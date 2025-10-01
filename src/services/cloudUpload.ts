@@ -53,24 +53,26 @@ export class CloudUploadService {
     this.propertiesByAgency = {};
 
     try {
-      const response = await fetch('/agencies.json');
-      const agencies = await response.json();
+      const response = await fetch('/A-data.json');
+      const agencyUrls = await response.json();
 
-      console.log(`📋 Loading properties from ${agencies.length} agency XML files...`);
+      console.log(`📋 Loading properties from ${agencyUrls.length} agency XML URLs...`);
 
-      for (const agency of agencies) {
-        const sitePrefix = agency.SitePrefix?.toLowerCase();
-        if (!sitePrefix) continue;
+      for (const agencyData of agencyUrls) {
+        const sitePrefix = agencyData.SitePrefix?.toLowerCase();
+        const xmlUrl = agencyData.url;
 
-        const xmlFile = `${sitePrefix}-0.xml`;
+        if (!sitePrefix || !xmlUrl) continue;
 
         try {
-          const checkResponse = await fetch(`/${xmlFile}`, { method: 'HEAD' });
-          if (!checkResponse.ok) {
+          const xmlResponse = await fetch(xmlUrl);
+          if (!xmlResponse.ok) {
+            console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: HTTP ${xmlResponse.status}`);
             continue;
           }
 
-          const properties = await xmlParser.loadXMLFile(xmlFile);
+          const xmlText = await xmlResponse.text();
+          const properties = xmlParser.parseXML(xmlText, sitePrefix.toUpperCase());
 
           if (properties.length > 0) {
             this.cachedProperties.push(...properties);
@@ -78,7 +80,7 @@ export class CloudUploadService {
             console.log(`✅ ${sitePrefix.toUpperCase()}: ${properties.length} properties`);
           }
         } catch (error: any) {
-          console.log(`⏭️  Skipping ${xmlFile}: ${error.message}`);
+          console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: ${error.message}`);
         }
       }
 
@@ -86,7 +88,7 @@ export class CloudUploadService {
       console.log(`\n🎉 Total loaded: ${this.cachedProperties.length} properties from ${Object.keys(this.propertiesByAgency).length} agencies`);
 
     } catch (error: any) {
-      console.error('Failed to load agencies.json:', error);
+      console.error('Failed to load A-data.json:', error);
       allErrors.push(`Failed to load agencies: ${error.message}`);
     }
 
