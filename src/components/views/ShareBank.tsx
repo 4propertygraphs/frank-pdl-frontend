@@ -1,15 +1,7 @@
-import React, { useState } from 'react';
-import { Folder, Upload, Download, Trash2, Plus, ExternalLink, Cloud } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Folder, Upload, Download, Trash2, Plus, ExternalLink, Cloud, FileJson } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
-
-interface FileItem {
-  id: string;
-  name: string;
-  type: 'folder' | 'file';
-  size?: number;
-  modified: Date;
-  path: string;
-}
+import { shareBankService, ShareBankFile, ShareBankExport } from '../../services/sharebank';
 
 export default function ShareBank() {
   const { state } = useApp();
@@ -18,55 +10,70 @@ export default function ShareBank() {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showNewFolderModal, setShowNewFolderModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [files, setFiles] = useState<ShareBankFile[]>([]);
+  const [exports, setExports] = useState<ShareBankExport[]>([]);
+  const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock data for demonstration
-  const [files, setFiles] = useState<FileItem[]>([
-    {
-      id: '1',
-      name: 'Property Reports',
-      type: 'folder',
-      modified: new Date('2024-01-15'),
-      path: '/',
-    },
-    {
-      id: '2',
-      name: 'Market Analysis',
-      type: 'folder',
-      modified: new Date('2024-01-10'),
-      path: '/',
-    },
-    {
-      id: '3',
-      name: 'Property_Analysis_Jan_2024.pdf',
-      type: 'file',
-      size: 2543680,
-      modified: new Date('2024-01-20'),
-      path: '/',
-    },
-    {
-      id: '4',
-      name: 'Market_Trends_Report.xlsx',
-      type: 'file',
-      size: 1024000,
-      modified: new Date('2024-01-18'),
-      path: '/',
-    },
-  ]);
+  useEffect(() => {
+    loadFiles();
+    loadExports();
+  }, [currentPath]);
 
-  const createFolder = () => {
+  const loadFiles = async () => {
+    setLoading(true);
+    try {
+      const loadedFiles = await shareBankService.listFiles(currentPath);
+      setFiles(loadedFiles);
+    } catch (error) {
+      console.error('Failed to load files:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadExports = async () => {
+    try {
+      const loadedExports = await shareBankService.listExports();
+      setExports(loadedExports);
+    } catch (error) {
+      console.error('Failed to load exports:', error);
+    }
+  };
+
+  const createFolder = async () => {
     if (!newFolderName.trim()) return;
-    
-    const newFolder: FileItem = {
-      id: Date.now().toString(),
-      name: newFolderName,
-      type: 'folder',
-      modified: new Date(),
-      path: currentPath,
-    };
-    
-    setFiles([...files, newFolder]);
-    setNewFolderName('');
-    setShowNewFolderModal(false);
+
+    try {
+      await shareBankService.createFolder(newFolderName, currentPath);
+      setNewFolderName('');
+      setShowNewFolderModal(false);
+      await loadFiles();
+    } catch (error) {
+      console.error('Failed to create folder:', error);
+      alert('Failed to create folder');
+    }
+  };
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setLoading(true);
+    try {
+      for (const file of Array.from(files)) {
+        await shareBankService.uploadFile(file, currentPath);
+      }
+      await loadFiles();
+    } catch (error) {
+      console.error('Failed to upload files:', error);
+      alert('Failed to upload files');
+    } finally {
+      setLoading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
   };
 
   const formatFileSize = (bytes: number) => {
@@ -84,9 +91,47 @@ export default function ShareBank() {
     );
   };
 
-  const deleteSelectedItems = () => {
-    setFiles(prev => prev.filter(file => !selectedItems.includes(file.id)));
-    setSelectedItems([]);
+  const deleteSelectedItems = async () => {
+    if (selectedItems.length === 0) return;
+
+    if (!confirm(`Delete ${selectedItems.length} item(s)?`)) return;
+
+    setLoading(true);
+    try {
+      await shareBankService.deleteFiles(selectedItems);
+      setSelectedItems([]);
+      await loadFiles();
+    } catch (error) {
+      console.error('Failed to delete items:', error);
+      alert('Failed to delete items');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const downloadSelectedItems = async () => {
+    if (selectedItems.length === 0) return;
+
+    for (const itemId of selectedItems) {
+      const file = files.find(f => f.id === itemId);
+      if (!file || file.type === 'folder') continue;
+
+      try {
+        const blob = await shareBankService.downloadFile(file);
+        if (!blob) continue;
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = file.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Failed to download file:', error);
+      }
+    }
   };
 
   const translations = {
@@ -222,15 +267,27 @@ export default function ShareBank() {
               <button
                 onClick={() => setShowNewFolderModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                disabled={loading}
               >
                 <Plus className="w-4 h-4" />
                 {t.newFolder}
               </button>
-              
-              <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                disabled={loading}
+              >
                 <Upload className="w-4 h-4" />
                 {t.upload}
               </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                onChange={handleFileUpload}
+                className="hidden"
+              />
             </div>
 
             {selectedItems.length > 0 && (
@@ -238,13 +295,18 @@ export default function ShareBank() {
                 <span className="text-sm text-gray-600">
                   {selectedItems.length} {t.selected}
                 </span>
-                <button className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                <button
+                  onClick={downloadSelectedItems}
+                  className="flex items-center gap-2 px-3 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                  disabled={loading}
+                >
                   <Download className="w-4 h-4" />
                   {t.download}
                 </button>
                 <button
                   onClick={deleteSelectedItems}
                   className="flex items-center gap-2 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  disabled={loading}
                 >
                   <Trash2 className="w-4 h-4" />
                   {t.delete}
@@ -289,6 +351,8 @@ export default function ShareBank() {
                         <div className="flex items-center gap-3">
                           {file.type === 'folder' ? (
                             <Folder className="w-5 h-5 text-blue-600" />
+                          ) : file.mime_type === 'application/json' ? (
+                            <FileJson className="w-5 h-5 text-green-600" />
                           ) : (
                             <div className="w-5 h-5 bg-gray-300 rounded"></div>
                           )}
@@ -302,7 +366,7 @@ export default function ShareBank() {
                         {file.size ? formatFileSize(file.size) : '-'}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
-                        {file.modified.toLocaleDateString()}
+                        {new Date(file.updated_at).toLocaleDateString()}
                       </td>
                     </tr>
                   ))}

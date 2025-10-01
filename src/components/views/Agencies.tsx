@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Building, Search, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Building, Search, ArrowLeft, RefreshCw, Download } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { apiService } from '../../services/api';
 import { propertySyncService } from '../../services/propertySync';
 import { cloudUploadService } from '../../services/cloudUpload';
+import { shareBankService } from '../../services/sharebank';
 
 type AgencyRecord = Awaited<ReturnType<typeof apiService.getAgencies>>[number];
 
@@ -109,6 +110,7 @@ export default function Agencies() {
   const [checkedAgencies, setCheckedAgencies] = useState<Set<string>>(new Set());
   const [isCheckingAll, setIsCheckingAll] = useState(false);
   const [checkProgress, setCheckProgress] = useState({ current: 0, total: 0 });
+  const [isExporting, setIsExporting] = useState(false);
 
   const selectedAgencyKey = useMemo(() => buildAgencyKey(selectedAgency), [selectedAgency]);
 
@@ -314,6 +316,42 @@ export default function Agencies() {
     );
   };
 
+  const handleExportToShareBank = async () => {
+    setIsExporting(true);
+    try {
+      const agenciesWithProperties = filteredAgencies.map((agency) => {
+        const key = buildAgencyKey(agency);
+        const props = propertiesCache[key] || [];
+        return {
+          ...agency,
+          properties: props,
+          property_count: props.length,
+        };
+      });
+
+      const allProperties = Object.values(propertiesCache).flat();
+
+      const exportData = {
+        agencies: agenciesWithProperties,
+        properties: allProperties,
+        export_date: new Date().toISOString(),
+        total_agencies: agenciesWithProperties.length,
+        total_properties: allProperties.length,
+      };
+
+      const exportName = `Export_${new Date().toISOString().split('T')[0]}_${agenciesWithProperties.length}_agencies_${allProperties.length}_properties`;
+
+      await shareBankService.exportData(exportName, 'mixed', exportData);
+
+      alert(`Successfully exported ${agenciesWithProperties.length} agencies and ${allProperties.length} properties to Share Bank!`);
+    } catch (error) {
+      console.error('Export failed:', error);
+      alert('Failed to export data. Please try again.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const currentLanguage = (settings.language as 'en' | 'cz') ?? 'en';
   const translations = {
     en: {
@@ -450,6 +488,23 @@ export default function Agencies() {
           )}
         </div>
         <div className="flex gap-2">
+          <button
+            onClick={handleExportToShareBank}
+            disabled={isExporting || Object.keys(propertiesCache).length === 0}
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isExporting ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                Exporting...
+              </>
+            ) : (
+              <>
+                <Download className="w-4 h-4" />
+                Export to Share Bank
+              </>
+            )}
+          </button>
           <button
             onClick={checkAllAgencies}
             disabled={isCheckingAll}
