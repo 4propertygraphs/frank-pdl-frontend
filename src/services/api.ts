@@ -204,29 +204,39 @@ class ApiService {
       const parser = new XMLParser({ ignoreAttributes: false });
       const json = parser.parse(xmlText);
 
-      const properties = json?.Properties?.Property || [];
+      const properties = json?.data?.properties?.property || [];
+      const propsArray = Array.isArray(properties) ? properties : [properties];
 
-      return properties.map((p: any, idx: number) => ({
-        id: p.ID || p.PropertyID || idx,
-        title: p.Address1 || p.Address || 'No Address',
-        address: p.Address1 || p.Address || '',
-        city: p.Town || p.City || 'Unknown',
-        county: p.County || '',
-        country: 'Ireland',
-        price: Number(p.Price) || 0,
-        bedrooms: p.Bedrooms || null,
-        bathrooms: p.Bathrooms || null,
-        type: p.Type || p.PropertyType || 'Unknown',
-        status: p.Status || 'active',
-        description: p.Description || '',
-        images: Array.isArray(p.Images?.Image)
-          ? p.Images.Image.map((img: any) => img.Url || img)
-          : p.Images?.Image?.Url
-          ? [p.Images.Image.Url]
-          : [],
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }));
+      return propsArray.map((p: any) => {
+        const images: string[] = [];
+
+        if (p.pictures) {
+          for (let i = 1; i <= 20; i++) {
+            const picKey = `picture${i}`;
+            if (p.pictures[picKey]) {
+              images.push(p.pictures[picKey]);
+            }
+          }
+        }
+
+        return {
+          id: p.id || p.uniquereferencenumber || Math.random().toString(36),
+          title: p.displayaddress || p.address?.street || 'No Address',
+          address: p.address?.street || p.displayaddress || '',
+          city: p.address?.town || 'Unknown',
+          county: p.address?.region || '',
+          country: 'Ireland',
+          price: Number(p.price) || 0,
+          bedrooms: Number(p.bedrooms) || null,
+          bathrooms: Number(p.bathrooms) || null,
+          type: p.type || 'Unknown',
+          status: p.status || 'active',
+          description: p.descriptionfull || p.descriptionbrief || '',
+          images: images,
+          created_at: p.addeddate || new Date().toISOString(),
+          updated_at: p.updateddate || new Date().toISOString(),
+        };
+      });
     } catch (error) {
       console.error('Failed to fetch Acquaint data:', error);
       throw new Error('Nezdarilo se nacist data o nemovitostech z Acquaint API');
