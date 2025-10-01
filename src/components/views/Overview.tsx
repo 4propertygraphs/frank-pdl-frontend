@@ -1,179 +1,174 @@
 import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
-import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, Home, Loader2 } from "lucide-react";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, MapPin, Home, Loader2, Activity, BarChart3 } from "lucide-react";
+
+interface DBStats {
+  totalProperties: number;
+  activeAgencies: number;
+  avgPrice: number;
+  totalValue: number;
+  topAgencies: Array<{ name: string; count: number; avgPrice: number }>;
+  recentProperties: Array<any>;
+  countiesCounts: Record<string, number>;
+  typeCounts: Record<string, number>;
+  priceRanges: Array<{ label: string; count: number }>;
+}
 
 export default function Overview() {
   const { state, dispatch } = useApp();
-  const { agencies, properties, settings, loading } = state;
+  const { settings } = state;
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
-  const [totalPropertiesFromDB, setTotalPropertiesFromDB] = useState<number>(0);
-  const [activeAgenciesFromDB, setActiveAgenciesFromDB] = useState<number>(0);
-  const [ckpProperties, setCkpProperties] = useState<any[]>([]);
-  const [loadingCkpProperties, setLoadingCkpProperties] = useState(true);
+  const [stats, setStats] = useState<DBStats | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Don't auto-load - user must click button to load data
-    if (!hasLoadedOnce && properties.length === 0 && !loading) {
-      console.log("📊 Overview: Ready to load data (manual action required)");
-      setHasLoadedOnce(true);
-    }
-    // Load stats from database
-    void loadStatsFromDatabase();
-    // Load CKP properties
-    void loadCkpProperties();
-  }, [hasLoadedOnce, properties.length, loading]);
+    loadAllStats();
+  }, []);
 
-  const loadStatsFromDatabase = async () => {
+  const loadAllStats = async () => {
     try {
+      setLoading(true);
       const { supabase } = await import('../../services/supabase');
 
-      // Get total properties count and active agencies count
-      const { data, error } = await supabase
+      const { data: agencies, error: agenciesError } = await supabase
         .from('agencies')
-        .select('property_count, is_active')
-        .eq('is_active', true)
-        .gt('property_count', 0);
+        .select('*')
+        .eq('is_active', true);
 
-      if (error) {
-        console.error('Failed to load stats from database:', error);
-        return;
-      }
-
-      if (data && data.length > 0) {
-        const totalProps = data.reduce((sum, agency) => sum + (agency.property_count || 0), 0);
-        setTotalPropertiesFromDB(totalProps);
-        setActiveAgenciesFromDB(data.length);
-        console.log(`📊 Loaded stats: ${totalProps} properties from ${data.length} agencies`);
-      }
-    } catch (err: any) {
-      console.error('Error loading stats from database:', err);
-    }
-  };
-
-  const loadCkpProperties = async () => {
-    try {
-      setLoadingCkpProperties(true);
-      const { supabase } = await import('../../services/supabase');
-
-      // Get 10 most recent properties
-      const { data: propertiesData, error: propertiesError } = await supabase
+      const { data: properties, error: propertiesError } = await supabase
         .from('properties')
-        .select('id, title, address, city, county, price, status, agency_id, created_at')
-        .order('created_at', { ascending: false })
-        .limit(10);
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      if (propertiesError) {
-        console.error('Failed to load properties:', propertiesError);
-        setLoadingCkpProperties(false);
+      if (agenciesError || propertiesError) {
+        console.error('Error loading data:', agenciesError || propertiesError);
+        setLoading(false);
         return;
       }
 
-      setCkpProperties(propertiesData || []);
-      setLoadingCkpProperties(false);
-      console.log(`📊 Loaded ${propertiesData?.length || 0} recent properties`);
-    } catch (err: any) {
-      console.error('Error loading properties:', err);
-      setLoadingCkpProperties(false);
-    }
-  };
+      const activeAgencies = agencies?.filter(a => a.property_count > 0) || [];
+      const allProperties = properties || [];
 
+      const totalValue = allProperties.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
+      const avgPrice = allProperties.length > 0 ? Math.round(totalValue / allProperties.length) : 0;
 
-  useEffect(() => {
-    const checkAndAutoSync = async () => {
-      const lastSync = localStorage.getItem('lastAutoSync');
-      const now = Date.now();
-      const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
+      const topAgencies = activeAgencies
+        .map(a => {
+          const agencyProps = allProperties.filter(p => p.agency_id === a.agency_id);
+          const agencyTotal = agencyProps.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
+          const agencyAvg = agencyProps.length > 0 ? Math.round(agencyTotal / agencyProps.length) : 0;
+          return {
+            name: a.name,
+            count: agencyProps.length,
+            avgPrice: agencyAvg
+          };
+        })
+        .filter(a => a.count > 0)
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 5);
 
-      if (!lastSync || now - parseInt(lastSync) > twoDaysInMs) {
-        console.log('🔄 Auto-sync triggered (2 days passed)');
-        setUploadProgress('Auto-syncing from XML...');
-
-        try {
-          const result = await cloudUploadService.uploadAllXMLFiles();
-          console.log(`✅ Auto-sync complete: ${result.success} properties`);
-
-          localStorage.setItem('lastAutoSync', now.toString());
-
-          const allProperties = await cloudUploadService.getPropertiesFromDatabase();
-          dispatch({ type: "SET_PROPERTIES", payload: allProperties });
-
-          setUploadProgress(`✅ Auto-synced ${result.success} properties`);
-          setTimeout(() => setUploadProgress(""), 3000);
-        } catch (error: any) {
-          console.error('Auto-sync failed:', error);
-          setUploadProgress("");
+      const countiesCounts: Record<string, number> = {};
+      allProperties.forEach(prop => {
+        let county = 'Unknown';
+        if (prop.county) {
+          try {
+            const countyObj = typeof prop.county === 'string' ? JSON.parse(prop.county) : prop.county;
+            county = countyObj['#text'] || countyObj;
+          } catch {
+            county = prop.county;
+          }
         }
-      }
-    };
-
-    if (hasLoadedOnce && properties.length > 0) {
-      checkAndAutoSync();
-    }
-
-    const interval = setInterval(checkAndAutoSync, 60 * 60 * 1000);
-
-    return () => clearInterval(interval);
-  }, [hasLoadedOnce, properties.length]);
-
-  const loadData = async () => {
-    try {
-      dispatch({ type: "SET_LOADING", payload: true });
-
-      console.log("📁 Loading agencies...");
-      const agencies = await apiService.getAgencies();
-
-      console.log("📋 Loading properties from XML files...");
-      setUploadProgress("Loading properties from XML...");
-
-      const result = await cloudUploadService.loadAllXMLFiles();
-      const allProperties = await cloudUploadService.getAllProperties();
-
-      console.log(`✅ Loaded ${agencies.length} agencies and ${allProperties.length} properties from ${result.loaded} XML files`);
-      setUploadProgress(`✅ Loaded ${allProperties.length} properties from ${result.loaded} agencies`);
-
-      dispatch({ type: "SET_AGENCIES", payload: agencies });
-      dispatch({ type: "SET_PROPERTIES", payload: allProperties });
-
-      setTimeout(() => setUploadProgress(""), 3000);
-    } catch (error: any) {
-      console.error("💥 Data loading failed:", error);
-      dispatch({
-        type: "SET_ERROR",
-        payload: `Data loading failed: ${error.message}`,
+        if (!county || county === 'Unknown') {
+          if (prop.title) {
+            let lastPart = prop.title.split(',').map((s: string) => s.trim()).filter(Boolean).pop();
+            if (lastPart) {
+              lastPart = lastPart.replace(/\.$/, '');
+              lastPart = lastPart.replace(/\b[A-Z]\d{2}\s*[A-Z0-9]{4}\b/g, '').trim();
+              const words = lastPart.split(/\s+/);
+              const filteredWords = words.filter((w: string) => !/^[A-Z]\d{2}/.test(w));
+              lastPart = filteredWords.join(' ').trim();
+              if (lastPart.length > 0 && lastPart.length < 50 && !/\d{2,}/.test(lastPart)) {
+                county = lastPart;
+              }
+            }
+          }
+        }
+        countiesCounts[county] = (countiesCounts[county] || 0) + 1;
       });
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
+
+      const typeCounts: Record<string, number> = {};
+      allProperties.forEach(prop => {
+        let type = 'Other';
+        if (prop.type) {
+          try {
+            if (typeof prop.type === 'string') {
+              const typeObj = JSON.parse(prop.type);
+              type = typeObj['#text'] || typeObj.toString();
+            } else if (typeof prop.type === 'object' && prop.type['#text']) {
+              type = prop.type['#text'];
+            } else {
+              type = String(prop.type);
+            }
+            if (!type || type === '' || type === '[object Object]' || type === 'ERROR' || type === 'Unknown') {
+              type = 'Other';
+            }
+          } catch (e) {
+            type = 'Other';
+          }
+        }
+        typeCounts[type] = (typeCounts[type] || 0) + 1;
+      });
+
+      const priceRanges = [
+        { label: '< €100k', min: 0, max: 100000 },
+        { label: '€100k - €200k', min: 100000, max: 200000 },
+        { label: '€200k - €300k', min: 200000, max: 300000 },
+        { label: '€300k - €500k', min: 300000, max: 500000 },
+        { label: '> €500k', min: 500000, max: Infinity },
+      ].map(range => ({
+        label: range.label,
+        count: allProperties.filter(p => {
+          const price = parseFloat(p.price) || 0;
+          return price >= range.min && price < range.max;
+        }).length
+      }));
+
+      setStats({
+        totalProperties: allProperties.length,
+        activeAgencies: activeAgencies.length,
+        avgPrice,
+        totalValue,
+        topAgencies,
+        recentProperties: allProperties.slice(0, 10),
+        countiesCounts,
+        typeCounts,
+        priceRanges
+      });
+
+      setLoading(false);
+    } catch (err: any) {
+      console.error('Error loading stats:', err);
+      setLoading(false);
     }
   };
 
   const handleUploadToCloud = async () => {
     if (isUploading) return;
 
-    const confirmed = window.confirm(
-      `This will upload ${properties.length} properties from loaded XML files to Supabase. Continue?`
-    );
-
+    const confirmed = window.confirm('This will sync all XML files to Supabase. Continue?');
     if (!confirmed) return;
 
     setIsUploading(true);
-    setUploadProgress(`Uploading ${properties.length} properties to Supabase...`);
+    setUploadProgress('Uploading properties to Supabase...');
 
     try {
       const result = await cloudUploadService.uploadAllXMLFiles();
-
       localStorage.setItem('lastAutoSync', Date.now().toString());
+      setUploadProgress(`✅ Sync complete: ${result.success} uploaded, ${result.failed} failed`);
 
-      setUploadProgress(
-        `✅ Sync complete: ${result.success} uploaded, ${result.failed} failed`
-      );
-
-      if (result.errors.length > 0) {
-        console.error("Upload errors:", result.errors);
-      }
+      await loadAllStats();
 
       setTimeout(() => {
         setUploadProgress("");
@@ -189,167 +184,6 @@ export default function Overview() {
     }
   };
 
-  const averagePrice = properties.length > 0
-    ? Math.round(properties.reduce((sum, p) => sum + p.price, 0) / properties.length)
-    : 0;
-
-  const totalValue = properties.reduce((sum, p) => sum + p.price, 0);
-  const availableProperties = properties.filter(p => p.status === 'available').length;
-
-  const allProperties = properties.length > 0 ? properties : ckpProperties;
-  const propertiesByCounty = allProperties.length > 0 ? allProperties.reduce((acc, prop) => {
-    let county = 'Unknown';
-
-    if (prop.county && prop.county !== '') {
-      try {
-        const countyObj = typeof prop.county === 'string' ? JSON.parse(prop.county) : prop.county;
-        county = countyObj['#text'] || countyObj;
-      } catch {
-        county = prop.county;
-      }
-    }
-
-    if (!county || county === '' || county === 'Unknown') {
-      if (prop.title) {
-        let lastPart = prop.title.split(',').map((s: string) => s.trim()).filter(Boolean).pop();
-        if (lastPart) {
-          lastPart = lastPart.replace(/\.$/, '');
-          lastPart = lastPart.replace(/\b[A-Z]\d{2}\s*[A-Z0-9]{4}\b/g, '').trim();
-          const words = lastPart.split(/\s+/);
-          const filteredWords = words.filter(w => !/^[A-Z]\d{2}/.test(w));
-          lastPart = filteredWords.join(' ').trim();
-          if (lastPart.length > 0 && lastPart.length < 50 && !/\d{2,}/.test(lastPart)) {
-            county = lastPart;
-          }
-        }
-      }
-    }
-
-    if (!acc[county]) {
-      acc[county] = { count: 0, totalPrice: 0, avgPrice: 0 };
-    }
-    acc[county].count++;
-    acc[county].totalPrice += prop.price || 0;
-    acc[county].avgPrice = Math.round(acc[county].totalPrice / acc[county].count);
-    return acc;
-  }, {} as Record<string, { count: number; totalPrice: number; avgPrice: number }>) : {};
-
-  const topCounties = Object.entries(propertiesByCounty)
-    .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 5);
-
-  const propertiesByType = allProperties.length > 0 ? (() => {
-    const result = allProperties.reduce((acc, prop) => {
-      let type = 'Other';
-      if (prop.type) {
-        try {
-          if (typeof prop.type === 'string') {
-            const typeObj = JSON.parse(prop.type);
-            type = typeObj['#text'] || typeObj.toString();
-          } else if (typeof prop.type === 'object' && prop.type['#text']) {
-            type = prop.type['#text'];
-          } else {
-            type = String(prop.type);
-          }
-          if (!type || type === '' || type === '[object Object]' || type === 'ERROR' || type === 'Unknown') {
-            type = 'Other';
-          }
-        } catch (e) {
-          type = 'Other';
-        }
-      }
-      if (!acc[type]) {
-        acc[type] = { count: 0, avgPrice: 0 };
-      }
-      acc[type].count++;
-      return acc;
-    }, {} as Record<string, { count: number; avgPrice: number }>);
-
-    Object.keys(result).forEach(type => {
-      const typeProps = allProperties.filter(p => {
-        let pType = 'Other';
-        if (p.type) {
-          try {
-            if (typeof p.type === 'string') {
-              const typeObj = JSON.parse(p.type);
-              pType = typeObj['#text'] || typeObj.toString();
-            } else if (typeof p.type === 'object' && p.type['#text']) {
-              pType = p.type['#text'];
-            } else {
-              pType = String(p.type);
-            }
-            if (!pType || pType === '' || pType === '[object Object]' || pType === 'ERROR' || pType === 'Unknown') {
-              pType = 'Other';
-            }
-          } catch (e) {
-            pType = 'Other';
-          }
-        }
-        return pType === type;
-      });
-      const avgPrice = typeProps.reduce((sum, p) => sum + (p.price || 0), 0) / typeProps.length;
-      result[type].avgPrice = Math.round(avgPrice);
-    });
-
-    return result;
-  })() : {};
-
-  const topTypes = Object.entries(propertiesByType)
-    .sort((a, b) => b[1].count - a[1].count)
-    .slice(0, 5);
-
-  const priceRanges = [
-    { label: '< €100k', min: 0, max: 100000 },
-    { label: '€100k - €200k', min: 100000, max: 200000 },
-    { label: '€200k - €300k', min: 200000, max: 300000 },
-    { label: '€300k - €500k', min: 300000, max: 500000 },
-    { label: '> €500k', min: 500000, max: Infinity },
-  ];
-
-  const propertiesByPriceRange = allProperties.length > 0
-    ? priceRanges.map(range => ({
-        ...range,
-        count: allProperties.filter(p => p.price >= range.min && p.price < range.max).length
-      }))
-    : [
-        { label: '< €100k', min: 0, max: 100000, count: 12 },
-        { label: '€100k - €200k', min: 100000, max: 200000, count: 35 },
-        { label: '€200k - €300k', min: 200000, max: 300000, count: 48 },
-        { label: '€300k - €500k', min: 300000, max: 500000, count: 32 },
-        { label: '> €500k', min: 500000, max: Infinity, count: 14 },
-      ];
-
-  const stats = [
-    {
-      title: "Total Properties",
-      value: (totalPropertiesFromDB || properties.length).toString(),
-      icon: Building,
-      color: "bg-gradient-to-br from-blue-500 to-blue-600",
-      subtitle: "Properties in database",
-    },
-    {
-      title: "Active Agencies",
-      value: (activeAgenciesFromDB || agencies.length).toString(),
-      icon: Users,
-      color: "bg-gradient-to-br from-green-500 to-green-600",
-      subtitle: "Connected agencies",
-    },
-    {
-      title: "Average Price",
-      value: averagePrice > 0 ? `€${averagePrice.toLocaleString()}` : "€0",
-      icon: DollarSign,
-      color: "bg-gradient-to-br from-orange-500 to-orange-600",
-      subtitle: "Across all properties",
-    },
-    {
-      title: "Total Value",
-      value: `€${totalValue.toLocaleString()}`,
-      icon: TrendingUp,
-      color: "bg-gradient-to-br from-green-500 to-green-600",
-      subtitle: "Portfolio value",
-    },
-  ];
-
   const translations = {
     en: {
       title: "Dashboard Overview",
@@ -363,17 +197,71 @@ export default function Overview() {
 
   const t = translations[settings.language as "en" | "cz"] || translations.en;
 
-  if (loading && properties.length === 0) {
+  if (loading) {
     return (
       <div className="flex-1 p-6 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Cloud className="w-16 h-16 text-blue-600 animate-pulse mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-700">Loading properties...</h2>
-          <p className="text-gray-500 mt-2">Please wait while we fetch your data</p>
+          <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700">Loading dashboard...</h2>
         </div>
       </div>
     );
   }
+
+  if (!stats) {
+    return (
+      <div className="flex-1 p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Cloud className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700">No data available</h2>
+          <p className="text-gray-500 mt-2">Click "Sync All to Cloud" to load properties</p>
+        </div>
+      </div>
+    );
+  }
+
+  const mainStats = [
+    {
+      title: "Total Properties",
+      value: stats.totalProperties.toLocaleString(),
+      icon: Building,
+      color: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-50",
+      iconColor: "text-blue-600"
+    },
+    {
+      title: "Active Agencies",
+      value: stats.activeAgencies.toString(),
+      icon: Users,
+      color: "from-green-500 to-green-600",
+      bgColor: "bg-green-50",
+      iconColor: "text-green-600"
+    },
+    {
+      title: "Average Price",
+      value: `€${stats.avgPrice.toLocaleString()}`,
+      icon: DollarSign,
+      color: "from-orange-500 to-orange-600",
+      bgColor: "bg-orange-50",
+      iconColor: "text-orange-600"
+    },
+    {
+      title: "Total Value",
+      value: `€${stats.totalValue.toLocaleString()}`,
+      icon: TrendingUp,
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600"
+    },
+  ];
+
+  const topCounties = Object.entries(stats.countiesCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const topTypes = Object.entries(stats.typeCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
 
   return (
     <div className="flex-1 p-6 bg-gray-50 min-h-screen">
@@ -400,7 +288,7 @@ export default function Overview() {
             {isUploading ? (
               <>
                 <Cloud className="w-5 h-5 animate-pulse" />
-                Uploading...
+                Syncing...
               </>
             ) : (
               <>
@@ -412,31 +300,25 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat, index) => {
+        {mainStats.map((stat, index) => {
           const Icon = stat.icon;
           return (
             <div
               key={index}
-              className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 group cursor-pointer hover:-translate-y-1"
+              className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 group cursor-pointer"
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-500 mb-2">
                     {stat.title}
                   </p>
-                  <p className="text-3xl font-bold text-gray-900 mb-1">
+                  <p className="text-3xl font-bold text-gray-900">
                     {stat.value}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {stat.subtitle}
-                  </p>
                 </div>
-                <div
-                  className={`p-4 rounded-xl ${stat.color} shadow-md group-hover:scale-110 transition-transform duration-300`}
-                >
-                  <Icon className="w-7 h-7 text-white" />
+                <div className={`p-4 rounded-xl ${stat.bgColor}`}>
+                  <Icon className={`w-7 h-7 ${stat.iconColor}`} />
                 </div>
               </div>
             </div>
@@ -444,30 +326,21 @@ export default function Overview() {
         })}
       </div>
 
-      {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        {/* Recent Activity - 2 columns */}
         <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
               <Activity className="w-5 h-5 text-blue-600" />
               Recent Properties
             </h2>
-            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              View All
-            </button>
           </div>
           <div className="space-y-3">
-            {loadingCkpProperties ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-              </div>
-            ) : (ckpProperties.length > 0 ? ckpProperties : properties.slice(0, 10)).map((property) => (
+            {stats.recentProperties.map((property) => (
               <div
                 key={property.id}
                 className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 group"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
                   <Building className="w-7 h-7 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -483,7 +356,7 @@ export default function Overview() {
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-gray-900 text-lg">
-                    €{(property.price || 0).toLocaleString()}
+                    €{(parseFloat(property.price) || 0).toLocaleString()}
                   </p>
                   <span className={`text-xs font-medium px-2 py-1 rounded-full ${
                     property.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
@@ -496,84 +369,61 @@ export default function Overview() {
           </div>
         </div>
 
-        {/* Quick Stats - 1 column */}
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-white/20 rounded-lg">
-                <DollarSign className="w-6 h-6" />
-              </div>
-              <div>
-                <p className="text-sm text-blue-100">Total Portfolio Value</p>
-                <p className="text-2xl font-bold">€{totalValue.toLocaleString()}</p>
-              </div>
-            </div>
-            <div className="border-t border-white/20 pt-4 mt-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-blue-100">Properties</span>
-                <span className="font-semibold">{properties.length}</span>
-              </div>
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-blue-600" />
+              Top Agencies
+            </h3>
+            <div className="space-y-3">
+              {stats.topAgencies.map((agency, index) => (
+                <div key={index} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div>
+                    <p className="font-medium text-gray-900">{agency.name}</p>
+                    <p className="text-xs text-gray-500">Avg: €{agency.avgPrice.toLocaleString()}</p>
+                  </div>
+                  <span className="text-sm font-bold text-blue-600">{agency.count}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-blue-600" />
-              Database Stats
+              <BarChart3 className="w-5 h-5 text-orange-600" />
+              Price Ranges
             </h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Total Properties</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {totalPropertiesFromDB || properties.length}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Active Agencies</span>
-                <span className="text-sm font-medium text-gray-900">
-                  {activeAgenciesFromDB || agencies.length}
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Average Price</span>
-                <span className="text-sm font-medium text-gray-900">
-                  €{averagePrice.toLocaleString()}
-                </span>
-              </div>
+              {stats.priceRanges.map((range, index) => (
+                <div key={index} className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">{range.label}</span>
+                  <span className="text-sm font-bold text-gray-900">{range.count}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Market Analysis Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Properties by County */}
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center gap-2 mb-6">
             <MapPin className="w-5 h-5 text-blue-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Properties by County</h2>
+            <h2 className="text-xl font-semibold text-gray-900">Top 5 Counties</h2>
           </div>
-          {loadingCkpProperties && allProperties.length === 0 ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-            </div>
-          ) : (
           <div className="space-y-4">
-            {topCounties.map(([county, data], index) => {
-              const maxCount = topCounties[0][1].count;
-              const percentage = (data.count / maxCount) * 100;
+            {topCounties.map(([county, count], index) => {
+              const maxCount = topCounties[0][1];
+              const percentage = (count / maxCount) * 100;
               return (
                 <div key={county} className="group">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">{county}</span>
-                    <div className="text-right">
-                      <span className="text-sm font-bold text-gray-900">{data.count} properties</span>
-                      <span className="text-xs text-gray-500 ml-2">Avg: €{data.avgPrice.toLocaleString()}</span>
-                    </div>
+                    <span className="text-sm font-bold text-gray-900">{count} properties</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 group-hover:from-blue-600 group-hover:to-blue-700"
+                      className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500"
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
@@ -581,36 +431,26 @@ export default function Overview() {
               );
             })}
           </div>
-          )}
         </div>
 
-        {/* Properties by Type */}
         <div className="bg-white rounded-xl shadow-sm border p-6">
           <div className="flex items-center gap-2 mb-6">
-            <Home className="w-5 h-5 text-purple-600" />
-            <h2 className="text-xl font-semibold text-gray-900">Properties by Type</h2>
+            <Home className="w-5 h-5 text-green-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Top 5 Property Types</h2>
           </div>
-          {loadingCkpProperties && allProperties.length === 0 ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-            </div>
-          ) : (
           <div className="space-y-4">
-            {topTypes.map(([type, data], index) => {
-              const maxCount = topTypes[0][1].count;
-              const percentage = (data.count / maxCount) * 100;
+            {topTypes.map(([type, count], index) => {
+              const maxCount = topTypes[0][1];
+              const percentage = (count / maxCount) * 100;
               return (
                 <div key={type} className="group">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-700">{type}</span>
-                    <div className="text-right">
-                      <span className="text-sm font-bold text-gray-900">{data.count} properties</span>
-                      <span className="text-xs text-gray-500 ml-2">Avg: €{data.avgPrice.toLocaleString()}</span>
-                    </div>
+                    <span className="text-sm font-bold text-gray-900">{count} properties</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-500 group-hover:from-purple-600 group-hover:to-purple-700"
+                      className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-500"
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
@@ -618,10 +458,8 @@ export default function Overview() {
               );
             })}
           </div>
-          )}
         </div>
       </div>
-
     </div>
   );
 }
