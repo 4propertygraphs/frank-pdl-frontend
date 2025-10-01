@@ -223,7 +223,7 @@ export default function Overview() {
               </div>
               <div className="text-right">
                 <p className="font-semibold text-gray-900">
-                  €{property.price.toLocaleString()}
+                  €{(property.price || 0).toLocaleString()}
                 </p>
                 <p className="text-sm text-gray-600">{property.status}</p>
               </div>
