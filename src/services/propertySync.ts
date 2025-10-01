@@ -181,20 +181,30 @@ class PropertySyncService {
   }
 
   async getPropertiesWithAutoSync(agencyId: string): Promise<Property[]> {
-    const shouldSync = await this.needsSync(agencyId);
+    const cachedProperties = await this.getPropertiesFromDb(agencyId);
 
-    if (shouldSync) {
-      console.log(`⏰ Agency ${agencyId} needs sync, fetching from API...`);
-      try {
-        return await this.syncAgencyProperties(agencyId);
-      } catch (error) {
-        console.error('Sync failed, falling back to cached data:', error);
-        return await this.getPropertiesFromDb(agencyId);
+    if (cachedProperties.length > 0) {
+      console.log(`✨ Found ${cachedProperties.length} cached properties for agency ${agencyId}`);
+
+      const shouldSync = await this.needsSync(agencyId);
+
+      if (shouldSync) {
+        console.log(`⏰ Agency ${agencyId} needs sync, attempting background update...`);
+        this.syncAgencyProperties(agencyId).catch((error) => {
+          console.warn('Background sync failed:', error);
+        });
       }
+
+      return cachedProperties;
     }
 
-    console.log(`✨ Using cached data for agency ${agencyId}`);
-    return await this.getPropertiesFromDb(agencyId);
+    console.log(`🔄 No cached data for agency ${agencyId}, fetching from API...`);
+    try {
+      return await this.syncAgencyProperties(agencyId);
+    } catch (error) {
+      console.error('Initial sync failed:', error);
+      return [];
+    }
   }
 
   async getSyncMetadata(agencyId: string): Promise<SyncMetadata | null> {
