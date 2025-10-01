@@ -285,8 +285,27 @@ export default function Agencies() {
           <p className="text-gray-600">{properties.length} {t.properties}</p>
         </div>
 
+        <div className="mb-4">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder={currentLanguage === 'cz' ? 'Vyhledat nemovitost...' : 'Search properties...'}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {properties.map((property) => (
+          {properties.filter((property) => {
+            if (!searchTerm.trim()) return true;
+            const lower = searchTerm.toLowerCase();
+            return (
+              property.title?.toLowerCase().includes(lower) ||
+              property.address?.toLowerCase().includes(lower) ||
+              property.city?.toLowerCase().includes(lower) ||
+              property.id?.toLowerCase().includes(lower)
+            );
+          }).map((property) => (
             <div
               key={property.id}
               onClick={() => dispatch({ type: 'SET_SELECTED_PROPERTY', payload: property })}
