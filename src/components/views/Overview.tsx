@@ -35,26 +35,30 @@ const resolveAgencyLookupKey = (agency: any): string | null => {
 };
 export default function Overview() {
   const { state, dispatch } = useApp();
-  const { agencies, properties, settings } = state;
+  const { agencies, properties, settings, loading } = state;
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   useEffect(() => {
-    console.log("📊 Overview component mounted, loading data...");
-    loadData();
-  }, []);
+    if (!hasLoadedOnce && properties.length === 0 && !loading) {
+      console.log("📊 Overview: Loading data for first time...");
+      setHasLoadedOnce(true);
+      loadData();
+    }
+  }, [hasLoadedOnce, properties.length, loading]);
 
   const loadData = async () => {
     try {
       dispatch({ type: "SET_LOADING", payload: true });
 
-      console.log("📁 Loading agencies from agencies.json...");
+      console.log("📁 Loading agencies...");
       const agencies = await apiService.getAgencies();
-      console.log(`📁 Loaded ${agencies.length} agencies`);
 
-      console.log("🌐 Loading properties from Supabase database...");
+      console.log("🌐 Loading properties from database...");
       const allProperties = await cloudUploadService.getPropertiesFromDatabase();
-      console.log(`✅ Loaded ${allProperties.length} properties from database`);
+
+      console.log(`✅ Loaded ${agencies.length} agencies and ${allProperties.length} properties`);
 
       dispatch({ type: "SET_AGENCIES", payload: agencies });
       dispatch({ type: "SET_PROPERTIES", payload: allProperties });
@@ -92,6 +96,7 @@ export default function Overview() {
         console.error("Upload errors:", result.errors);
       }
 
+      setHasLoadedOnce(false);
       await loadData();
 
       setTimeout(() => {
@@ -161,6 +166,18 @@ export default function Overview() {
   };
 
   const t = translations[settings.language as "en" | "cz"] || translations.en;
+
+  if (loading && properties.length === 0) {
+    return (
+      <div className="flex-1 p-6 bg-gray-50 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Cloud className="w-16 h-16 text-blue-600 animate-pulse mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700">Loading properties...</h2>
+          <p className="text-gray-500 mt-2">Please wait while we fetch your data</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 p-6 bg-gray-50 min-h-screen">

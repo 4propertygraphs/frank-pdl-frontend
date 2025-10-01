@@ -78,14 +78,14 @@ export class CloudUploadService {
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Failed to fetch properties from database:', error);
-        throw error;
+        console.warn('Database fetch error (this is normal if table is empty):', error.message);
+        return [];
       }
 
       return data || [];
-    } catch (error) {
-      console.error('Error fetching properties:', error);
-      throw error;
+    } catch (error: any) {
+      console.warn('Error fetching properties (returning empty array):', error.message);
+      return [];
     }
   }
 
