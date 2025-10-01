@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Building, Search, ArrowLeft, RefreshCw, Download } from 'lucide-react';
+import { Building, Search, ArrowLeft, RefreshCw, Download, FileText, X, Loader2 } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { apiService } from '../../services/api';
 import { propertySyncService } from '../../services/propertySync';
@@ -111,6 +111,12 @@ export default function Agencies() {
   const [isCheckingAll, setIsCheckingAll] = useState(false);
   const [checkProgress, setCheckProgress] = useState({ current: 0, total: 0 });
   const [isExporting, setIsExporting] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [selectedAgencyForReport, setSelectedAgencyForReport] = useState<string>('');
+  const [selectedPropertyForReport, setSelectedPropertyForReport] = useState<string>('all');
+  const [reportProgress, setReportProgress] = useState(0);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [agencyPropertiesList, setAgencyPropertiesList] = useState<any[]>([]);
 
   const selectedAgencyKey = useMemo(() => buildAgencyKey(selectedAgency), [selectedAgency]);
 
@@ -352,6 +358,84 @@ export default function Agencies() {
     }
   };
 
+  const handleGenerateReport = async () => {
+    if (!selectedAgencyForReport) {
+      alert('Please select an agency');
+      return;
+    }
+
+    setIsGeneratingReport(true);
+    setReportProgress(0);
+
+    try {
+      const { reportGeneratorService } = await import('../../services/reportGenerator');
+
+      setReportProgress(20);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setReportProgress(40);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setReportProgress(60);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setReportProgress(80);
+      const reportBlob = await reportGeneratorService.generateReport(
+        selectedAgencyForReport,
+        selectedPropertyForReport
+      );
+
+      setReportProgress(100);
+
+      const url = URL.createObjectURL(reportBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `property-report-${Date.now()}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setTimeout(() => {
+        setShowReportModal(false);
+        setIsGeneratingReport(false);
+        setReportProgress(0);
+        setSelectedAgencyForReport('');
+        setSelectedPropertyForReport('all');
+      }, 500);
+    } catch (error) {
+      console.error('Failed to generate report:', error);
+      alert('Failed to generate report');
+      setIsGeneratingReport(false);
+      setReportProgress(0);
+    }
+  };
+
+  const loadAgencyPropertiesForReport = async (agencyId: string) => {
+    if (!agencyId) {
+      setAgencyPropertiesList([]);
+      return;
+    }
+
+    try {
+      const { supabase } = await import('../../services/supabase');
+      const { data, error } = await supabase
+        .from('properties')
+        .select('id, title')
+        .eq('agency_id', agencyId)
+        .order('title', { ascending: true });
+
+      if (error) {
+        console.error('Failed to load agency properties:', error);
+        return;
+      }
+
+      setAgencyPropertiesList(data || []);
+    } catch (err: any) {
+      console.error('Error loading agency properties:', err);
+    }
+  };
+
   const currentLanguage = (settings.language as 'en' | 'cz') ?? 'en';
   const translations = {
     en: {
@@ -489,6 +573,13 @@ export default function Agencies() {
         </div>
         <div className="flex gap-2">
           <button
+            onClick={() => setShowReportModal(true)}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+          >
+            <FileText className="w-4 h-4" />
+            Generate Report
+          </button>
+          <button
             onClick={handleExportToShareBank}
             disabled={isExporting || Object.keys(propertiesCache).length === 0}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
@@ -508,7 +599,7 @@ export default function Agencies() {
           <button
             onClick={checkAllAgencies}
             disabled={isCheckingAll}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isCheckingAll ? (
               <>
@@ -519,7 +610,7 @@ export default function Agencies() {
               'Check All'
             )}
           </button>
-          <button onClick={loadAgencies} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button onClick={loadAgencies} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700">
             Refresh
           </button>
         </div>
@@ -611,6 +702,122 @@ export default function Agencies() {
           })
         )}
       </div>
+
+      {/* Report Generation Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative">
+            <button
+              onClick={() => !isGeneratingReport && setShowReportModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              disabled={isGeneratingReport}
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Generate Property Report</h2>
+              <p className="text-gray-600">Create a comprehensive analysis report with market insights and statistics</p>
+            </div>
+
+            {!isGeneratingReport ? (
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Select Agency *
+                  </label>
+                  <select
+                    value={selectedAgencyForReport}
+                    onChange={(e) => {
+                      setSelectedAgencyForReport(e.target.value);
+                      setSelectedPropertyForReport('all');
+                      loadAgencyPropertiesForReport(e.target.value);
+                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  >
+                    <option value="">Choose an agency...</option>
+                    {agencies.map((agency) => (
+                      <option key={(agency as any).id} value={(agency as any).id}>
+                        {getDisplayName(agency)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Select Property
+                  </label>
+                  <select
+                    value={selectedPropertyForReport}
+                    onChange={(e) => setSelectedPropertyForReport(e.target.value)}
+                    disabled={!selectedAgencyForReport}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  >
+                    <option value="all">All Properties</option>
+                    {agencyPropertiesList.map((property) => (
+                      <option key={property.id} value={property.id}>
+                        {property.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-900 mb-2">Report will include:</h3>
+                  <ul className="space-y-1 text-sm text-blue-800">
+                    <li>• Property portfolio overview</li>
+                    <li>• Market analysis by location and type</li>
+                    <li>• Price trends and statistics</li>
+                    <li>• Performance metrics and insights</li>
+                    <li>• Visual charts and graphs</li>
+                    <li>• Executive summary</li>
+                  </ul>
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowReportModal(false)}
+                    className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleGenerateReport}
+                    disabled={!selectedAgencyForReport}
+                    className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                  >
+                    Generate Report
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="text-center py-8">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+                    <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Generating Report...</h3>
+                  <p className="text-gray-600 mb-6">Please wait while we analyze your data</p>
+
+                  <div className="max-w-md mx-auto">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Progress</span>
+                      <span className="text-sm font-bold text-green-600">{reportProgress}%</span>
+                    </div>
+                    <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 rounded-full"
+                        style={{ width: `${reportProgress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

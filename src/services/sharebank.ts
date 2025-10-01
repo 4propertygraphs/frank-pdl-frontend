@@ -29,7 +29,7 @@ export interface ShareBankExport {
 
 class ShareBankService {
   private readonly BUCKET_NAME = 'sharebank';
-  private readonly GOOGLE_DRIVE_FOLDER_ID = '1_YOUR_FOLDER_ID_HERE';
+  private readonly GOOGLE_DRIVE_FOLDER_ID = '1e9caJPRf5P6V26_FET3YhdxSaxrsQxmx';
 
   async ensureBucketExists(): Promise<void> {
     const { data: buckets } = await supabase.storage.listBuckets();
