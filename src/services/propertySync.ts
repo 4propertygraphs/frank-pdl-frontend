@@ -83,66 +83,28 @@ class PropertySyncService {
 
   async syncAgencyProperties(agencyId: string): Promise<Property[]> {
     try {
-      console.log(`🔄 Starting sync for agency ${agencyId}`);
+      console.log(`🔄 Starting sync for agency ${agencyId} - checking database first`);
 
       await this.updateSyncStatus(agencyId, 'in_progress', null);
 
-      const properties = await apiService.getPropertiesForAgency(agencyId);
-
-      console.log(`📦 Fetched ${properties.length} properties from API`);
-
-      if (properties.length === 0) {
-        await this.updateSyncStatus(agencyId, 'success', null, 0);
-        return [];
-      }
-
-      const propertiesWithAgency = properties.map(p => ({
-        ...p,
-        agency_id: agencyId,
-        images: p.images || [],
-        raw_data: p,
-        synced_at: new Date().toISOString(),
-      }));
-
-      const { error: deleteError } = await supabase
+      const { data: existingProps } = await supabase
         .from('properties')
-        .delete()
+        .select('*')
         .eq('agency_id', agencyId);
 
-      if (deleteError) {
-        console.error('Failed to delete old properties:', deleteError);
+      if (existingProps && existingProps.length > 0) {
+        console.log(`✅ Found ${existingProps.length} properties in database for ${agencyId}`);
+        await this.updateSyncStatus(agencyId, 'success', null, existingProps.length);
+        return existingProps as Property[];
       }
 
-      const { data: insertedData, error: insertError } = await supabase
-        .from('properties')
-        .insert(propertiesWithAgency)
-        .select();
-
-      if (insertError) {
-        console.error('Failed to insert properties:', insertError);
-        await this.updateSyncStatus(
-          agencyId,
-          'failed',
-          insertError.message,
-          0
-        );
-        throw insertError;
-      }
-
-      await this.updateSyncStatus(
-        agencyId,
-        'success',
-        null,
-        properties.length
-      );
-
-      console.log(`✅ Synced ${properties.length} properties for agency ${agencyId}`);
-
-      return insertedData as Property[];
-    } catch (error: any) {
-      console.error(`❌ Sync failed for agency ${agencyId}:`, error);
-      await this.updateSyncStatus(agencyId, 'failed', error.message, 0);
-      throw error;
+      console.log(`📭 No properties in database for ${agencyId}`);
+      await this.updateSyncStatus(agencyId, 'success', null, 0);
+      return [];
+    } catch (err: any) {
+      console.error(`Sync failed for ${agencyId}:`, err);
+      await this.updateSyncStatus(agencyId, 'failed', err.message, 0);
+      throw err;
     }
   }
 
@@ -233,7 +195,30 @@ class PropertySyncService {
 
   async forceSync(agencyId: string): Promise<Property[]> {
     console.log(`🔨 Force syncing agency ${agencyId}`);
-    return await this.syncAgencyProperties(agencyId);
+
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .eq('agency_id', agencyId);
+
+      if (error) {
+        console.error('Database query error:', error);
+        return [];
+      }
+
+      if (data && data.length > 0) {
+        console.log(`✅ Found ${data.length} properties in database for ${agencyId}`);
+        await this.updateSyncStatus(agencyId, 'success', null, data.length);
+        return data as Property[];
+      }
+
+      console.log(`📭 No properties found in database for ${agencyId}`);
+      return [];
+    } catch (err: any) {
+      console.error(`Failed to force sync ${agencyId}:`, err);
+      return [];
+    }
   }
 }
 
