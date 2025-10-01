@@ -42,16 +42,29 @@ export class XMLPropertyParser {
     try {
       const result = this.parser.parse(xmlText);
 
-      if (!result.data || !result.data.properties || !result.data.properties.property) {
-        console.warn('No properties found in XML');
+      let propertyList: any[] = [];
+
+      if (result.data?.properties?.property) {
+        propertyList = Array.isArray(result.data.properties.property)
+          ? result.data.properties.property
+          : [result.data.properties.property];
+      } else if (result.properties?.property) {
+        propertyList = Array.isArray(result.properties.property)
+          ? result.properties.property
+          : [result.properties.property];
+      } else if (result.property) {
+        propertyList = Array.isArray(result.property)
+          ? result.property
+          : [result.property];
+      }
+
+      if (propertyList.length === 0) {
+        console.warn('No properties found in XML for', agencyId);
         return [];
       }
 
-      const properties = Array.isArray(result.data.properties.property)
-        ? result.data.properties.property
-        : [result.data.properties.property];
-
-      return properties.map((prop: any) => this.convertToProperty(prop, agencyId));
+      console.log(`Found ${propertyList.length} properties for ${agencyId}`);
+      return propertyList.map((prop: any) => this.convertToProperty(prop, agencyId));
     } catch (error) {
       console.error('Error parsing XML:', error);
       throw error;
