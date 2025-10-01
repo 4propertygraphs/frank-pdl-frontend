@@ -61,7 +61,18 @@ export class XMLPropertyParser {
   private convertToProperty(xmlProp: any, agencyId: string): Property {
     const images: string[] = [];
 
-    if (xmlProp.imageurl) {
+    if (xmlProp.pictures) {
+      for (let i = 1; i <= 50; i++) {
+        const picKey = `picture${i}`;
+        if (xmlProp.pictures[picKey]) {
+          images.push(xmlProp.pictures[picKey]);
+        } else {
+          break;
+        }
+      }
+    }
+
+    if (images.length === 0 && xmlProp.imageurl) {
       if (Array.isArray(xmlProp.imageurl)) {
         images.push(...xmlProp.imageurl.filter((url: string) => url));
       } else if (xmlProp.imageurl) {
@@ -69,13 +80,14 @@ export class XMLPropertyParser {
       }
     }
 
-    const titleParts = [xmlProp.propertyname, xmlProp.street].filter(Boolean);
-    const title = titleParts.length > 0
-      ? titleParts.join(' ')
-      : xmlProp.descriptionbrief || xmlProp.address1 || 'Untitled Property';
+    const title = xmlProp.displayaddress
+      || [xmlProp.propertyname, xmlProp.street].filter(Boolean).join(' ')
+      || xmlProp.descriptionbrief
+      || xmlProp.address1
+      || 'Untitled Property';
 
     return {
-      id: xmlProp.referencenumber || `xml-${Date.now()}-${Math.random()}`,
+      id: xmlProp.referencenumber || xmlProp.id || `xml-${Date.now()}-${Math.random()}`,
       agency_id: agencyId,
       title: title,
       address: [xmlProp.address1, xmlProp.address2, xmlProp.address3]
