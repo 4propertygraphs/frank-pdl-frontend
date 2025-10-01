@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight, BarChart3, PieChart, Home, Loader2 } from "lucide-react";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight, BarChart3, PieChart, Home, Loader2, FileText, X } from "lucide-react";
 
 export default function Overview() {
   const { state, dispatch } = useApp();
@@ -14,6 +14,12 @@ export default function Overview() {
   const [activeAgenciesFromDB, setActiveAgenciesFromDB] = useState<number>(0);
   const [ckpProperties, setCkpProperties] = useState<any[]>([]);
   const [loadingCkpProperties, setLoadingCkpProperties] = useState(true);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [selectedAgency, setSelectedAgency] = useState<string>('');
+  const [selectedProperty, setSelectedProperty] = useState<string>('all');
+  const [reportProgress, setReportProgress] = useState(0);
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [agencyPropertiesList, setAgencyPropertiesList] = useState<any[]>([]);
 
   useEffect(() => {
     // Don't auto-load - user must click button to load data
@@ -59,40 +65,103 @@ export default function Overview() {
       setLoadingCkpProperties(true);
       const { supabase } = await import('../../services/supabase');
 
-      // Get CKP agency ID
-      const { data: agencyData, error: agencyError } = await supabase
-        .from('agencies')
-        .select('id')
-        .ilike('name', '%CKP%')
-        .limit(1)
-        .maybeSingle();
-
-      if (agencyError || !agencyData) {
-        console.log('CKP agency not found');
-        setLoadingCkpProperties(false);
-        return;
-      }
-
-      // Get properties from CKP
+      // Get top 5 most expensive properties
       const { data: propertiesData, error: propertiesError } = await supabase
         .from('properties')
-        .select('id, title, address, city, county, price, status')
-        .eq('agency_id', agencyData.id)
-        .order('created_at', { ascending: false })
+        .select('id, title, address, city, county, price, status, agency_id')
+        .order('price', { ascending: false })
         .limit(5);
 
       if (propertiesError) {
-        console.error('Failed to load CKP properties:', propertiesError);
+        console.error('Failed to load properties:', propertiesError);
         setLoadingCkpProperties(false);
         return;
       }
 
       setCkpProperties(propertiesData || []);
       setLoadingCkpProperties(false);
-      console.log(`📊 Loaded ${propertiesData?.length || 0} CKP properties`);
+      console.log(`📊 Loaded ${propertiesData?.length || 0} most expensive properties`);
     } catch (err: any) {
-      console.error('Error loading CKP properties:', err);
+      console.error('Error loading properties:', err);
       setLoadingCkpProperties(false);
+    }
+  };
+
+  const handleGenerateReport = async () => {
+    if (!selectedAgency) {
+      alert('Please select an agency');
+      return;
+    }
+
+    setIsGeneratingReport(true);
+    setReportProgress(0);
+
+    try {
+      const { reportGeneratorService } = await import('../../services/reportGenerator');
+
+      setReportProgress(20);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setReportProgress(40);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setReportProgress(60);
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      setReportProgress(80);
+      const reportBlob = await reportGeneratorService.generateReport(
+        selectedAgency,
+        selectedProperty
+      );
+
+      setReportProgress(100);
+
+      const url = URL.createObjectURL(reportBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `property-report-${Date.now()}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      setTimeout(() => {
+        setShowReportModal(false);
+        setIsGeneratingReport(false);
+        setReportProgress(0);
+        setSelectedAgency('');
+        setSelectedProperty('all');
+      }, 500);
+    } catch (error) {
+      console.error('Failed to generate report:', error);
+      alert('Failed to generate report');
+      setIsGeneratingReport(false);
+      setReportProgress(0);
+    }
+  };
+
+  const loadAgencyProperties = async (agencyId: string) => {
+    if (!agencyId) {
+      setAgencyPropertiesList([]);
+      return;
+    }
+
+    try {
+      const { supabase } = await import('../../services/supabase');
+      const { data, error } = await supabase
+        .from('properties')
+        .select('id, title')
+        .eq('agency_id', agencyId)
+        .order('title', { ascending: true });
+
+      if (error) {
+        console.error('Failed to load agency properties:', error);
+        return;
+      }
+
+      setAgencyPropertiesList(data || []);
+    } catch (err: any) {
+      console.error('Error loading agency properties:', err);
     }
   };
 
@@ -360,6 +429,13 @@ export default function Overview() {
             </div>
           )}
           <button
+            onClick={() => setShowReportModal(true)}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg font-semibold shadow-md transition-all bg-green-600 text-white hover:bg-green-700 hover:shadow-lg"
+          >
+            <FileText className="w-5 h-5" />
+            Generate Report
+          </button>
+          <button
             onClick={handleUploadToCloud}
             disabled={isUploading}
             className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold shadow-md transition-all ${
@@ -595,45 +671,122 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* Price Distribution */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <div className="flex items-center gap-2 mb-6">
-          <BarChart3 className="w-5 h-5 text-green-600" />
-          <h2 className="text-xl font-semibold text-gray-900">Price Distribution</h2>
-        </div>
-        {loadingCkpProperties && allProperties.length === 0 ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-          </div>
-        ) : (
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-          {propertiesByPriceRange.map((range, index) => {
-            const maxCount = Math.max(...propertiesByPriceRange.map(r => r.count));
-            const heightPercentage = maxCount > 0 ? (range.count / maxCount) * 100 : 0;
-            return (
-              <div key={range.label} className="flex flex-col items-center group">
-                <div className="w-full h-48 flex items-end justify-center mb-3">
-                  <div
-                    className="w-full bg-gradient-to-t from-green-500 to-green-400 rounded-t-lg transition-all duration-500 group-hover:from-green-600 group-hover:to-green-500 relative"
-                    style={{ height: `${heightPercentage}%`, minHeight: range.count > 0 ? '20px' : '0' }}
+      {/* Report Generation Modal */}
+      {showReportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 relative">
+            <button
+              onClick={() => !isGeneratingReport && setShowReportModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+              disabled={isGeneratingReport}
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Generate Property Report</h2>
+              <p className="text-gray-600">Create a comprehensive analysis report with market insights and statistics</p>
+            </div>
+
+            {!isGeneratingReport ? (
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Select Agency *
+                  </label>
+                  <select
+                    value={selectedAgency}
+                    onChange={(e) => {
+                      setSelectedAgency(e.target.value);
+                      setSelectedProperty('all');
+                      loadAgencyProperties(e.target.value);
+                    }}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
-                    {range.count > 0 && (
-                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                        {range.count} properties
-                      </div>
-                    )}
-                  </div>
+                    <option value="">Choose an agency...</option>
+                    {agencies.map((agency) => (
+                      <option key={agency.id} value={agency.id}>
+                        {agency.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div className="text-center">
-                  <p className="text-xs font-medium text-gray-700">{range.label}</p>
-                  <p className="text-lg font-bold text-gray-900 mt-1">{range.count}</p>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Select Property
+                  </label>
+                  <select
+                    value={selectedProperty}
+                    onChange={(e) => setSelectedProperty(e.target.value)}
+                    disabled={!selectedAgency}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  >
+                    <option value="all">All Properties</option>
+                    {agencyPropertiesList.map((property) => (
+                      <option key={property.id} value={property.id}>
+                        {property.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-900 mb-2">Report will include:</h3>
+                  <ul className="space-y-1 text-sm text-blue-800">
+                    <li>• Property portfolio overview</li>
+                    <li>• Market analysis by location and type</li>
+                    <li>• Price trends and statistics</li>
+                    <li>• Performance metrics and insights</li>
+                    <li>• Visual charts and graphs</li>
+                    <li>• Executive summary</li>
+                  </ul>
+                </div>
+
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setShowReportModal(false)}
+                    className="flex-1 px-6 py-3 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleGenerateReport}
+                    disabled={!selectedAgency}
+                    className="flex-1 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                  >
+                    Generate Report
+                  </button>
                 </div>
               </div>
-            );
-          })}
+            ) : (
+              <div className="space-y-6">
+                <div className="text-center py-8">
+                  <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-4">
+                    <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Generating Report...</h3>
+                  <p className="text-gray-600 mb-6">Please wait while we analyze your data</p>
+
+                  <div className="max-w-md mx-auto">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-700">Progress</span>
+                      <span className="text-sm font-bold text-green-600">{reportProgress}%</span>
+                    </div>
+                    <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-green-500 to-green-600 transition-all duration-500 rounded-full"
+                        style={{ width: `${reportProgress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        )}
-      </div>
+      )}
+
     </div>
   );
 }
