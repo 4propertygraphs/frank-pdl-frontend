@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Minimize2, Maximize2 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
-import { kyraAI } from '../services/kyra';
+import { openAIService, ChatMessage } from '../services/openai';
 import { AIMessage } from '../types';
 
 export default function KyraFloatingChat() {
@@ -11,6 +11,7 @@ export default function KyraFloatingChat() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [conversationHistory, setConversationHistory] = useState<ChatMessage[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -32,11 +33,23 @@ export default function KyraFloatingChat() {
     };
 
     dispatch({ type: 'ADD_AI_MESSAGE', payload: userMessage });
+    const userInput = input;
     setInput('');
     setIsLoading(true);
 
     try {
-      const response = await kyraAI.generateResponse(input, { agencies, properties });
+      const { response, actions } = await openAIService.chat(
+        userInput,
+        conversationHistory,
+        { agencies, properties }
+      );
+
+      setConversationHistory(prev => [
+        ...prev,
+        { role: 'user', content: userInput },
+        { role: 'assistant', content: response }
+      ]);
+
       const aiMessage: AIMessage = {
         id: (Date.now() + 1).toString(),
         content: response,
@@ -44,6 +57,10 @@ export default function KyraFloatingChat() {
         timestamp: new Date(),
       };
       dispatch({ type: 'ADD_AI_MESSAGE', payload: aiMessage });
+
+      if (actions && actions.length > 0) {
+        executeActions(actions);
+      }
     } catch (error) {
       console.error('Kyra AI error:', error);
       const errorMessage: AIMessage = {
@@ -56,6 +73,36 @@ export default function KyraFloatingChat() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const executeActions = (actions: any[]) => {
+    actions.forEach(action => {
+      switch (action.type) {
+        case 'OPEN_PROPERTY':
+          const property = properties.find((p: any) => p.id === action.data);
+          if (property) {
+            dispatch({ type: 'SET_SELECTED_PROPERTY', payload: property });
+            dispatch({ type: 'SET_CURRENT_VIEW', payload: 'overview' });
+          }
+          break;
+        case 'GENERATE_REPORT':
+          const reportProperty = properties.find((p: any) => p.id === action.data);
+          if (reportProperty) {
+            dispatch({ type: 'SET_SELECTED_PROPERTY', payload: reportProperty });
+            dispatch({ type: 'SET_CURRENT_VIEW', payload: 'overview' });
+          }
+          break;
+        case 'NAVIGATE':
+          dispatch({ type: 'SET_CURRENT_VIEW', payload: action.data });
+          dispatch({ type: 'SET_SELECTED_PROPERTY', payload: null });
+          break;
+        case 'SEARCH':
+          console.log('Search action:', action.data);
+          break;
+        default:
+          console.log('Unknown action:', action);
+      }
+    });
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -74,7 +121,7 @@ export default function KyraFloatingChat() {
       minimize: 'Minimize',
       maximize: 'Maximize',
       close: 'Close',
-      welcomeMessage: 'Hello! I\'m Kyra, your real estate advisor. I have extensive experience in property analysis and market trends. I can help you analyze properties, evaluate investment opportunities, and provide market insights. What would you like to know?'
+      welcomeMessage: 'Hello! I\'m Kyra, your real estate advisor. I can help you with property analysis, market trends, and investment insights. I can also open properties, generate reports, or navigate the app for you. Just ask me anything!'
     },
     cz: {
       chatWithKyra: 'Chat s Kyrou',
@@ -84,7 +131,7 @@ export default function KyraFloatingChat() {
       minimize: 'Minimalizovat',
       maximize: 'Maximalizovat',
       close: 'Zavřít',
-      welcomeMessage: 'Dobrý den! Jsem Kyra, vaše realitní poradkyně. Mám dlouholeté zkušenosti s analýzou nemovitostí a znalostí trhu. Můžu vám pomoct s hodnocením properties, investičními příležitostmi a tržními insights. Co vás zajímá?'
+      welcomeMessage: 'Dobrý den! Jsem Kyra, vaše realitní poradkyně. Můžu vám pomoct s analýzou nemovitostí, tržními trendy a investičními tipy. Také můžu otevřít konkrétní nemovitosti, vygenerovat reporty nebo vás navigovat v aplikaci. Ptejte se na cokoliv!'
     },
     ru: {
       chatWithKyra: 'Чат с Kyra',
@@ -94,7 +141,7 @@ export default function KyraFloatingChat() {
       minimize: 'Свернуть',
       maximize: 'Развернуть',
       close: 'Закрыть',
-      welcomeMessage: 'Привет! Я Kyra, ваш AI ассистент. Я могу помочь анализировать недвижимость, генерировать отчеты и навигировать по приложению. Как я могу помочь?'
+      welcomeMessage: 'Здравствуйте! Я Kyra, ваш консультант по недвижимости. Могу помочь с анализом объектов, рыночными трендами и инвестиционными советами. Также могу открыть конкретные объекты, создать отчеты или помочь с навигацией. Спрашивайте что угодно!'
     },
     fr: {
       chatWithKyra: 'Chat avec Kyra',
@@ -104,7 +151,7 @@ export default function KyraFloatingChat() {
       minimize: 'Réduire',
       maximize: 'Agrandir',
       close: 'Fermer',
-      welcomeMessage: 'Bonjour! Je suis Kyra, votre assistant IA. Je peux vous aider à analyser les propriétés, générer des rapports et naviguer dans l\'application. Comment puis-je vous aider?'
+      welcomeMessage: 'Bonjour! Je suis Kyra, votre conseillère immobilière. Je peux vous aider avec l\'analyse des propriétés, les tendances du marché et les conseils d\'investissement. Je peux aussi ouvrir des propriétés, générer des rapports ou vous guider dans l\'application. Demandez-moi ce que vous voulez!'
     },
   };
 
