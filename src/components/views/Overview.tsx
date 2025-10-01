@@ -12,10 +12,10 @@ export default function Overview() {
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
 
   useEffect(() => {
+    // Don't auto-load - user must click button to load data
     if (!hasLoadedOnce && properties.length === 0 && !loading) {
-      console.log("📊 Overview: Loading data for first time...");
+      console.log("📊 Overview: Ready to load data (manual action required)");
       setHasLoadedOnce(true);
-      loadData();
     }
   }, [hasLoadedOnce, properties.length, loading]);
 
