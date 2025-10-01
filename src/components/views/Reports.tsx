@@ -124,15 +124,27 @@ export default function Reports() {
   const groupByCounty = (props: any[]) => {
     return props.reduce((acc, prop) => {
       let county = 'Unknown';
-      if (prop.county) {
+
+      if (prop.county && prop.county !== '') {
         try {
           const countyObj = typeof prop.county === 'string' ? JSON.parse(prop.county) : prop.county;
           county = countyObj['#text'] || countyObj;
-          if (!county || county === '') county = 'Unknown';
         } catch {
-          county = prop.county || 'Unknown';
+          county = prop.county;
         }
       }
+
+      if (!county || county === '' || county === 'Unknown') {
+        if (prop.title) {
+          const parts = prop.title.split(',').map((s: string) => s.trim());
+          if (parts.length > 1) {
+            county = parts[parts.length - 1];
+          } else {
+            county = 'Unknown';
+          }
+        }
+      }
+
       if (!acc[county]) {
         acc[county] = { count: 0, avgPrice: 0, totalPrice: 0 };
       }
@@ -149,11 +161,20 @@ export default function Reports() {
       let type = 'Unknown';
       if (prop.type) {
         try {
-          const typeObj = typeof prop.type === 'string' ? JSON.parse(prop.type) : prop.type;
-          type = typeObj['#text'] || typeObj;
-          if (!type || type === '') type = 'Unknown';
-        } catch {
-          type = prop.type || 'Unknown';
+          if (typeof prop.type === 'string') {
+            const typeObj = JSON.parse(prop.type);
+            type = typeObj['#text'] || typeObj.toString();
+          } else if (typeof prop.type === 'object' && prop.type['#text']) {
+            type = prop.type['#text'];
+          } else {
+            type = String(prop.type);
+          }
+          if (!type || type === '' || type === '[object Object]') {
+            type = 'Unknown';
+          }
+        } catch (e) {
+          type = 'Unknown';
+          console.error('Error parsing type:', prop.type, e);
         }
       }
       if (!acc[type]) {
