@@ -168,19 +168,19 @@ class ApiService {
     }
 
     const filename = `${sitePrefix}-${siteId}.xml`;
-    const directUrl = `https://www.acquaintcrm.co.uk/datafeeds/standardxml/${filename}`;
+    const proxyUrl = `http://localhost:3001/acquaint/datafeeds/standardxml/${filename}`;
 
-    console.log('Fetching Acquaint feed:', directUrl);
+    console.log('Fetching Acquaint feed via proxy:', proxyUrl);
 
     try {
-      const response = await axios.get(directUrl, {
+      const response = await axios.get(proxyUrl, {
         responseType: 'text',
         headers: {
           'Accept': 'application/xml, text/xml, */*'
         }
       });
 
-      console.log(`✅ Successfully fetched ${filename}, saving locally...`);
+      console.log(`✅ Successfully fetched ${filename} (${response.data.length} bytes)`);
 
       const blob = new Blob([response.data], { type: 'application/xml' });
       const url = window.URL.createObjectURL(blob);
