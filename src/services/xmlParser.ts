@@ -85,8 +85,13 @@ export class XMLPropertyParser {
     if (xmlProp.pictures) {
       for (let i = 1; i <= 50; i++) {
         const picKey = `picture${i}`;
-        if (xmlProp.pictures[picKey]) {
-          images.push(xmlProp.pictures[picKey]);
+        const picValue = xmlProp.pictures[picKey];
+
+        if (picValue) {
+          const url = typeof picValue === 'string' ? picValue : picValue['#text'];
+          if (url && url.trim()) {
+            images.push(url.trim());
+          }
         } else {
           break;
         }
