@@ -258,6 +258,63 @@ export default function Agencies() {
     );
   }
 
+  if (selectedAgency && properties.length > 0) {
+    return (
+      <div className="p-6">
+        <div className="mb-6">
+          <button
+            onClick={handleBackToAgencies}
+            className="inline-flex items-center gap-2 text-sm text-blue-600 hover:underline mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {t.backToAgencies}
+          </button>
+          <h1 className="text-2xl font-bold">{getDisplayName(selectedAgency)}</h1>
+          <p className="text-gray-600">{properties.length} {t.properties}</p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {properties.map((property) => (
+            <div
+              key={property.id}
+              onClick={() => dispatch({ type: 'SET_SELECTED_PROPERTY', payload: property })}
+              className="bg-white border rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <div className="h-48 bg-gray-200 relative">
+                {property.images && property.images.length > 0 ? (
+                  <img
+                    src={property.images[0]}
+                    alt={property.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Building className="w-16 h-16 text-gray-400" />
+                  </div>
+                )}
+                <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  €{property.price?.toLocaleString() ?? 'N/A'}
+                </div>
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-lg mb-2 truncate">{property.title}</h3>
+                <p className="text-sm text-gray-600 mb-2">{property.address}</p>
+                <div className="flex gap-4 text-sm text-gray-500">
+                  <span>{property.bedrooms ?? 0} beds</span>
+                  <span>{property.bathrooms ?? 0} baths</span>
+                  <span className="capitalize">{property.type}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">

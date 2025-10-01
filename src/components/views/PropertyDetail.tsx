@@ -103,24 +103,27 @@ export default function PropertyDetail() {
       case 'description':
         return (
           <div className="prose max-w-none">
-            <p className="text-gray-700 leading-relaxed">{selectedProperty.description}</p>
-            
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.features}</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {selectedProperty.features.map((feature, index) => (
-                  <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                    {feature}
-                  </span>
-                ))}
-              </div>
-            </div>
+            <p className="text-gray-700 leading-relaxed">{selectedProperty.description || 'No description available'}</p>
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.location}</h3>
-              <div className="flex items-center gap-2 text-gray-600">
-                <MapPin className="w-4 h-4" />
-                <span>{selectedProperty.location.address}, {selectedProperty.location.city}, {selectedProperty.location.country}</span>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-gray-600">
+                  <MapPin className="w-4 h-4" />
+                  <span>{selectedProperty.address}</span>
+                </div>
+                {selectedProperty.city && (
+                  <p className="text-gray-600 ml-6">City: {selectedProperty.city}</p>
+                )}
+                {selectedProperty.county && (
+                  <p className="text-gray-600 ml-6">County: {selectedProperty.county}</p>
+                )}
+                {selectedProperty.postcode && (
+                  <p className="text-gray-600 ml-6">Postcode: {selectedProperty.postcode}</p>
+                )}
+                {selectedProperty.country && (
+                  <p className="text-gray-600 ml-6">Country: {selectedProperty.country}</p>
+                )}
               </div>
             </div>
           </div>
@@ -266,7 +269,7 @@ export default function PropertyDetail() {
         <h1 className="text-2xl font-bold text-gray-900">{selectedProperty.title}</h1>
         <p className="text-gray-600 flex items-center gap-1">
           <MapPin className="w-4 h-4" />
-          {selectedProperty.location.address}
+          {selectedProperty.address}
         </p>
       </div>
 
@@ -341,7 +344,7 @@ export default function PropertyDetail() {
             <div className="space-y-4">
               <div>
                 <span className="text-sm text-gray-600">{t.price}</span>
-                <p className="text-2xl font-bold text-blue-600">${selectedProperty.price.toLocaleString()}</p>
+                <p className="text-2xl font-bold text-blue-600">€{selectedProperty.price?.toLocaleString() ?? 'N/A'}</p>
               </div>
               
               <div className="grid grid-cols-2 gap-4">
@@ -361,28 +364,17 @@ export default function PropertyDetail() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                {selectedProperty.bedrooms && (
-                  <div className="text-center">
-                    <Bed className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                    <p className="font-semibold text-gray-900">{selectedProperty.bedrooms}</p>
-                    <p className="text-xs text-gray-600">{t.bedrooms}</p>
-                  </div>
-                )}
-                {selectedProperty.bathrooms && (
-                  <div className="text-center">
-                    <Bath className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                    <p className="font-semibold text-gray-900">{selectedProperty.bathrooms}</p>
-                    <p className="text-xs text-gray-600">{t.bathrooms}</p>
-                  </div>
-                )}
-                {selectedProperty.area && (
-                  <div className="text-center">
-                    <Square className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                    <p className="font-semibold text-gray-900">{selectedProperty.area}</p>
-                    <p className="text-xs text-gray-600">m²</p>
-                  </div>
-                )}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="text-center">
+                  <Bed className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+                  <p className="font-semibold text-gray-900">{selectedProperty.bedrooms ?? 0}</p>
+                  <p className="text-xs text-gray-600">{t.bedrooms}</p>
+                </div>
+                <div className="text-center">
+                  <Bath className="w-6 h-6 text-gray-400 mx-auto mb-1" />
+                  <p className="font-semibold text-gray-900">{selectedProperty.bathrooms ?? 0}</p>
+                  <p className="text-xs text-gray-600">{t.bathrooms}</p>
+                </div>
               </div>
 
               <div className="pt-4 border-t">
