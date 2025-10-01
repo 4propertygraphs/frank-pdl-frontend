@@ -81,10 +81,15 @@ export class CloudUploadService {
             console.log(`🔌 Using Electron IPC for ${sitePrefix.toUpperCase()}`);
             xmlText = await electronAPI.fetchAcquaintData(sitePrefix.toUpperCase(), siteId);
           } else {
-            console.log(`🌐 Direct fetch for ${sitePrefix.toUpperCase()} (no Electron API)`);
-            // Fallback to direct fetch (for web version)
-            const xmlUrl = agencyData.url;
-            const xmlResponse = await fetch(xmlUrl);
+            // Use Supabase Edge Function as proxy to avoid CORS
+            const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-xml-proxy?sitePrefix=${sitePrefix.toUpperCase()}&siteId=${siteId}`;
+
+            const xmlResponse = await fetch(proxyUrl, {
+              headers: {
+                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              },
+            });
+
             if (!xmlResponse.ok) {
               console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: HTTP ${xmlResponse.status}`);
               continue;
