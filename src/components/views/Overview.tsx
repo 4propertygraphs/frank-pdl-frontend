@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight, BarChart3, PieChart, Home, Loader2 } from "lucide-react";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, Home, Loader2 } from "lucide-react";
 
 export default function Overview() {
   const { state, dispatch } = useApp();
@@ -59,12 +59,12 @@ export default function Overview() {
       setLoadingCkpProperties(true);
       const { supabase } = await import('../../services/supabase');
 
-      // Get top 5 most expensive properties
+      // Get 10 most recent properties
       const { data: propertiesData, error: propertiesError } = await supabase
         .from('properties')
-        .select('id, title, address, city, county, price, status, agency_id')
-        .order('price', { ascending: false })
-        .limit(5);
+        .select('id, title, address, city, county, price, status, agency_id, created_at')
+        .order('created_at', { ascending: false })
+        .limit(10);
 
       if (propertiesError) {
         console.error('Failed to load properties:', propertiesError);
@@ -74,7 +74,7 @@ export default function Overview() {
 
       setCkpProperties(propertiesData || []);
       setLoadingCkpProperties(false);
-      console.log(`📊 Loaded ${propertiesData?.length || 0} most expensive properties`);
+      console.log(`📊 Loaded ${propertiesData?.length || 0} recent properties`);
     } catch (err: any) {
       console.error('Error loading properties:', err);
       setLoadingCkpProperties(false);
@@ -198,7 +198,33 @@ export default function Overview() {
 
   const allProperties = properties.length > 0 ? properties : ckpProperties;
   const propertiesByCounty = allProperties.length > 0 ? allProperties.reduce((acc, prop) => {
-    const county = prop.county || 'Unknown';
+    let county = 'Unknown';
+
+    if (prop.county && prop.county !== '') {
+      try {
+        const countyObj = typeof prop.county === 'string' ? JSON.parse(prop.county) : prop.county;
+        county = countyObj['#text'] || countyObj;
+      } catch {
+        county = prop.county;
+      }
+    }
+
+    if (!county || county === '' || county === 'Unknown') {
+      if (prop.title) {
+        let lastPart = prop.title.split(',').map((s: string) => s.trim()).filter(Boolean).pop();
+        if (lastPart) {
+          lastPart = lastPart.replace(/\.$/, '');
+          lastPart = lastPart.replace(/\b[A-Z]\d{2}\s*[A-Z0-9]{4}\b/g, '').trim();
+          const words = lastPart.split(/\s+/);
+          const filteredWords = words.filter(w => !/^[A-Z]\d{2}/.test(w));
+          lastPart = filteredWords.join(' ').trim();
+          if (lastPart.length > 0 && lastPart.length < 50 && !/\d{2,}/.test(lastPart)) {
+            county = lastPart;
+          }
+        }
+      }
+    }
+
     if (!acc[county]) {
       acc[county] = { count: 0, totalPrice: 0, avgPrice: 0 };
     }
@@ -206,13 +232,7 @@ export default function Overview() {
     acc[county].totalPrice += prop.price || 0;
     acc[county].avgPrice = Math.round(acc[county].totalPrice / acc[county].count);
     return acc;
-  }, {} as Record<string, { count: number; totalPrice: number; avgPrice: number }>) : {
-    'Dublin': { count: 45, totalPrice: 13500000, avgPrice: 300000 },
-    'Cork': { count: 32, totalPrice: 7680000, avgPrice: 240000 },
-    'Galway': { count: 28, totalPrice: 6720000, avgPrice: 240000 },
-    'Limerick': { count: 21, totalPrice: 4200000, avgPrice: 200000 },
-    'Waterford': { count: 15, totalPrice: 2700000, avgPrice: 180000 },
-  };
+  }, {} as Record<string, { count: number; totalPrice: number; avgPrice: number }>) : {};
 
   const topCounties = Object.entries(propertiesByCounty)
     .sort((a, b) => b[1].count - a[1].count)
@@ -220,7 +240,24 @@ export default function Overview() {
 
   const propertiesByType = allProperties.length > 0 ? (() => {
     const result = allProperties.reduce((acc, prop) => {
-      const type = prop.type || 'Unknown';
+      let type = 'Other';
+      if (prop.type) {
+        try {
+          if (typeof prop.type === 'string') {
+            const typeObj = JSON.parse(prop.type);
+            type = typeObj['#text'] || typeObj.toString();
+          } else if (typeof prop.type === 'object' && prop.type['#text']) {
+            type = prop.type['#text'];
+          } else {
+            type = String(prop.type);
+          }
+          if (!type || type === '' || type === '[object Object]' || type === 'ERROR' || type === 'Unknown') {
+            type = 'Other';
+          }
+        } catch (e) {
+          type = 'Other';
+        }
+      }
       if (!acc[type]) {
         acc[type] = { count: 0, avgPrice: 0 };
       }
@@ -229,19 +266,33 @@ export default function Overview() {
     }, {} as Record<string, { count: number; avgPrice: number }>);
 
     Object.keys(result).forEach(type => {
-      const typeProps = allProperties.filter(p => (p.type || 'Unknown') === type);
+      const typeProps = allProperties.filter(p => {
+        let pType = 'Other';
+        if (p.type) {
+          try {
+            if (typeof p.type === 'string') {
+              const typeObj = JSON.parse(p.type);
+              pType = typeObj['#text'] || typeObj.toString();
+            } else if (typeof p.type === 'object' && p.type['#text']) {
+              pType = p.type['#text'];
+            } else {
+              pType = String(p.type);
+            }
+            if (!pType || pType === '' || pType === '[object Object]' || pType === 'ERROR' || pType === 'Unknown') {
+              pType = 'Other';
+            }
+          } catch (e) {
+            pType = 'Other';
+          }
+        }
+        return pType === type;
+      });
       const avgPrice = typeProps.reduce((sum, p) => sum + (p.price || 0), 0) / typeProps.length;
       result[type].avgPrice = Math.round(avgPrice);
     });
 
     return result;
-  })() : {
-    'Apartment': { count: 58, avgPrice: 280000 },
-    'House': { count: 42, avgPrice: 350000 },
-    'Villa': { count: 18, avgPrice: 650000 },
-    'Studio': { count: 12, avgPrice: 180000 },
-    'Duplex': { count: 11, avgPrice: 420000 },
-  };
+  })() : {};
 
   const topTypes = Object.entries(propertiesByType)
     .sort((a, b) => b[1].count - a[1].count)
@@ -274,36 +325,28 @@ export default function Overview() {
       value: (totalPropertiesFromDB || properties.length).toString(),
       icon: Building,
       color: "bg-gradient-to-br from-blue-500 to-blue-600",
-      change: "+12%",
-      trend: "up",
-      kyraInsight: "Strong portfolio growth this quarter",
+      subtitle: "Properties in database",
     },
     {
       title: "Active Agencies",
       value: (activeAgenciesFromDB || agencies.length).toString(),
       icon: Users,
       color: "bg-gradient-to-br from-green-500 to-green-600",
-      change: "+5%",
-      trend: "up",
-      kyraInsight: "Excellent agency partnerships",
+      subtitle: "Connected agencies",
     },
     {
       title: "Average Price",
       value: averagePrice > 0 ? `€${averagePrice.toLocaleString()}` : "€0",
       icon: DollarSign,
-      color: "bg-gradient-to-br from-purple-500 to-purple-600",
-      change: "+8%",
-      trend: "up",
-      kyraInsight: "Above market average pricing",
+      color: "bg-gradient-to-br from-orange-500 to-orange-600",
+      subtitle: "Across all properties",
     },
     {
-      title: "Available Now",
-      value: availableProperties.toString(),
+      title: "Total Value",
+      value: `€${totalValue.toLocaleString()}`,
       icon: TrendingUp,
-      color: "bg-gradient-to-br from-orange-500 to-orange-600",
-      change: "+2.1%",
-      trend: "up",
-      kyraInsight: "High availability for new clients",
+      color: "bg-gradient-to-br from-green-500 to-green-600",
+      subtitle: "Portfolio value",
     },
   ];
 
@@ -373,35 +416,28 @@ export default function Overview() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
-          const TrendIcon = stat.trend === "up" ? ArrowUpRight : ArrowDownRight;
           return (
             <div
               key={index}
               className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 group cursor-pointer hover:-translate-y-1"
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <p className="text-sm font-medium text-gray-500 mb-2">
                     {stat.title}
                   </p>
-                  <p className="text-3xl font-bold text-gray-900 mb-2">
+                  <p className="text-3xl font-bold text-gray-900 mb-1">
                     {stat.value}
                   </p>
-                  <div className={`flex items-center gap-1 text-sm font-semibold ${
-                    stat.trend === "up" ? "text-green-600" : "text-red-600"
-                  }`}>
-                    <TrendIcon className="w-4 h-4" />
-                    {stat.change}
-                  </div>
+                  <p className="text-xs text-gray-500">
+                    {stat.subtitle}
+                  </p>
                 </div>
                 <div
                   className={`p-4 rounded-xl ${stat.color} shadow-md group-hover:scale-110 transition-transform duration-300`}
                 >
                   <Icon className="w-7 h-7 text-white" />
                 </div>
-              </div>
-              <div className="border-t pt-3 mt-4">
-                <p className="text-xs text-gray-600 leading-relaxed">{stat.kyraInsight}</p>
               </div>
             </div>
           );
@@ -426,7 +462,7 @@ export default function Overview() {
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
               </div>
-            ) : (ckpProperties.length > 0 ? ckpProperties : properties.slice(0, 5)).map((property) => (
+            ) : (ckpProperties.length > 0 ? ckpProperties : properties.slice(0, 10)).map((property) => (
               <div
                 key={property.id}
                 className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 group"
@@ -473,31 +509,36 @@ export default function Overview() {
               </div>
             </div>
             <div className="border-t border-white/20 pt-4 mt-4">
-              <p className="text-sm text-blue-100">Avg. property value increased by 8% this month</p>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-blue-100">Properties</span>
+                <span className="font-semibold">{properties.length}</span>
+              </div>
             </div>
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-blue-600" />
-              Last Sync
+              Database Stats
             </h3>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Last Update</span>
+                <span className="text-sm text-gray-600">Total Properties</span>
                 <span className="text-sm font-medium text-gray-900">
-                  {new Date().toLocaleDateString()}
+                  {totalPropertiesFromDB || properties.length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Properties Synced</span>
+                <span className="text-sm text-gray-600">Active Agencies</span>
                 <span className="text-sm font-medium text-gray-900">
-                  {properties.length}
+                  {activeAgenciesFromDB || agencies.length}
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Next Auto-Sync</span>
-                <span className="text-sm font-medium text-gray-900">2 days</span>
+                <span className="text-sm text-gray-600">Average Price</span>
+                <span className="text-sm font-medium text-gray-900">
+                  €{averagePrice.toLocaleString()}
+                </span>
               </div>
             </div>
           </div>
