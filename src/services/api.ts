@@ -256,7 +256,47 @@ class ApiService {
     }
 
     const siteId = source.siteId ?? 0;
-    return this.getPropertyDataFromApi(source.sitePrefix, siteId);
+
+    try {
+      return await this.getPropertyDataFromApi(source.sitePrefix, siteId);
+    } catch (error) {
+      console.warn(`API fetch failed for agency ${agencyId}, trying fallback data...`);
+      return await this.loadPropertiesFromJson();
+    }
+  }
+
+  private async loadPropertiesFromJson(): Promise<Property[]> {
+    try {
+      const response = await fetch('/A-data.json');
+      if (!response.ok) {
+        console.warn('A-data.json not found');
+        return [];
+      }
+
+      const data = await response.json();
+      const propertiesData = data.find((item: any) => item.type === 'table')?.data || [];
+
+      return propertiesData.map((p: any) => ({
+        id: p.id || `prop-${Date.now()}-${Math.random()}`,
+        agency_id: p.agency_id || 'unknown',
+        title: p.title || 'Untitled Property',
+        address: p.address || '',
+        city: p.city || '',
+        postcode: p.postcode || '',
+        price: Number(p.price) || 0,
+        bedrooms: Number(p.bedrooms) || null,
+        bathrooms: Number(p.bathrooms) || null,
+        type: p.type || 'Unknown',
+        status: p.status || 'active',
+        description: p.description || '',
+        images: p.images || [],
+        created_at: p.created_at || new Date().toISOString(),
+        updated_at: p.updated_at || new Date().toISOString(),
+      }));
+    } catch (error) {
+      console.error('Failed to load properties from JSON:', error);
+      return [];
+    }
   }
 }
 
