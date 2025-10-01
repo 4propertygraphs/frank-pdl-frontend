@@ -11,6 +11,8 @@ export default function PropertyDetail() {
   const [comparisonData, setComparisonData] = useState<any>(null);
   const [reportData, setReportData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
 
   useEffect(() => {
     if (selectedProperty && properties.length > 0) {
@@ -545,6 +547,63 @@ export default function PropertyDetail() {
         </button>
       </div>
 
+      {/* Lightbox Modal */}
+      {isLightboxOpen && selectedProperty.images && selectedProperty.images.length > 0 && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-95 flex items-center justify-center" onClick={() => setIsLightboxOpen(false)}>
+          <div className="relative w-full h-full flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+            {/* Close Button */}
+            <button
+              onClick={() => setIsLightboxOpen(false)}
+              className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Previous Button */}
+            {lightboxImageIndex > 0 && (
+              <button
+                onClick={() => setLightboxImageIndex(lightboxImageIndex - 1)}
+                className="absolute left-4 text-white hover:text-gray-300 bg-black bg-opacity-50 rounded-full p-2"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Image */}
+            <img
+              src={selectedProperty.images[lightboxImageIndex]}
+              alt={`${selectedProperty.title} ${lightboxImageIndex + 1}`}
+              className="max-w-full max-h-full object-contain"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=1920';
+              }}
+            />
+
+            {/* Next Button */}
+            {lightboxImageIndex < selectedProperty.images.length - 1 && (
+              <button
+                onClick={() => setLightboxImageIndex(lightboxImageIndex + 1)}
+                className="absolute right-4 text-white hover:text-gray-300 bg-black bg-opacity-50 rounded-full p-2"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            )}
+
+            {/* Image Counter */}
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-full">
+              {lightboxImageIndex + 1} / {selectedProperty.images.length}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Image Gallery - MyHome Style */}
       <div className="bg-black">
         {selectedProperty.images && selectedProperty.images.length > 0 ? (
@@ -554,8 +613,11 @@ export default function PropertyDetail() {
               <img
                 src={selectedProperty.images[0]}
                 alt={selectedProperty.title}
-                className="w-full h-96 object-cover cursor-pointer"
-                onClick={() => setCurrentImageIndex(0)}
+                className="w-full h-96 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                onClick={() => {
+                  setLightboxImageIndex(0);
+                  setIsLightboxOpen(true);
+                }}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800';
@@ -569,8 +631,11 @@ export default function PropertyDetail() {
                   key={index + 1}
                   src={image}
                   alt={`${selectedProperty.title} ${index + 2}`}
-                  className="w-full h-48 object-cover cursor-pointer"
-                  onClick={() => setCurrentImageIndex(index + 1)}
+                  className="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => {
+                    setLightboxImageIndex(index + 1);
+                    setIsLightboxOpen(true);
+                  }}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400';
