@@ -13,6 +13,7 @@ export default function PropertyDetail() {
   const tabs = [
     { id: 'description', label: 'Description' },
     { id: 'comparison', label: 'Comparison' },
+    { id: 'env-comparison', label: 'Env Comparison' },
     { id: 'report', label: 'Report' },
     { id: 'bug-report', label: 'Bug Report' },
   ];
@@ -26,6 +27,7 @@ export default function PropertyDetail() {
       backToProperties: 'Back to Properties',
       description: 'Description',
       comparison: 'Comparison',
+      envcomparison: 'Env Comparison',
       report: 'Report',
       bugReport: 'Bug Report',
       features: 'Features',
@@ -101,28 +103,35 @@ export default function PropertyDetail() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'description':
+        const cleanDescription = (desc: any) => {
+          if (!desc) return 'No description available';
+          if (typeof desc === 'string') return desc;
+          if (desc['#text']) return String(desc['#text']);
+          return String(desc);
+        };
+
         return (
           <div className="prose max-w-none">
-            <p className="text-gray-700 leading-relaxed">{selectedProperty.description || 'No description available'}</p>
+            <p className="text-gray-700 leading-relaxed">{cleanDescription(selectedProperty.description)}</p>
 
             <div className="mt-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.location}</h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-gray-600">
                   <MapPin className="w-4 h-4" />
-                  <span>{selectedProperty.address}</span>
+                  <span>{String(selectedProperty.address || '')}</span>
                 </div>
                 {selectedProperty.city && (
-                  <p className="text-gray-600 ml-6">City: {selectedProperty.city}</p>
+                  <p className="text-gray-600 ml-6">City: {String(selectedProperty.city)}</p>
                 )}
                 {selectedProperty.county && (
-                  <p className="text-gray-600 ml-6">County: {selectedProperty.county}</p>
+                  <p className="text-gray-600 ml-6">County: {String(selectedProperty.county)}</p>
                 )}
                 {selectedProperty.postcode && (
-                  <p className="text-gray-600 ml-6">Postcode: {selectedProperty.postcode}</p>
+                  <p className="text-gray-600 ml-6">Postcode: {String(selectedProperty.postcode)}</p>
                 )}
                 {selectedProperty.country && (
-                  <p className="text-gray-600 ml-6">Country: {selectedProperty.country}</p>
+                  <p className="text-gray-600 ml-6">Country: {String(selectedProperty.country)}</p>
                 )}
               </div>
             </div>
@@ -131,28 +140,123 @@ export default function PropertyDetail() {
       
       case 'comparison':
         return (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Comparison Analysis</h3>
-            <div className="space-y-4">
-              <div className="p-4 bg-white rounded border-l-4 border-green-500">
-                <p className="text-sm text-gray-600">Price Range</p>
-                <p className="font-semibold text-green-700">Within market average (+3%)</p>
-              </div>
-              <div className="p-4 bg-white rounded border-l-4 border-orange-500">
-                <p className="text-sm text-gray-600">Location Score</p>
-                <p className="font-semibold text-orange-700">Above average (+15%)</p>
-              </div>
-              <div className="p-4 bg-white rounded border-l-4 border-red-500">
-                <p className="text-sm text-gray-600">Property Age</p>
-                <p className="font-semibold text-red-700">Older than comparable (-8%)</p>
-              </div>
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Property Market Comparison</h3>
+            <div className="bg-white border rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Metric</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">This Property</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Market Average</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900">Price per sq m</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">€3,200</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">€3,100</td>
+                    <td className="px-6 py-4"><span className="inline-flex px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">+3%</span></td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900">Location Score</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">8.5/10</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">7.4/10</td>
+                    <td className="px-6 py-4"><span className="inline-flex px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">+15%</span></td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900">Property Age</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">25 years</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">18 years</td>
+                    <td className="px-6 py-4"><span className="inline-flex px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">-8%</span></td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm text-gray-900">Days on Market</td>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">12 days</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">28 days</td>
+                    <td className="px-6 py-4"><span className="inline-flex px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Fresh</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <p className="text-xs text-gray-500 mt-4">
-              * Hover over items to see detailed comparison sources
-            </p>
           </div>
         );
       
+      case 'env-comparison':
+        const compareData = {
+          acquaint: { source: 'Music', price: '€450,000', bedrooms: 3, type: 'House' },
+          daft: { source: 'Actor', price: '€448,000', bedrooms: 3, type: 'House' },
+          myhome: { source: 'Agency', price: '€450,000', bedrooms: 3, type: 'House' },
+          wordpress: { source: 'Direct', price: '€455,000', bedrooms: 3, type: 'Semi-Detached' }
+        };
+
+        return (
+          <div className="space-y-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Environment Data Comparison</h3>
+            <div className="bg-white border rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Field</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Acquaint</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Daft</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">MyHome</th>
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">WordPress</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  <tr>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Source</td>
+                    <td className={`px-6 py-4 text-sm ${compareData.acquaint.source !== compareData.daft.source ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
+                      {compareData.acquaint.source}
+                    </td>
+                    <td className={`px-6 py-4 text-sm ${compareData.daft.source !== compareData.acquaint.source ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
+                      {compareData.daft.source}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.source}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.wordpress.source}</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Price</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.acquaint.price}</td>
+                    <td className={`px-6 py-4 text-sm ${compareData.daft.price !== compareData.acquaint.price ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
+                      {compareData.daft.price}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.price}</td>
+                    <td className={`px-6 py-4 text-sm ${compareData.wordpress.price !== compareData.myhome.price ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
+                      {compareData.wordpress.price}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Bedrooms</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.acquaint.bedrooms}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.daft.bedrooms}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.bedrooms}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.wordpress.bedrooms}</td>
+                  </tr>
+                  <tr>
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Type</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.acquaint.type}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.daft.type}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.type}</td>
+                    <td className={`px-6 py-4 text-sm ${compareData.wordpress.type !== compareData.myhome.type ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
+                      {compareData.wordpress.type}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="flex items-start gap-2 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-yellow-900">Highlighted differences</p>
+                <p className="text-sm text-yellow-700">Yellow cells indicate data discrepancies between platforms</p>
+              </div>
+            </div>
+          </div>
+        );
+
       case 'report':
         return (
           <div className="space-y-6">
@@ -169,10 +273,10 @@ export default function PropertyDetail() {
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Price Recommendation</h4>
                   <p className="text-gray-700 text-sm">
-                    Current asking price: <span className="font-bold">${selectedProperty.price.toLocaleString()}</span>
+                    Current asking price: <span className="font-bold">€{selectedProperty.price?.toLocaleString() ?? 'N/A'}</span>
                   </p>
                   <p className="text-gray-700 text-sm">
-                    Estimated fair value: <span className="font-bold text-green-600">${Math.round(selectedProperty.price * 0.95).toLocaleString()}</span>
+                    Estimated fair value: <span className="font-bold text-green-600">€{Math.round((selectedProperty.price || 0) * 0.95).toLocaleString()}</span>
                   </p>
                   <p className="text-gray-700 text-sm">
                     Negotiation potential: <span className="font-bold text-blue-600">5-8%</span>
@@ -207,7 +311,7 @@ export default function PropertyDetail() {
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Change Log</h3>
             <div className="space-y-3">
               {[
-                { type: 'update', message: 'Price reduced from $685,000 to $650,000', date: '2 days ago', status: 'active' },
+                { type: 'update', message: 'Price reduced from €685,000 to €650,000', date: '2 days ago', status: 'active' },
                 { type: 'update', message: 'Images updated - 3 new photos added', date: '1 week ago', status: 'completed' },
                 { type: 'create', message: 'Property listed', date: '2 weeks ago', status: 'completed' },
                 { type: 'update', message: 'Description updated with new features', date: '3 weeks ago', status: 'completed' },
