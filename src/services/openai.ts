@@ -64,10 +64,10 @@ Always be helpful, professional, and conversational.`;
           'Authorization': `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: 'gpt-5-codex',
           messages,
           temperature: 0.7,
-          max_tokens: 800
+          max_tokens: 1500
         })
       });
 
