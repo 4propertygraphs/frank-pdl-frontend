@@ -65,7 +65,10 @@ export class CloudUploadService {
         if (!sitePrefix || !xmlUrl) continue;
 
         try {
-          const xmlResponse = await fetch(xmlUrl);
+          // Use proxy to avoid CORS: replace acquaintcrm.co.uk domain with proxy
+          const proxyUrl = xmlUrl.replace('https://www.acquaintcrm.co.uk', 'http://localhost:3001/acquaint');
+
+          const xmlResponse = await fetch(proxyUrl);
           if (!xmlResponse.ok) {
             console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: HTTP ${xmlResponse.status}`);
             continue;
