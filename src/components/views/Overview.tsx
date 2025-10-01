@@ -27,7 +27,25 @@ export default function Overview() {
       const agencies = await apiService.getAgencies();
 
       console.log("🌐 Loading properties from database...");
-      const allProperties = await cloudUploadService.getPropertiesFromDatabase();
+      let allProperties = await cloudUploadService.getPropertiesFromDatabase();
+
+      if (allProperties.length === 0) {
+        console.log("📤 Database is empty, auto-loading from XML...");
+        setUploadProgress("Auto-loading properties from XML...");
+
+        try {
+          const result = await cloudUploadService.uploadAllXMLFiles();
+          console.log(`✅ Auto-upload complete: ${result.success} properties loaded`);
+
+          allProperties = await cloudUploadService.getPropertiesFromDatabase();
+          setUploadProgress(`✅ Loaded ${result.success} properties from XML`);
+
+          setTimeout(() => setUploadProgress(""), 3000);
+        } catch (uploadError: any) {
+          console.warn("Auto-upload failed:", uploadError);
+          setUploadProgress("");
+        }
+      }
 
       console.log(`✅ Loaded ${agencies.length} agencies and ${allProperties.length} properties`);
 
