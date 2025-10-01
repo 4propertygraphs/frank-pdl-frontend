@@ -533,18 +533,24 @@ class KyraAI {
   private calculateInvestmentScore(property: Property): number {
     // Simple scoring algorithm (0-10)
     let score = 5; // Base score
-    
+
     // Location bonus
-    if (property.location.city.toLowerCase().includes('prague')) score += 2;
-    if (property.location.city.toLowerCase().includes('brno')) score += 1;
-    
+    const city = property.location?.city || property.city || '';
+    if (city.toLowerCase().includes('prague') || city.toLowerCase().includes('dublin')) score += 2;
+    if (city.toLowerCase().includes('brno') || city.toLowerCase().includes('cork')) score += 1;
+    if (city.toLowerCase().includes('naas') || city.toLowerCase().includes('kildare')) score += 0.5;
+
     // Property type bonus
-    if (property.type.toLowerCase().includes('apartment')) score += 1;
-    if (property.type.toLowerCase().includes('house')) score += 1.5;
-    
+    const type = String(property.type || '').toLowerCase();
+    if (type.includes('apartment')) score += 1;
+    if (type.includes('house') || type.includes('detached')) score += 1.5;
+
     // Status bonus
     if (property.status === 'active') score += 0.5;
-    
+
+    // Bedrooms bonus
+    if (property.bedrooms && property.bedrooms >= 4) score += 0.5;
+
     return Math.min(Math.max(score, 0), 10);
   }
 
@@ -780,9 +786,14 @@ Just ask me anything about your properties, agencies, market trends, or let me h
 
   private calculateLocationScore(property: Property): number {
     let score = 7.4;
-    if (property.location?.city?.toLowerCase().includes('dublin')) score += 1.5;
-    if (property.location?.city?.toLowerCase().includes('naas')) score += 0.5;
-    if (property.address?.toLowerCase().includes('centre')) score += 0.5;
+    const city = (property.location?.city || property.city || '').toLowerCase();
+    const address = (property.address || '').toLowerCase();
+
+    if (city.includes('dublin')) score += 1.5;
+    if (city.includes('naas') || city.includes('sallins')) score += 0.5;
+    if (city.includes('cork')) score += 1.0;
+    if (address.includes('centre') || address.includes('center')) score += 0.5;
+
     return Math.min(score, 10);
   }
 
@@ -811,7 +822,8 @@ Just ask me anything about your properties, agencies, market trends, or let me h
       strengths.push('Spacious accommodation with multiple bedrooms');
     }
 
-    if (property.type?.toLowerCase().includes('detached')) {
+    const type = String(property.type || '').toLowerCase();
+    if (type.includes('detached')) {
       strengths.push('Detached property with privacy and space');
     }
 
