@@ -22,14 +22,23 @@ export class XMLPropertyParser {
       }
 
       const xmlText = await response.text();
-      return this.parseXML(xmlText);
+      const agencyId = this.extractAgencyIdFromFilename(filename);
+      return this.parseXML(xmlText, agencyId);
     } catch (error) {
       console.error(`Error loading XML file ${filename}:`, error);
       throw error;
     }
   }
 
-  parseXML(xmlText: string): Property[] {
+  private extractAgencyIdFromFilename(filename: string): string {
+    const match = filename.match(/([a-zA-Z0-9]+)-\d+\.xml/i);
+    if (match && match[1]) {
+      return match[1].toUpperCase();
+    }
+    return 'unknown';
+  }
+
+  parseXML(xmlText: string, agencyId: string = 'unknown'): Property[] {
     try {
       const result = this.parser.parse(xmlText);
 
@@ -42,14 +51,14 @@ export class XMLPropertyParser {
         ? result.data.properties.property
         : [result.data.properties.property];
 
-      return properties.map((prop: any) => this.convertToProperty(prop));
+      return properties.map((prop: any) => this.convertToProperty(prop, agencyId));
     } catch (error) {
       console.error('Error parsing XML:', error);
       throw error;
     }
   }
 
-  private convertToProperty(xmlProp: any): Property {
+  private convertToProperty(xmlProp: any, agencyId: string): Property {
     const images: string[] = [];
 
     if (xmlProp.imageurl) {
@@ -62,7 +71,7 @@ export class XMLPropertyParser {
 
     return {
       id: xmlProp.referencenumber || `xml-${Date.now()}-${Math.random()}`,
-      agency_id: xmlProp.branchid || 'unknown',
+      agency_id: agencyId,
       title: xmlProp.descriptionbrief || xmlProp.address1 || 'Untitled Property',
       address: [xmlProp.address1, xmlProp.address2, xmlProp.address3]
         .filter(Boolean)
