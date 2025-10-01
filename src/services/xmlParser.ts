@@ -127,7 +127,7 @@ export class XMLPropertyParser {
       bedrooms: this.parseNumber(xmlProp.bedrooms),
       bathrooms: this.parseNumber(xmlProp.bathrooms),
       type: xmlProp.type || 'Unknown',
-      status: this.mapStatus(xmlProp.status),
+      status: this.mapStatus(xmlProp.status, xmlProp.category),
       description: xmlProp.descriptionfull || xmlProp.descriptionbrief || '',
       images: images,
       created_at: xmlProp.addeddate || new Date().toISOString(),
@@ -153,14 +153,21 @@ export class XMLPropertyParser {
     return null;
   }
 
-  private mapStatus(status: any): string {
-    if (!status) return 'active';
-    const statusStr = String(status).toLowerCase();
+  private mapStatus(status: any, category: any): string {
+    const statusStr = typeof status === 'string' ? status : (status?.['#text'] || '');
+    const categoryStr = typeof category === 'string' ? category : (category?.['#text'] || '');
 
-    if (statusStr.includes('sale')) return 'for_sale';
-    if (statusStr.includes('rent')) return 'for_rent';
-    if (statusStr.includes('sold')) return 'sold';
-    if (statusStr.includes('let')) return 'let';
+    const statusLower = statusStr.toLowerCase();
+    const categoryLower = categoryStr.toLowerCase();
+
+    if (statusLower.includes('sold')) return 'sold';
+    if (statusLower.includes('let')) return 'let';
+
+    if (categoryLower.includes('sale')) return 'for_sale';
+    if (categoryLower.includes('let') || categoryLower.includes('rent')) return 'for_rent';
+
+    if (statusLower.includes('sale')) return 'for_sale';
+    if (statusLower.includes('rent')) return 'for_rent';
 
     return 'active';
   }

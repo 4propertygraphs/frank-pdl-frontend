@@ -326,8 +326,15 @@ export default function Agencies() {
                     <Building className="w-12 h-12 text-gray-400" />
                   </div>
                 )}
-                <div className="absolute top-2 left-2 bg-green-600 text-white px-2 py-1 rounded-md text-xs font-semibold shadow-lg">
-                  {property.price && property.price < 10000 ? 'RENT' : 'SALE'}
+                <div className={`absolute top-2 left-2 text-white px-2 py-1 rounded-md text-xs font-semibold shadow-lg uppercase ${
+                  property.status === 'sold' ? 'bg-red-600' :
+                  property.status === 'let' ? 'bg-orange-600' :
+                  property.status === 'for_rent' ? 'bg-green-600' :
+                  'bg-blue-600'
+                }`}>
+                  {property.status === 'for_sale' ? 'SALE' :
+                   property.status === 'for_rent' ? 'RENT' :
+                   property.status}
                 </div>
                 <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-lg">
                   €{(property.price || 0).toLocaleString()}
