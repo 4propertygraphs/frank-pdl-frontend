@@ -10,6 +10,8 @@ export default function Overview() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [totalPropertiesFromDB, setTotalPropertiesFromDB] = useState<number>(0);
+  const [activeAgenciesFromDB, setActiveAgenciesFromDB] = useState<number>(0);
 
   useEffect(() => {
     // Don't auto-load - user must click button to load data
@@ -17,7 +19,36 @@ export default function Overview() {
       console.log("📊 Overview: Ready to load data (manual action required)");
       setHasLoadedOnce(true);
     }
+    // Load stats from database
+    void loadStatsFromDatabase();
   }, [hasLoadedOnce, properties.length, loading]);
+
+  const loadStatsFromDatabase = async () => {
+    try {
+      const { supabase } = await import('../../services/supabase');
+
+      // Get total properties count and active agencies count
+      const { data, error } = await supabase
+        .from('agencies')
+        .select('property_count, is_active')
+        .eq('is_active', true)
+        .gt('property_count', 0);
+
+      if (error) {
+        console.error('Failed to load stats from database:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const totalProps = data.reduce((sum, agency) => sum + (agency.property_count || 0), 0);
+        setTotalPropertiesFromDB(totalProps);
+        setActiveAgenciesFromDB(data.length);
+        console.log(`📊 Loaded stats: ${totalProps} properties from ${data.length} agencies`);
+      }
+    } catch (err: any) {
+      console.error('Error loading stats from database:', err);
+    }
+  };
 
   useEffect(() => {
     const checkAndAutoSync = async () => {
@@ -129,7 +160,7 @@ export default function Overview() {
   const stats = [
     {
       title: "Total Properties",
-      value: properties.length.toString(),
+      value: (totalPropertiesFromDB || properties.length).toString(),
       icon: Building,
       color: "bg-blue-500",
       change: "+12%",
@@ -137,7 +168,7 @@ export default function Overview() {
     },
     {
       title: "Active Agencies",
-      value: agencies.length.toString(),
+      value: (activeAgenciesFromDB || agencies.length).toString(),
       icon: Users,
       color: "bg-green-500",
       change: "+5%",
