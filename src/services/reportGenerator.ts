@@ -37,10 +37,25 @@ export class ReportGeneratorService {
 
     console.log('📊 Agency data:', agency);
 
+    if (!agency) {
+      console.error('❌ Agency not found');
+      return {
+        agency: {},
+        properties: [],
+        stats: { totalProperties: 0, avgPrice: 0, totalValue: 0, availableCount: 0, soldCount: 0 },
+        byCounty: {},
+        byType: {},
+        priceRanges: [],
+      };
+    }
+
+    const sitePrefix = agency.site_prefix;
+    console.log('🔑 Using site_prefix for properties query:', sitePrefix);
+
     let propertiesQuery = supabase
       .from('properties')
       .select('*')
-      .eq('agency_id', agencyId);
+      .eq('agency_id', sitePrefix);
 
     if (propertyId && propertyId !== 'all') {
       propertiesQuery = propertiesQuery.eq('id', propertyId);
@@ -53,7 +68,9 @@ export class ReportGeneratorService {
     }
 
     console.log('📋 Properties loaded:', properties?.length || 0, 'properties');
-    console.log('Properties data:', properties);
+    if (properties && properties.length > 0) {
+      console.log('Sample property:', properties[0]);
+    }
 
     const stats = this.calculateStats(properties || []);
     const byCounty = this.groupByCounty(properties || []);
@@ -263,14 +280,14 @@ export class ReportGeneratorService {
 <body>
   <div class="header">
     <h1>Property Portfolio Report</h1>
-    <p>${data.agency.name} • Generated on ${date}</p>
+    <p>${data.agency.name || data.agency.site_prefix || 'Agency'} • Generated on ${date}</p>
   </div>
 
   <div class="executive-summary">
     <h3>Executive Summary</h3>
     <p>
       This comprehensive report provides a detailed analysis of the property portfolio
-      for ${data.agency.name}. The portfolio consists of ${data.stats.totalProperties} properties
+      for ${data.agency.name || data.agency.site_prefix || 'the selected agency'}. The portfolio consists of ${data.stats.totalProperties} properties
       with a total estimated value of €${data.stats.totalValue.toLocaleString()}.
     </p>
   </div>

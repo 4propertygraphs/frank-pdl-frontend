@@ -444,14 +444,28 @@ export default function Agencies() {
       return;
     }
 
-    console.log('🏠 Loading properties for agency:', agencyId);
+    console.log('🏠 Loading properties for agency UUID:', agencyId);
 
     try {
       const { supabase } = await import('../../services/supabase');
+
+      const { data: agency } = await supabase
+        .from('agencies')
+        .select('site_prefix')
+        .eq('id', agencyId)
+        .maybeSingle();
+
+      if (!agency) {
+        console.error('Agency not found for ID:', agencyId);
+        return;
+      }
+
+      console.log('🔑 Found site_prefix:', agency.site_prefix);
+
       const { data, error } = await supabase
         .from('properties')
         .select('id, title')
-        .eq('agency_id', agencyId)
+        .eq('agency_id', agency.site_prefix)
         .order('title', { ascending: true });
 
       if (error) {
@@ -459,7 +473,7 @@ export default function Agencies() {
         return;
       }
 
-      console.log(`✅ Loaded ${data?.length || 0} properties for report dropdown:`, data);
+      console.log(`✅ Loaded ${data?.length || 0} properties for report dropdown`);
       setAgencyPropertiesList(data || []);
     } catch (err: any) {
       console.error('Error loading agency properties:', err);
