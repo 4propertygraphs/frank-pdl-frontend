@@ -128,11 +128,38 @@ export default function Agencies() {
   }, [agencies, searchTerm]);
 
   useEffect(() => {
-    // Only load agencies list on mount (GetAgency.json)
+    // Load agencies list and property counts from database
     if (agencies.length === 0) {
       void loadAgencies();
     }
+    void loadPropertyCountsFromDatabase();
   }, []);
+
+  const loadPropertyCountsFromDatabase = async () => {
+    try {
+      const { supabase } = await import('../../services/supabase');
+      const { data, error } = await supabase
+        .from('agencies')
+        .select('site_prefix, property_count')
+        .gt('property_count', 0);
+
+      if (error) {
+        console.error('Failed to load property counts:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const counts: Record<string, number> = {};
+        data.forEach(agency => {
+          counts[agency.site_prefix.toLowerCase()] = agency.property_count;
+        });
+        setPropertyCounts(counts);
+        console.log(`📊 Loaded property counts for ${data.length} agencies from database`);
+      }
+    } catch (err: any) {
+      console.error('Error loading property counts:', err);
+    }
+  };
 
   const loadAgencies = async () => {
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -472,7 +499,8 @@ export default function Agencies() {
             const displayName = getDisplayName(agency);
             const cachedCount = propertiesCache[key]?.length ?? 0;
             const dbCount = propertyCounts[key] || 0;
-            const propertyCount = key === selectedAgencyKey ? properties.length : (cachedCount || dbCount);
+            // Use database count first, then cached, then current properties
+            const propertyCount = dbCount || cachedCount || (key === selectedAgencyKey ? properties.length : 0);
             const logoUrl = (agency as any)?.logo ?? (agency as any)?.Logo ?? null;
 
             if (checkedAgencies.has(key) && propertyCount === 0) {
