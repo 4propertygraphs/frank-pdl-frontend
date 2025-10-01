@@ -131,18 +131,22 @@ export default function Agencies() {
   }, [agencies, searchTerm, propertyCounts]);
 
   useEffect(() => {
-    const init = async () => {
-      // First load property counts
-      await loadPropertyCounts();
-      // Then load agencies if needed
-      if (agencies.length === 0) {
-        await loadAgencies();
-      }
-    };
-    void init();
+    // Load property counts when Agencies view opens
+    void loadPropertyCounts();
+
+    // Load agencies list if not yet loaded
+    if (agencies.length === 0) {
+      void loadAgencies();
+    }
   }, []);
 
   const loadPropertyCounts = async () => {
+    if (Object.keys(propertyCounts).length > 0) {
+      console.log('📊 Property counts already loaded');
+      return;
+    }
+
+    console.log('📊 Loading property counts...');
     await cloudUploadService.loadAllXMLFiles();
     const counts = cloudUploadService.getPropertyCountsByAgency();
     console.log('📊 Property counts loaded:', counts);
@@ -162,8 +166,6 @@ export default function Agencies() {
       dispatch({ type: 'SET_SELECTED_PROPERTY', payload: null });
       dispatch({ type: 'SET_PROPERTIES', payload: [] });
       dispatch({ type: 'SET_AGENCIES', payload: fetchedAgencies as any });
-
-      await loadPropertyCounts();
     } catch (err: any) {
       dispatch({
         type: 'SET_ERROR',
