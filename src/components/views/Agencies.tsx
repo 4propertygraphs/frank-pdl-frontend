@@ -273,40 +273,31 @@ export default function Agencies() {
           <p className="text-gray-600">{properties.length} {t.properties}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {properties.map((property) => (
             <div
               key={property.id}
               onClick={() => dispatch({ type: 'SET_SELECTED_PROPERTY', payload: property })}
               className="bg-white border rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
             >
-              <div className="h-48 bg-gray-200 relative">
+              <div className="aspect-square bg-gray-200">
                 {property.images && property.images.length > 0 ? (
                   <img
                     src={property.images[0]}
                     alt={property.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=600';
+                      (e.target as HTMLImageElement).src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400';
                     }}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Building className="w-16 h-16 text-gray-400" />
+                    <Building className="w-12 h-12 text-gray-400" />
                   </div>
                 )}
-                <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                  €{property.price?.toLocaleString() ?? 'N/A'}
-                </div>
               </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-2 truncate">{property.title}</h3>
-                <p className="text-sm text-gray-600 mb-2">{property.address}</p>
-                <div className="flex gap-4 text-sm text-gray-500">
-                  <span>{property.bedrooms ?? 0} beds</span>
-                  <span>{property.bathrooms ?? 0} baths</span>
-                  <span className="capitalize">{property.type}</span>
-                </div>
+              <div className="p-3">
+                <h3 className="font-semibold text-sm line-clamp-2">{property.title}</h3>
               </div>
             </div>
           ))}
