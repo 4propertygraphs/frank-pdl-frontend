@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud } from "lucide-react";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 export default function Overview() {
   const { state, dispatch } = useApp();
@@ -157,44 +157,49 @@ export default function Overview() {
     }
   };
 
+  const averagePrice = properties.length > 0
+    ? Math.round(properties.reduce((sum, p) => sum + p.price, 0) / properties.length)
+    : 0;
+
+  const totalValue = properties.reduce((sum, p) => sum + p.price, 0);
+  const availableProperties = properties.filter(p => p.status === 'available').length;
+
   const stats = [
     {
       title: "Total Properties",
       value: (totalPropertiesFromDB || properties.length).toString(),
       icon: Building,
-      color: "bg-blue-500",
+      color: "bg-gradient-to-br from-blue-500 to-blue-600",
       change: "+12%",
+      trend: "up",
       kyraInsight: "Strong portfolio growth this quarter",
     },
     {
       title: "Active Agencies",
       value: (activeAgenciesFromDB || agencies.length).toString(),
       icon: Users,
-      color: "bg-green-500",
+      color: "bg-gradient-to-br from-green-500 to-green-600",
       change: "+5%",
+      trend: "up",
       kyraInsight: "Excellent agency partnerships",
     },
     {
       title: "Average Price",
-      value:
-        properties.length > 0
-          ? `€${Math.round(
-              properties.reduce((sum, p) => sum + p.price, 0) /
-                properties.length
-            ).toLocaleString()}`
-          : "€0",
+      value: averagePrice > 0 ? `€${averagePrice.toLocaleString()}` : "€0",
       icon: DollarSign,
-      color: "bg-purple-500",
+      color: "bg-gradient-to-br from-purple-500 to-purple-600",
       change: "+8%",
+      trend: "up",
       kyraInsight: "Above market average pricing",
     },
     {
-      title: "Market Growth",
-      value: "15.3%",
+      title: "Available Now",
+      value: availableProperties.toString(),
       icon: TrendingUp,
-      color: "bg-orange-500",
+      color: "bg-gradient-to-br from-orange-500 to-orange-600",
       change: "+2.1%",
-      kyraInsight: "Positive market momentum",
+      trend: "up",
+      kyraInsight: "High availability for new clients",
     },
   ];
 
@@ -264,63 +269,130 @@ export default function Overview() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, index) => {
           const Icon = stat.icon;
+          const TrendIcon = stat.trend === "up" ? ArrowUpRight : ArrowDownRight;
           return (
             <div
               key={index}
-              className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow group"
+              className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 group cursor-pointer hover:-translate-y-1"
             >
               <div className="flex items-center justify-between mb-4">
-                <div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-500 mb-2">
                     {stat.title}
                   </p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-3xl font-bold text-gray-900 mb-2">
                     {stat.value}
                   </p>
-                  <p className="text-sm text-green-600 font-medium mt-1">
+                  <div className={`flex items-center gap-1 text-sm font-semibold ${
+                    stat.trend === "up" ? "text-green-600" : "text-red-600"
+                  }`}>
+                    <TrendIcon className="w-4 h-4" />
                     {stat.change}
-                  </p>
+                  </div>
                 </div>
                 <div
-                  className={`p-3 rounded-lg ${stat.color} group-hover:scale-110 transition-transform`}
+                  className={`p-4 rounded-xl ${stat.color} shadow-md group-hover:scale-110 transition-transform duration-300`}
                 >
-                  <Icon className="w-6 h-6 text-white" />
+                  <Icon className="w-7 h-7 text-white" />
                 </div>
               </div>
-              <div className="border-t pt-3">
-                <p className="text-xs text-gray-600 mt-1">{stat.kyraInsight}</p>
+              <div className="border-t pt-3 mt-4">
+                <p className="text-xs text-gray-600 leading-relaxed">{stat.kyraInsight}</p>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Recent Activity */}
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">Recent Activity</h2>
-        <div className="space-y-4">
-          {properties.slice(0, 5).map((property) => (
-            <div
-              key={property.id}
-              className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Building className="w-6 h-6 text-blue-600" />
+      {/* Two Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Recent Activity - 2 columns */}
+        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-blue-600" />
+              Recent Properties
+            </h2>
+            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+              View All
+            </button>
+          </div>
+          <div className="space-y-3">
+            {properties.slice(0, 5).map((property) => (
+              <div
+                key={property.id}
+                className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 group"
+              >
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
+                  <Building className="w-7 h-7 text-white" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
+                    {property.title}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <MapPin className="w-3 h-3 text-gray-400" />
+                    <p className="text-sm text-gray-600 truncate">
+                      {property.location?.address || 'No address'}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-bold text-gray-900 text-lg">
+                    €{(property.price || 0).toLocaleString()}
+                  </p>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                    property.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
+                  }`}>
+                    {property.status || 'unknown'}
+                  </span>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-900">{property.title}</p>
-                <p className="text-sm text-gray-600">
-                  {property.location?.address}
-                </p>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Stats - 1 column */}
+        <div className="space-y-6">
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm p-6 text-white">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-3 bg-white/20 rounded-lg">
+                <DollarSign className="w-6 h-6" />
               </div>
-              <div className="text-right">
-                <p className="font-semibold text-gray-900">
-                  €{(property.price || 0).toLocaleString()}
-                </p>
-                <p className="text-sm text-gray-600">{property.status}</p>
+              <div>
+                <p className="text-sm text-blue-100">Total Portfolio Value</p>
+                <p className="text-2xl font-bold">€{totalValue.toLocaleString()}</p>
               </div>
             </div>
-          ))}
+            <div className="border-t border-white/20 pt-4 mt-4">
+              <p className="text-sm text-blue-100">Avg. property value increased by 8% this month</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl shadow-sm border p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Calendar className="w-5 h-5 text-blue-600" />
+              Last Sync
+            </h3>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Last Update</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {new Date().toLocaleDateString()}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Properties Synced</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {properties.length}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Next Auto-Sync</span>
+                <span className="text-sm font-medium text-gray-900">2 days</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
