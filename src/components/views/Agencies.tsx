@@ -464,17 +464,56 @@ export default function Agencies() {
 
       const { data, error } = await supabase
         .from('properties')
-        .select('id, title')
+        .select('id, title, type, bedrooms, price, city, address')
         .eq('agency_id', agency.site_prefix)
-        .order('title', { ascending: true });
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Failed to load agency properties:', error);
         return;
       }
 
-      console.log(`✅ Loaded ${data?.length || 0} properties for report dropdown`);
-      setAgencyPropertiesList(data || []);
+      const formattedProperties = (data || []).map(prop => {
+        let displayTitle = '';
+
+        if (prop.bedrooms) {
+          displayTitle += `${prop.bedrooms} bed `;
+        }
+
+        if (prop.type) {
+          try {
+            const typeObj = typeof prop.type === 'string' ? JSON.parse(prop.type) : prop.type;
+            displayTitle += typeObj['#text'] || typeObj;
+          } catch {
+            displayTitle += prop.type;
+          }
+          displayTitle += ' ';
+        }
+
+        if (prop.city) {
+          displayTitle += `in ${prop.city} `;
+        } else if (prop.address) {
+          displayTitle += `at ${prop.address.substring(0, 30)} `;
+        }
+
+        if (prop.price) {
+          displayTitle += `- €${Number(prop.price).toLocaleString()}`;
+        }
+
+        if (!displayTitle.trim()) {
+          displayTitle = prop.title.length > 50
+            ? prop.title.substring(0, 50) + '...'
+            : prop.title;
+        }
+
+        return {
+          id: prop.id,
+          title: displayTitle.trim()
+        };
+      });
+
+      console.log(`✅ Loaded ${formattedProperties.length} properties for report dropdown`);
+      setAgencyPropertiesList(formattedProperties);
     } catch (err: any) {
       console.error('Error loading agency properties:', err);
     }
