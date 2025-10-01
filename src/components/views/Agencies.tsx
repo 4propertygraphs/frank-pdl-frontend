@@ -106,6 +106,7 @@ export default function Agencies() {
   const [searchTerm, setSearchTerm] = useState('');
   const [propertiesCache, setPropertiesCache] = useState<PropertiesCache>({});
   const [propertyCounts, setPropertyCounts] = useState<Record<string, number>>({});
+  const [checkedAgencies, setCheckedAgencies] = useState<Set<string>>(new Set());
 
   const selectedAgencyKey = useMemo(() => buildAgencyKey(selectedAgency), [selectedAgency]);
 
@@ -157,6 +158,8 @@ export default function Agencies() {
   const loadPropertiesForAgency = async (agency: AgencyRecord) => {
     const key = buildAgencyKey(agency);
     if (!key) return;
+
+    setCheckedAgencies((prev) => new Set(prev).add(key));
 
     dispatch({ type: 'SET_SELECTED_AGENCY', payload: agency as any });
     dispatch({ type: 'SET_SELECTED_PROPERTY', payload: null });
@@ -401,6 +404,10 @@ export default function Agencies() {
             const dbCount = propertyCounts[key] || 0;
             const propertyCount = key === selectedAgencyKey ? properties.length : (cachedCount || dbCount);
             const logoUrl = (agency as any)?.logo ?? (agency as any)?.Logo ?? null;
+
+            if (checkedAgencies.has(key) && propertyCount === 0) {
+              return null;
+            }
 
             return (
               <div
