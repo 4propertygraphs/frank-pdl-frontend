@@ -155,9 +155,9 @@ class ApiService {
       return window.electron.fetchAcquaintData(sitePrefix, siteId);
     }
 
-    const url = `https://www.acquaintcrm.co.uk/datafeeds/standardxml/${sitePrefix}-${siteId}.xml`;
-    console.log('Fetching Acquaint feed:', url);
-    const response = await axios.get(url, { responseType: 'text' });
+    const proxyUrl = `http://localhost:3001/acquaint/datafeeds/standardxml/${sitePrefix}-${siteId}.xml`;
+    console.log('Fetching Acquaint feed via proxy:', proxyUrl);
+    const response = await axios.get(proxyUrl, { responseType: 'text' });
     return response.data;
   }
 
