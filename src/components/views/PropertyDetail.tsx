@@ -316,13 +316,13 @@ export default function PropertyDetail() {
           <div className="lg:col-span-2 space-y-6">
             {/* Title and Price */}
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedProperty.title}</h1>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{String(selectedProperty.title)}</h1>
               <p className="text-gray-600 flex items-center gap-2 mb-4">
                 <MapPin className="w-5 h-5" />
-                {selectedProperty.address}
+                {String(selectedProperty.address || '')}
               </p>
               <div className="text-3xl font-bold text-gray-900">€{selectedProperty.price?.toLocaleString() ?? 'N/A'}</div>
-              <p className="text-sm text-gray-500 mt-1">3 beds • 2 bath • {selectedProperty.type}</p>
+              <p className="text-sm text-gray-500 mt-1">{selectedProperty.bedrooms ?? 0} beds • {selectedProperty.bathrooms ?? 0} bath • {String(selectedProperty.type || 'Property')}</p>
             </div>
 
             {/* Features */}
