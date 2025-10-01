@@ -66,13 +66,19 @@ export default function Overview() {
       console.log("🌐 Loading properties from database...");
       let allProperties = await cloudUploadService.getPropertiesFromDatabase();
 
-      if (allProperties.length === 0) {
-        console.log("📤 Database is empty, auto-loading from XML...");
-        setUploadProgress("Auto-loading properties from XML...");
+      const needsReupload = localStorage.getItem('xmlParserUpdated') !== 'v2';
+
+      if (allProperties.length === 0 || needsReupload) {
+        const reason = allProperties.length === 0 ? 'Database is empty' : 'XML parser updated, re-uploading';
+        console.log(`📤 ${reason}, auto-loading from XML...`);
+        setUploadProgress(`${reason}, loading...`);
 
         try {
           const result = await cloudUploadService.uploadAllXMLFiles();
           console.log(`✅ Auto-upload complete: ${result.success} properties loaded`);
+
+          localStorage.setItem('xmlParserUpdated', 'v2');
+          localStorage.setItem('lastAutoSync', Date.now().toString());
 
           allProperties = await cloudUploadService.getPropertiesFromDatabase();
           setUploadProgress(`✅ Loaded ${result.success} properties from XML`);
