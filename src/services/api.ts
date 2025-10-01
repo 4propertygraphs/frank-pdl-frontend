@@ -136,7 +136,34 @@ class ApiService {
   }
 
   async getAgencies() {
-    return this.normalizeAgencies();
+    // First, get agencies with properties from database
+    const { supabase } = await import('./supabase');
+    const { data: dbAgencies, error } = await supabase
+      .from('agencies')
+      .select('*')
+      .eq('is_active', true)
+      .gt('property_count', 0)
+      .order('property_count', { ascending: false });
+
+    if (error || !dbAgencies || dbAgencies.length === 0) {
+      console.log('No active agencies in database, returning all agencies from GetAgency.json');
+      return this.normalizeAgencies();
+    }
+
+    console.log(`📋 Found ${dbAgencies.length} active agencies in database`);
+
+    // Filter normalized agencies to only include those in the database
+    const allAgencies = this.normalizeAgencies();
+    const dbSitePrefixes = new Set(dbAgencies.map(a => a.site_prefix.toLowerCase()));
+
+    const filteredAgencies = allAgencies.filter(agency => {
+      const sitePrefix = agency.sitePrefix?.toLowerCase() ||
+                        agency.acquaintSource?.sitePrefix?.toLowerCase();
+      return sitePrefix && dbSitePrefixes.has(sitePrefix);
+    });
+
+    console.log(`✅ Returning ${filteredAgencies.length} agencies with data`);
+    return filteredAgencies;
   }
 
   async getAgency(id: string) {
