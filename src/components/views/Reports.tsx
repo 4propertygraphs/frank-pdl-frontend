@@ -136,11 +136,21 @@ export default function Reports() {
 
       if (!county || county === '' || county === 'Unknown') {
         if (prop.title) {
-          const parts = prop.title.split(',').map((s: string) => s.trim());
-          if (parts.length > 1) {
-            county = parts[parts.length - 1];
-          } else {
-            county = 'Unknown';
+          let lastPart = prop.title.split(',').map((s: string) => s.trim()).filter(Boolean).pop();
+
+          if (lastPart) {
+            lastPart = lastPart.replace(/\.$/, '');
+            lastPart = lastPart.replace(/\b[A-Z]\d{2}\s*[A-Z0-9]{4}\b/g, '').trim();
+
+            const words = lastPart.split(/\s+/);
+            const filteredWords = words.filter(w => !/^[A-Z]\d{2}/.test(w));
+            lastPart = filteredWords.join(' ').trim();
+
+            if (lastPart.length > 0 && lastPart.length < 50 && !/\d{2,}/.test(lastPart)) {
+              county = lastPart;
+            } else {
+              county = 'Unknown';
+            }
           }
         }
       }
@@ -169,13 +179,15 @@ export default function Reports() {
           } else {
             type = String(prop.type);
           }
-          if (!type || type === '' || type === '[object Object]') {
-            type = 'Unknown';
+          if (!type || type === '' || type === '[object Object]' || type === 'ERROR') {
+            type = 'Other';
           }
         } catch (e) {
-          type = 'Unknown';
-          console.error('Error parsing type:', prop.type, e);
+          type = 'Other';
         }
+      }
+      if (type === 'Unknown') {
+        type = 'Other';
       }
       if (!acc[type]) {
         acc[type] = { count: 0, avgPrice: 0, totalPrice: 0 };
