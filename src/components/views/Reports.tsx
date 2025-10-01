@@ -3,6 +3,7 @@ import { FileText, Download, Calendar, Filter, TrendingUp, Building, DollarSign,
 import { useApp } from '../../contexts/AppContext';
 import { supabase } from '../../services/supabase';
 import { reportGeneratorService } from '../../services/reportGenerator';
+import { professionalReportGenerator } from '../../services/professionalReportGenerator';
 import ReportCharts from '../ReportCharts';
 
 interface Report {
@@ -194,18 +195,27 @@ export default function Reports() {
 
   const downloadReport = async (report: Report) => {
     try {
-      const blob = await reportGeneratorService.generateReport(report.agency_id);
+      const agency = agencies.find(a => a.site_prefix === report.agency_id);
+      if (!agency || !agency.xml_url) {
+        alert('Agency XML URL not found. Cannot generate report.');
+        return;
+      }
+
+      const blob = await professionalReportGenerator.generateProfessionalReport(
+        agency.xml_url,
+        agency.name || agency.site_prefix
+      );
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${report.title}.html`;
+      a.download = `${report.title.replace(/[^a-z0-9]/gi, '_')}_Professional_Report.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Failed to download report:', error);
-      alert('Failed to download report. Please try again.');
+      alert('Failed to generate professional report. Please try again.');
     }
   };
 
