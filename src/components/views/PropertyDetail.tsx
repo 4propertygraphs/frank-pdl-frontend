@@ -128,29 +128,93 @@ export default function PropertyDetail() {
           return text || 'No description available';
         };
 
-        return (
-          <div className="prose max-w-none">
-            <p className="text-gray-700 leading-relaxed">{cleanDescription(selectedProperty.description)}</p>
+        const description = cleanDescription(selectedProperty.description);
+        const paragraphs = description.split('\n\n').filter(p => p.trim());
 
-            <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">{t.location}</h3>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  <span>{String(selectedProperty.address || '')}</span>
+        return (
+          <div className="space-y-6">
+            {/* Property Description */}
+            <div className="bg-white">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">About This Property</h3>
+              <div className="space-y-4">
+                {paragraphs.map((paragraph, index) => (
+                  <p key={index} className="text-gray-700 leading-relaxed text-base">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+
+            {/* Location Information */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-blue-600" />
+                Location Details
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-500 mb-1">Address</span>
+                  <span className="text-gray-900">{String(selectedProperty.address || 'Not specified')}</span>
                 </div>
                 {selectedProperty.city && (
-                  <p className="text-gray-600 ml-6">City: {String(selectedProperty.city)}</p>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-500 mb-1">City</span>
+                    <span className="text-gray-900">{String(selectedProperty.city)}</span>
+                  </div>
                 )}
                 {selectedProperty.county && (
-                  <p className="text-gray-600 ml-6">County: {String(selectedProperty.county)}</p>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-500 mb-1">County</span>
+                    <span className="text-gray-900">{String(selectedProperty.county)}</span>
+                  </div>
                 )}
                 {selectedProperty.postcode && (
-                  <p className="text-gray-600 ml-6">Postcode: {String(selectedProperty.postcode)}</p>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-500 mb-1">Postcode</span>
+                    <span className="text-gray-900">{String(selectedProperty.postcode)}</span>
+                  </div>
                 )}
                 {selectedProperty.country && (
-                  <p className="text-gray-600 ml-6">Country: {String(selectedProperty.country)}</p>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-500 mb-1">Country</span>
+                    <span className="text-gray-900">{String(selectedProperty.country)}</span>
+                  </div>
                 )}
+              </div>
+            </div>
+
+            {/* Key Features */}
+            <div className="bg-white border border-gray-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Highlights</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                  <Bed className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">Bedrooms</p>
+                    <p className="font-semibold text-gray-900">{selectedProperty.bedrooms ?? 'N/A'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                  <Bath className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">Bathrooms</p>
+                    <p className="font-semibold text-gray-900">{selectedProperty.bathrooms ?? 'N/A'}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                  <Square className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">Property Type</p>
+                    <p className="font-semibold text-gray-900">{String(selectedProperty.type || 'N/A')}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                  <Calendar className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="text-sm text-gray-600">Status</p>
+                    <p className="font-semibold text-gray-900">{String(selectedProperty.availability || 'Available')}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
