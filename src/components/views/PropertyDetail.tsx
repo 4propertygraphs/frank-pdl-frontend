@@ -256,135 +256,129 @@ export default function PropertyDetail() {
   };
 
   return (
-    <div className="flex-1 bg-gray-50 min-h-screen">
-      {/* Header */}
-      <div className="bg-white border-b px-6 py-4">
+    <div className="flex-1 bg-white min-h-screen">
+      {/* Header with Back Button */}
+      <div className="bg-white border-b px-6 py-3">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-4"
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
         >
           <ArrowLeft className="w-4 h-4" />
           {t.backToProperties}
         </button>
-        <h1 className="text-2xl font-bold text-gray-900">{selectedProperty.title}</h1>
-        <p className="text-gray-600 flex items-center gap-1">
-          <MapPin className="w-4 h-4" />
-          {selectedProperty.address}
-        </p>
       </div>
 
-      <div className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Images */}
-          <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="h-96 bg-gray-200 relative">
-                {selectedProperty.images && selectedProperty.images.length > 0 ? (
-                  <>
-                    <img
-                      src={selectedProperty.images[currentImageIndex] || 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800'}
-                      alt={selectedProperty.title}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800';
-                      }}
-                    />
-                    {selectedProperty.images.length > 1 && (
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-                        {selectedProperty.images.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentImageIndex(index)}
-                            className={`w-3 h-3 rounded-full ${
-                              currentImageIndex === index ? 'bg-white' : 'bg-white/50'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Image className="w-16 h-16 text-gray-400" />
-                  </div>
-                )}
-              </div>
-              
-              {/* Image thumbnails */}
-              {selectedProperty.images && selectedProperty.images.length > 1 && (
-                <div className="p-4 flex gap-2 overflow-x-auto">
-                  {selectedProperty.images.map((image, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentImageIndex(index)}
-                      className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 ${
-                        currentImageIndex === index ? 'border-blue-500' : 'border-gray-200'
-                      }`}
-                    >
-                      <img
-                        src={image}
-                        alt={`${selectedProperty.title} ${index + 1}`}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=200';
-                        }}
-                      />
-                    </button>
-                  ))}
+      {/* Image Gallery - MyHome Style */}
+      <div className="bg-black">
+        {selectedProperty.images && selectedProperty.images.length > 0 ? (
+          <div className="grid grid-cols-2 gap-1">
+            {/* Main Large Image */}
+            <div className="col-span-2 lg:col-span-1">
+              <img
+                src={selectedProperty.images[0]}
+                alt={selectedProperty.title}
+                className="w-full h-96 object-cover cursor-pointer"
+                onClick={() => setCurrentImageIndex(0)}
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=800';
+                }}
+              />
+            </div>
+            {/* Grid of smaller images */}
+            <div className="col-span-2 lg:col-span-1 grid grid-cols-2 gap-1">
+              {selectedProperty.images.slice(1, 5).map((image, index) => (
+                <img
+                  key={index + 1}
+                  src={image}
+                  alt={`${selectedProperty.title} ${index + 2}`}
+                  className="w-full h-48 object-cover cursor-pointer"
+                  onClick={() => setCurrentImageIndex(index + 1)}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = 'https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg?auto=compress&cs=tinysrgb&w=400';
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="w-full h-96 flex items-center justify-center bg-gray-200">
+            <Image className="w-16 h-16 text-gray-400" />
+          </div>
+        )}
+      </div>
+
+      {/* Property Info Section */}
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Main Info */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Title and Price */}
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedProperty.title}</h1>
+              <p className="text-gray-600 flex items-center gap-2 mb-4">
+                <MapPin className="w-5 h-5" />
+                {selectedProperty.address}
+              </p>
+              <div className="text-3xl font-bold text-gray-900">€{selectedProperty.price?.toLocaleString() ?? 'N/A'}</div>
+              <p className="text-sm text-gray-500 mt-1">3 beds • 2 bath • {selectedProperty.type}</p>
+            </div>
+
+            {/* Features */}
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-semibold text-lg mb-4">{t.features}</h3>
+              <div className="grid grid-cols-3 gap-6">
+                <div className="text-center">
+                  <Bed className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-gray-900">{selectedProperty.bedrooms ?? 0}</p>
+                  <p className="text-sm text-gray-600">{t.bedrooms}</p>
                 </div>
-              )}
+                <div className="text-center">
+                  <Bath className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-gray-900">{selectedProperty.bathrooms ?? 0}</p>
+                  <p className="text-sm text-gray-600">{t.bathrooms}</p>
+                </div>
+                <div className="text-center">
+                  <Square className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                  <p className="text-2xl font-bold text-gray-900">-</p>
+                  <p className="text-sm text-gray-600">{t.area}</p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Property Details */}
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">{t.details}</h2>
-            <div className="space-y-4">
-              <div>
-                <span className="text-sm text-gray-600">{t.price}</span>
-                <p className="text-2xl font-bold text-blue-600">€{selectedProperty.price?.toLocaleString() ?? 'N/A'}</p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <span className="text-sm text-gray-600">{t.type}</span>
-                  <p className="font-semibold text-gray-900">{selectedProperty.type}</p>
-                </div>
-                <div>
-                  <span className="text-sm text-gray-600">{t.status}</span>
-                  <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                    selectedProperty.status === 'active' ? 'bg-green-100 text-green-800' :
-                    selectedProperty.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {selectedProperty.status}
-                  </span>
+          {/* Right Column - Agent Info */}
+          <div>
+            <div className="bg-white border rounded-lg p-6 sticky top-6">
+              <div className="mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {selectedProperty.agency_id?.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Strong Financial Consulting</p>
+                    <p className="text-sm text-gray-500">PSRA Licence: 001420</p>
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
-                  <Bed className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                  <p className="font-semibold text-gray-900">{selectedProperty.bedrooms ?? 0}</p>
-                  <p className="text-xs text-gray-600">{t.bedrooms}</p>
-                </div>
-                <div className="text-center">
-                  <Bath className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                  <p className="font-semibold text-gray-900">{selectedProperty.bathrooms ?? 0}</p>
-                  <p className="text-xs text-gray-600">{t.bathrooms}</p>
-                </div>
-              </div>
+              <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 mb-3">
+                Call Agent: 01 293 6320
+              </button>
 
-              <div className="pt-4 border-t">
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>{t.listed}: {new Date(selectedProperty.created_at).toLocaleDateString()}</span>
+              <button className="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50">
+                Email Agent
+              </button>
+
+              <div className="mt-6 pt-6 border-t space-y-3">
+                <div>
+                  <span className="text-sm text-gray-600">Status</span>
+                  <p className="font-semibold text-gray-900 capitalize">{selectedProperty.status}</p>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  <span>{t.updated}: {new Date(selectedProperty.updated_at).toLocaleDateString()}</span>
+                <div>
+                  <span className="text-sm text-gray-600">Listed</span>
+                  <p className="font-semibold text-gray-900">{new Date(selectedProperty.created_at).toLocaleDateString()}</p>
                 </div>
               </div>
             </div>
