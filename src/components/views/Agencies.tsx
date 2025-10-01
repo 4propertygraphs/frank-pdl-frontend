@@ -107,6 +107,8 @@ export default function Agencies() {
   const [propertiesCache, setPropertiesCache] = useState<PropertiesCache>({});
   const [propertyCounts, setPropertyCounts] = useState<Record<string, number>>({});
   const [checkedAgencies, setCheckedAgencies] = useState<Set<string>>(new Set());
+  const [isCheckingAll, setIsCheckingAll] = useState(false);
+  const [checkProgress, setCheckProgress] = useState({ current: 0, total: 0 });
 
   const selectedAgencyKey = useMemo(() => buildAgencyKey(selectedAgency), [selectedAgency]);
 
@@ -221,6 +223,58 @@ export default function Agencies() {
     dispatch({ type: 'SET_SELECTED_AGENCY', payload: null });
     dispatch({ type: 'SET_SELECTED_PROPERTY', payload: null });
     dispatch({ type: 'SET_PROPERTIES', payload: [] });
+  };
+
+  const checkAllAgencies = async () => {
+    setIsCheckingAll(true);
+    setCheckProgress({ current: 0, total: agencies.length });
+
+    const newPropertiesCache: PropertiesCache = { ...propertiesCache };
+    const newPropertyCounts: Record<string, number> = { ...propertyCounts };
+    const newCheckedAgencies = new Set<string>(checkedAgencies);
+
+    for (let i = 0; i < agencies.length; i++) {
+      const agency = agencies[i];
+      const key = buildAgencyKey(agency);
+
+      if (!key) continue;
+
+      setCheckProgress({ current: i + 1, total: agencies.length });
+
+      if (newPropertiesCache[key]) {
+        newCheckedAgencies.add(key);
+        continue;
+      }
+
+      try {
+        const fetched = await cloudUploadService.getPropertiesByAgency(key);
+        newPropertiesCache[key] = fetched;
+        newPropertyCounts[key] = fetched.length;
+        newCheckedAgencies.add(key);
+
+        console.log(`✓ ${getDisplayName(agency)}: ${fetched.length} properties`);
+      } catch (err: any) {
+        console.error(`✗ ${getDisplayName(agency)}: ${err?.message ?? err}`);
+        newPropertiesCache[key] = [];
+        newPropertyCounts[key] = 0;
+        newCheckedAgencies.add(key);
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    setPropertiesCache(newPropertiesCache);
+    setPropertyCounts(newPropertyCounts);
+    setCheckedAgencies(newCheckedAgencies);
+    setIsCheckingAll(false);
+    setCheckProgress({ current: 0, total: 0 });
+
+    const agenciesWithData = Object.entries(newPropertyCounts).filter(([_, count]) => count > 0).length;
+    const agenciesWithoutData = Object.entries(newPropertyCounts).filter(([_, count]) => count === 0).length;
+
+    console.log(`\n✅ Check complete:`);
+    console.log(`   Agencies with data: ${agenciesWithData}`);
+    console.log(`   Agencies without data: ${agenciesWithoutData} (hidden)`);
   };
 
   const getDisplayName = (agency: AgencyRecord) => {
@@ -368,9 +422,25 @@ export default function Agencies() {
             </button>
           )}
         </div>
-        <button onClick={loadAgencies} className="px-4 py-2 bg-blue-600 text-white rounded-lg">
-          Refresh
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={checkAllAgencies}
+            disabled={isCheckingAll}
+            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {isCheckingAll ? (
+              <>
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                Checking {checkProgress.current}/{checkProgress.total}
+              </>
+            ) : (
+              'Check All'
+            )}
+          </button>
+          <button onClick={loadAgencies} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div className="mb-6 flex">
