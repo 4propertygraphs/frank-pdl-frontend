@@ -101,8 +101,15 @@ export class CloudUploadService {
 
           if (properties.length > 0) {
             this.cachedProperties.push(...properties);
-            this.propertiesByAgency[sitePrefix] = properties;
-            console.log(`✅ ${sitePrefix.toUpperCase()}: ${properties.length} properties`);
+
+            // Merge properties for agencies with multiple SiteIDs
+            if (this.propertiesByAgency[sitePrefix]) {
+              this.propertiesByAgency[sitePrefix].push(...properties);
+            } else {
+              this.propertiesByAgency[sitePrefix] = properties;
+            }
+
+            console.log(`✅ ${sitePrefix.toUpperCase()}-${siteId}: ${properties.length} properties`);
           }
         } catch (error: any) {
           console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: ${error.message}`);
@@ -111,6 +118,25 @@ export class CloudUploadService {
 
       this.isLoaded = true;
       console.log(`\n🎉 Total loaded: ${this.cachedProperties.length} properties from ${Object.keys(this.propertiesByAgency).length} agencies`);
+
+      // Update agencies table with property counts
+      for (const [sitePrefix, properties] of Object.entries(this.propertiesByAgency)) {
+        try {
+          await supabase
+            .from('agencies')
+            .upsert({
+              site_prefix: sitePrefix.toUpperCase(),
+              property_count: properties.length,
+              is_active: properties.length > 0,
+              last_sync: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            }, {
+              onConflict: 'site_prefix',
+            });
+        } catch (error: any) {
+          console.error(`Failed to update agency ${sitePrefix}:`, error);
+        }
+      }
 
     } catch (error: any) {
       console.error('Failed to load A-data.json:', error);

@@ -111,15 +111,24 @@ export default function Agencies() {
 
   const filteredAgencies = useMemo(() => {
     const lower = searchTerm.trim().toLowerCase();
-    if (!lower) return agencies;
-    return agencies.filter((agency) => {
+
+    // Filter agencies with 0 properties
+    const activeAgencies = agencies.filter((agency) => {
+      const sitePrefix = ((agency as any)?.SitePrefix ?? (agency as any)?.sitePrefix ?? '').toString().toLowerCase();
+      const count = propertyCounts[sitePrefix] ?? 0;
+      return count > 0;
+    });
+
+    if (!lower) return activeAgencies;
+
+    return activeAgencies.filter((agency) => {
       const name =
         ((agency as any)?.name ?? (agency as any)?.Name ?? (agency as any)?.OfficeName ?? '')
           .toString()
           .toLowerCase();
       return name.includes(lower);
     });
-  }, [agencies, searchTerm]);
+  }, [agencies, searchTerm, propertyCounts]);
 
   useEffect(() => {
     if (agencies.length === 0) {
