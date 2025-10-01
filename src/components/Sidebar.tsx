@@ -14,7 +14,6 @@ import { useApp } from '../contexts/AppContext';
 const menuItems = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
   { id: 'agencies', label: 'Agencies', icon: Building },
-  { id: 'reports', label: 'Reports', icon: FileText },
   { id: 'protect-data', label: 'Protect Data', icon: Shield },
   { id: 'share-bank', label: 'Share Bank', icon: Database },
   { id: 'track-on', label: 'Track On', icon: Activity },
@@ -25,7 +24,6 @@ const translations = {
   en: {
     overview: 'Overview',
     agencies: 'Agencies',
-    reports: 'Reports',
     'protect-data': 'Protect Data',
     'share-bank': 'Share Bank',
     'track-on': 'Track On',
@@ -34,7 +32,6 @@ const translations = {
   cz: {
     overview: 'Přehled',
     agencies: 'Agentury',
-    reports: 'Reporty',
     'protect-data': 'Ochrana dat',
     'share-bank': 'Share Bank',
     'track-on': 'Track On',
@@ -43,7 +40,6 @@ const translations = {
   ru: {
     overview: 'Обзор',
     agencies: 'Агентства',
-    reports: 'Отчеты',
     'protect-data': 'Защита данных',
     'share-bank': 'Share Bank',
     'track-on': 'Track On',
@@ -52,7 +48,6 @@ const translations = {
   fr: {
     overview: 'Vue d\'ensemble',
     agencies: 'Agences',
-    reports: 'Rapports',
     'protect-data': 'Protection des données',
     'share-bank': 'Share Bank',
     'track-on': 'Track On',
