@@ -24,6 +24,7 @@ export default function Reports() {
   const { state } = useApp();
   const { properties, agencies, settings } = state;
   const [selectedReportType, setSelectedReportType] = useState<string>('all');
+  const [selectedAgency, setSelectedAgency] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +40,10 @@ export default function Reports() {
 
   useEffect(() => {
     loadReports();
-  }, []);
+    if (agencies.length > 0 && !selectedAgency) {
+      setSelectedAgency(agencies[0].site_prefix);
+    }
+  }, [agencies]);
 
   const loadReports = async () => {
     try {
@@ -129,9 +133,18 @@ export default function Reports() {
       return;
     }
 
+    if (!selectedAgency) {
+      alert('Please select an agency first.');
+      return;
+    }
+
     setIsGenerating(true);
     try {
-      const agency = agencies[0];
+      const agency = agencies.find(a => a.site_prefix === selectedAgency);
+      if (!agency) {
+        alert('Selected agency not found.');
+        return;
+      }
       const agencyProps = properties.filter(p => p.agency_id === agency.site_prefix);
 
       const stats = calculateStats(agencyProps);
@@ -251,6 +264,7 @@ export default function Reports() {
       viewCharts: 'View Charts',
       hideCharts: 'Hide Charts',
       delete: 'Delete',
+      selectAgency: 'Select Agency',
     },
     cz: {
       title: 'Reporty',
@@ -279,6 +293,7 @@ export default function Reports() {
       viewCharts: 'Zobrazit grafy',
       hideCharts: 'Skrýt grafy',
       delete: 'Smazat',
+      selectAgency: 'Vybrat agenturu',
     },
     ru: {
       title: 'Отчеты',
@@ -307,6 +322,7 @@ export default function Reports() {
       viewCharts: 'Просмотр графиков',
       hideCharts: 'Скрыть графики',
       delete: 'Удалить',
+      selectAgency: 'Выбрать агентство',
     },
     fr: {
       title: 'Rapports',
@@ -335,6 +351,7 @@ export default function Reports() {
       viewCharts: 'Voir les graphiques',
       hideCharts: 'Masquer les graphiques',
       delete: 'Supprimer',
+      selectAgency: 'Sélectionner l\'agence',
     },
   };
 
@@ -386,7 +403,23 @@ export default function Reports() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">{t.generateNew}</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">{t.generateNew}</h2>
+            <div className="flex items-center gap-3">
+              <label className="text-sm font-medium text-gray-700">{t.selectAgency}:</label>
+              <select
+                value={selectedAgency}
+                onChange={(e) => setSelectedAgency(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                {agencies.map((agency) => (
+                  <option key={agency.site_prefix} value={agency.site_prefix}>
+                    {agency.name || agency.site_prefix}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {reportTypes.map((type) => {
               const Icon = type.icon;
