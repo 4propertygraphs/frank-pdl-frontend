@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
-import { propertySyncService } from "../../services/propertySync";
-import { Building, Users, DollarSign, TrendingUp } from "lucide-react";
+import { cloudUploadService } from "../../services/cloudUpload";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud } from "lucide-react";
 
 
 const resolveAgencyLookupKey = (agency: any): string | null => {
@@ -36,6 +36,8 @@ const resolveAgencyLookupKey = (agency: any): string | null => {
 export default function Overview() {
   const { state, dispatch } = useApp();
   const { agencies, properties, settings } = state;
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<string>("");
 
   useEffect(() => {
     console.log("📊 Overview component mounted, loading data...");
@@ -46,55 +48,14 @@ export default function Overview() {
     try {
       dispatch({ type: "SET_LOADING", payload: true });
 
-      // Načti agentury
-      console.log("📁 Overview: Loading agencies from agencies.json...");
+      console.log("📁 Loading agencies from agencies.json...");
       const agencies = await apiService.getAgencies();
-      console.log(`📁 Overview: Loaded ${agencies.length} agencies from JSON`);
+      console.log(`📁 Loaded ${agencies.length} agencies`);
 
-      // Načti nemovitosti z databáze (s auto-sync pokud je potřeba)
-      console.log("🌐 Overview: Loading properties from database...");
-      const propertiesByAgency = await Promise.all(
-        agencies.map((agency) => {
-          const lookupKey = resolveAgencyLookupKey(agency);
+      console.log("🌐 Loading properties from Supabase database...");
+      const allProperties = await cloudUploadService.getPropertiesFromDatabase();
+      console.log(`✅ Loaded ${allProperties.length} properties from database`);
 
-          if (!lookupKey) {
-            console.warn('⚠️ Overview: skipping agency with no lookup key', agency);
-            return Promise.resolve({ agencyId: null, properties: [] });
-          }
-
-          return propertySyncService
-            .getPropertiesWithAutoSync(lookupKey)
-            .then((props) => ({ agencyId: lookupKey, properties: props }))
-            .catch((error) => {
-              console.warn(`⚠️ Overview: Failed to load properties for agency ${lookupKey}:`, error);
-              return { agencyId: lookupKey, properties: [] };
-            });
-        })
-      );
-
-      // Sloučení a normalizace všech nemovitostí
-      const allProperties = propertiesByAgency.flatMap(
-        ({ agencyId, properties }) =>
-          properties.map((property) => ({
-            ...property,
-            agency_id: agencyId,
-            title: property.title || property.address || "No Address",
-            price: property.price || 0,
-            images: property.images || [],
-            location: {
-              address: property.address || "No Address",
-              city: property.city || "Unknown",
-              country: property.country || "Ireland",
-            },
-            status: property.status || "active",
-            created_at: property.created_at || new Date().toISOString(),
-            updated_at: property.updated_at || new Date().toISOString(),
-          }))
-      );
-
-      console.log(`✅ Overview: Processed ${allProperties.length} properties from API`);
-
-      // Uložení do stavu
       dispatch({ type: "SET_AGENCIES", payload: agencies });
       dispatch({ type: "SET_PROPERTIES", payload: allProperties });
     } catch (error: any) {
@@ -105,6 +66,45 @@ export default function Overview() {
       });
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
+    }
+  };
+
+  const handleUploadToCloud = async () => {
+    if (isUploading) return;
+
+    const confirmed = window.confirm(
+      "This will upload all properties from XML files to the cloud database. Continue?"
+    );
+
+    if (!confirmed) return;
+
+    setIsUploading(true);
+    setUploadProgress("Uploading properties...");
+
+    try {
+      const result = await cloudUploadService.uploadAllXMLFiles();
+
+      setUploadProgress(
+        `✅ Upload complete: ${result.success} successful, ${result.failed} failed`
+      );
+
+      if (result.errors.length > 0) {
+        console.error("Upload errors:", result.errors);
+      }
+
+      await loadData();
+
+      setTimeout(() => {
+        setUploadProgress("");
+        setIsUploading(false);
+      }, 3000);
+    } catch (error: any) {
+      console.error("Upload failed:", error);
+      setUploadProgress(`❌ Upload failed: ${error.message}`);
+      setTimeout(() => {
+        setUploadProgress("");
+        setIsUploading(false);
+      }, 5000);
     }
   };
 
@@ -164,9 +164,39 @@ export default function Overview() {
 
   return (
     <div className="flex-1 p-6 bg-gray-50 min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.title}</h1>
-        <p className="text-gray-600">{t.subtitle}</p>
+      <div className="mb-8 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.title}</h1>
+          <p className="text-gray-600">{t.subtitle}</p>
+        </div>
+        <div className="flex items-center gap-4">
+          {uploadProgress && (
+            <div className="text-sm text-gray-600 bg-white px-4 py-2 rounded-lg border">
+              {uploadProgress}
+            </div>
+          )}
+          <button
+            onClick={handleUploadToCloud}
+            disabled={isUploading}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold shadow-md transition-all ${
+              isUploading
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg"
+            }`}
+          >
+            {isUploading ? (
+              <>
+                <Cloud className="w-5 h-5 animate-pulse" />
+                Uploading...
+              </>
+            ) : (
+              <>
+                <Upload className="w-5 h-5" />
+                Upload to Cloud
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Stats Grid */}
