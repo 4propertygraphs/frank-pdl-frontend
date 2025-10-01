@@ -425,7 +425,7 @@ export default function Agencies() {
               property.title?.toLowerCase().includes(lower) ||
               property.address?.toLowerCase().includes(lower) ||
               property.city?.toLowerCase().includes(lower) ||
-              property.id?.toLowerCase().includes(lower)
+              property.id?.toString().toLowerCase().includes(lower)
             );
           }).map((property) => (
             <div
