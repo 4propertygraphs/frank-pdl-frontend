@@ -131,15 +131,21 @@ export default function Agencies() {
   }, [agencies, searchTerm, propertyCounts]);
 
   useEffect(() => {
-    if (agencies.length === 0) {
-      void loadAgencies();
-    }
-    void loadPropertyCounts();
+    const init = async () => {
+      // First load property counts
+      await loadPropertyCounts();
+      // Then load agencies if needed
+      if (agencies.length === 0) {
+        await loadAgencies();
+      }
+    };
+    void init();
   }, []);
 
   const loadPropertyCounts = async () => {
     await cloudUploadService.loadAllXMLFiles();
     const counts = cloudUploadService.getPropertyCountsByAgency();
+    console.log('📊 Property counts loaded:', counts);
     setPropertyCounts(counts);
   };
 
