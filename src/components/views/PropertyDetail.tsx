@@ -105,9 +105,27 @@ export default function PropertyDetail() {
       case 'description':
         const cleanDescription = (desc: any) => {
           if (!desc) return 'No description available';
-          if (typeof desc === 'string') return desc;
-          if (desc['#text']) return String(desc['#text']);
-          return String(desc);
+          let text = '';
+
+          if (typeof desc === 'string') {
+            text = desc;
+          } else if (desc['#text']) {
+            text = String(desc['#text']);
+          } else {
+            text = String(desc);
+          }
+
+          text = text
+            .replace(/&lt;br\/&gt;/g, '\n')
+            .replace(/&lt;br ?\/&gt;/g, '\n')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .replace(/&amp;/g, '&')
+            .replace(/<[^>]*>/g, '')
+            .replace(/\n\n+/g, '\n\n')
+            .trim();
+
+          return text || 'No description available';
         };
 
         return (
@@ -307,48 +325,16 @@ export default function PropertyDetail() {
       
       case 'bug-report':
         return (
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Change Log</h3>
-            <div className="space-y-3">
-              {[
-                { type: 'update', message: 'Price reduced from €685,000 to €650,000', date: '2 days ago', status: 'active' },
-                { type: 'update', message: 'Images updated - 3 new photos added', date: '1 week ago', status: 'completed' },
-                { type: 'create', message: 'Property listed', date: '2 weeks ago', status: 'completed' },
-                { type: 'update', message: 'Description updated with new features', date: '3 weeks ago', status: 'completed' },
-              ].map((log, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className={`w-2 h-2 rounded-full mt-2 ${
-                    log.type === 'create' ? 'bg-green-500' : 
-                    log.type === 'update' ? 'bg-blue-500' : 'bg-red-500'
-                  }`} />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-900">{log.message}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xs text-gray-500">{log.date}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        log.status === 'active' ? 'bg-green-100 text-green-800' :
-                        log.status === 'completed' ? 'bg-gray-100 text-gray-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {log.status}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <AlertTriangle className="w-4 h-4 text-blue-600" />
-                <span className="font-medium text-blue-900">Filter Options</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {['All Changes', 'Price Updates', 'Image Changes', 'Description Edits', 'Status Changes'].map((filter) => (
-                  <button key={filter} className="px-3 py-1 bg-white border border-blue-200 text-blue-700 text-xs rounded-full hover:bg-blue-100">
-                    {filter}
-                  </button>
-                ))}
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center max-w-md">
+              <AlertTriangle className="w-16 h-16 text-orange-500 mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Under Reconstruction</h3>
+              <p className="text-gray-600 mb-4">
+                This feature is currently being rebuilt to provide you with better property tracking and change history.
+              </p>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-50 border border-orange-200 rounded-lg">
+                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-orange-900 font-medium">Coming Soon</span>
               </div>
             </div>
           </div>
