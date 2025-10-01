@@ -13,17 +13,28 @@ function createWindow() {
     minWidth: 1000,
     minHeight: 600,
     webPreferences: {
-      preload: path.join(__dirname, "preload.cjs"), // Cesta k preload scriptu
-      contextIsolation: true,  // Povolení contextIsolation pro bezpečnost
-      nodeIntegration: false,  // Zakázání nodeIntegration pro ochranu
+      preload: path.join(__dirname, "preload.cjs"),
+      contextIsolation: true,
+      nodeIntegration: false,
+      webSecurity: false, // Disable CSP for development
     },
   });
 
+  // Set CSP to allow scripts
+  mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        ...details.responseHeaders,
+        'Content-Security-Policy': ["script-src 'self' 'unsafe-inline' 'unsafe-eval'; default-src 'self' http://localhost:* https://*"]
+      }
+    });
+  });
+
   if (isDev) {
-    mainWindow.loadURL("http://localhost:5173");  // Lokální server pro vývoj
-    mainWindow.webContents.openDevTools(); // Otevření devtools při vývoji
+    mainWindow.loadURL("http://localhost:5173");
+    mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, "../dist/index.html")); // Produkční verze
+    mainWindow.loadFile(path.join(__dirname, "../dist/index.html"));
   }
 
   mainWindow.on("closed", () => {
