@@ -112,46 +112,24 @@ export default function Agencies() {
   const filteredAgencies = useMemo(() => {
     const lower = searchTerm.trim().toLowerCase();
 
-    // Filter agencies with 0 properties
-    const activeAgencies = agencies.filter((agency) => {
-      const sitePrefix = ((agency as any)?.SitePrefix ?? (agency as any)?.sitePrefix ?? '').toString().toLowerCase();
-      const count = propertyCounts[sitePrefix] ?? 0;
-      return count > 0;
-    });
+    // Show all agencies - filtering only by search term
+    if (!lower) return agencies;
 
-    if (!lower) return activeAgencies;
-
-    return activeAgencies.filter((agency) => {
+    return agencies.filter((agency) => {
       const name =
         ((agency as any)?.name ?? (agency as any)?.Name ?? (agency as any)?.OfficeName ?? '')
           .toString()
           .toLowerCase();
       return name.includes(lower);
     });
-  }, [agencies, searchTerm, propertyCounts]);
+  }, [agencies, searchTerm]);
 
   useEffect(() => {
-    // Load property counts when Agencies view opens
-    void loadPropertyCounts();
-
-    // Load agencies list if not yet loaded
+    // Only load agencies list on mount (GetAgency.json)
     if (agencies.length === 0) {
       void loadAgencies();
     }
   }, []);
-
-  const loadPropertyCounts = async () => {
-    if (Object.keys(propertyCounts).length > 0) {
-      console.log('📊 Property counts already loaded');
-      return;
-    }
-
-    console.log('📊 Loading property counts...');
-    await cloudUploadService.loadAllXMLFiles();
-    const counts = cloudUploadService.getPropertyCountsByAgency();
-    console.log('📊 Property counts loaded:', counts);
-    setPropertyCounts(counts);
-  };
 
   const loadAgencies = async () => {
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -195,6 +173,7 @@ export default function Agencies() {
     try {
       const fetched = await cloudUploadService.getPropertiesByAgency(key);
       setPropertiesCache((prev) => ({ ...prev, [key]: fetched }));
+      setPropertyCounts((prev) => ({ ...prev, [key]: fetched.length }));
       dispatch({ type: 'SET_PROPERTIES', payload: fetched as any });
     } catch (err: any) {
       dispatch({
@@ -218,12 +197,13 @@ export default function Agencies() {
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      await cloudUploadService.loadAllXMLFiles();
+      // Clear cache for this agency to force reload
+      delete (cloudUploadService as any).propertiesByAgency[key];
+
       const fetched = await cloudUploadService.getPropertiesByAgency(key);
       setPropertiesCache((prev) => ({ ...prev, [key]: fetched }));
+      setPropertyCounts((prev) => ({ ...prev, [key]: fetched.length }));
       dispatch({ type: 'SET_PROPERTIES', payload: fetched as any });
-
-      await loadPropertyCounts();
     } catch (err: any) {
       dispatch({
         type: 'SET_ERROR',

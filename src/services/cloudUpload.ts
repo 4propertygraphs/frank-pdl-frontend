@@ -201,11 +201,95 @@ export class CloudUploadService {
     return this.cachedProperties;
   }
 
-  async getPropertiesByAgency(agencyKey: string): Promise<Property[]> {
-    if (!this.isLoaded) {
-      await this.loadAllXMLFiles();
+  async loadXMLForAgency(agencyKey: string): Promise<Property[]> {
+    const sitePrefix = agencyKey.toLowerCase();
+
+    // Return cached if already loaded
+    if (this.propertiesByAgency[sitePrefix]) {
+      console.log(`📦 Using cached properties for ${sitePrefix.toUpperCase()}`);
+      return this.propertiesByAgency[sitePrefix];
     }
-    return this.propertiesByAgency[agencyKey.toLowerCase()] || [];
+
+    try {
+      const response = await fetch('/A-data.json');
+      const agencyUrls = await response.json();
+
+      // Find all entries for this agency (can have multiple SiteIDs)
+      const agencyEntries = agencyUrls.filter((entry: any) =>
+        entry.SitePrefix?.toLowerCase() === sitePrefix
+      );
+
+      if (agencyEntries.length === 0) {
+        console.log(`⚠️  No XML URLs found for ${sitePrefix.toUpperCase()}`);
+        return [];
+      }
+
+      const allProperties: Property[] = [];
+
+      for (const agencyData of agencyEntries) {
+        const siteId = agencyData.SiteID ?? 0;
+
+        try {
+          let xmlText: string;
+
+          const electronAPI = (window as any).electron || (window as any).electronAPI;
+
+          if (electronAPI && electronAPI.fetchAcquaintData) {
+            console.log(`🔌 Using Electron IPC for ${sitePrefix.toUpperCase()}-${siteId}`);
+            xmlText = await electronAPI.fetchAcquaintData(sitePrefix.toUpperCase(), siteId);
+          } else {
+            const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-xml-proxy?sitePrefix=${sitePrefix.toUpperCase()}&siteId=${siteId}`;
+
+            const xmlResponse = await fetch(proxyUrl, {
+              headers: {
+                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+              },
+            });
+
+            if (!xmlResponse.ok) {
+              console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}-${siteId}: HTTP ${xmlResponse.status}`);
+              continue;
+            }
+            xmlText = await xmlResponse.text();
+          }
+
+          const properties = xmlParser.parseXML(xmlText, sitePrefix.toUpperCase());
+          allProperties.push(...properties);
+          console.log(`✅ ${sitePrefix.toUpperCase()}-${siteId}: ${properties.length} properties`);
+        } catch (error: any) {
+          console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}-${siteId}: ${error.message}`);
+        }
+      }
+
+      // Cache the properties
+      this.propertiesByAgency[sitePrefix] = allProperties;
+
+      // Update agency info in database
+      try {
+        await supabase
+          .from('agencies')
+          .upsert({
+            site_prefix: sitePrefix.toUpperCase(),
+            property_count: allProperties.length,
+            is_active: allProperties.length > 0,
+            last_sync: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'site_prefix',
+          });
+      } catch (error: any) {
+        console.error(`Failed to update agency ${sitePrefix}:`, error);
+      }
+
+      return allProperties;
+    } catch (error: any) {
+      console.error(`Failed to load XML for ${sitePrefix}:`, error);
+      return [];
+    }
+  }
+
+  async getPropertiesByAgency(agencyKey: string): Promise<Property[]> {
+    return this.loadXMLForAgency(agencyKey);
   }
 
   getPropertyCountsByAgency(): Record<string, number> {
