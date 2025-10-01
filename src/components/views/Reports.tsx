@@ -104,7 +104,10 @@ export default function Reports() {
 
   const calculateStats = (props: any[]) => {
     const totalProperties = props.length;
-    const totalValue = props.reduce((sum, p) => sum + (p.price || 0), 0);
+    const totalValue = props.reduce((sum, p) => {
+      const price = typeof p.price === 'string' ? parseFloat(p.price) : (p.price || 0);
+      return sum + price;
+    }, 0);
     const avgPrice = totalProperties > 0 ? Math.round(totalValue / totalProperties) : 0;
     const availableCount = props.filter(p => p.status === 'available').length;
     const soldCount = props.filter(p => p.status === 'sold').length;
@@ -120,12 +123,22 @@ export default function Reports() {
 
   const groupByCounty = (props: any[]) => {
     return props.reduce((acc, prop) => {
-      const county = prop.county || 'Unknown';
+      let county = 'Unknown';
+      if (prop.county) {
+        try {
+          const countyObj = typeof prop.county === 'string' ? JSON.parse(prop.county) : prop.county;
+          county = countyObj['#text'] || countyObj;
+          if (!county || county === '') county = 'Unknown';
+        } catch {
+          county = prop.county || 'Unknown';
+        }
+      }
       if (!acc[county]) {
         acc[county] = { count: 0, avgPrice: 0, totalPrice: 0 };
       }
       acc[county].count++;
-      acc[county].totalPrice += prop.price || 0;
+      const price = typeof prop.price === 'string' ? parseFloat(prop.price) : (prop.price || 0);
+      acc[county].totalPrice += price;
       acc[county].avgPrice = Math.round(acc[county].totalPrice / acc[county].count);
       return acc;
     }, {} as Record<string, { count: number; avgPrice: number; totalPrice: number }>);
@@ -138,15 +151,17 @@ export default function Reports() {
         try {
           const typeObj = typeof prop.type === 'string' ? JSON.parse(prop.type) : prop.type;
           type = typeObj['#text'] || typeObj;
+          if (!type || type === '') type = 'Unknown';
         } catch {
-          type = prop.type;
+          type = prop.type || 'Unknown';
         }
       }
       if (!acc[type]) {
         acc[type] = { count: 0, avgPrice: 0, totalPrice: 0 };
       }
       acc[type].count++;
-      acc[type].totalPrice += prop.price || 0;
+      const price = typeof prop.price === 'string' ? parseFloat(prop.price) : (prop.price || 0);
+      acc[type].totalPrice += price;
       acc[type].avgPrice = Math.round(acc[type].totalPrice / acc[type].count);
       return acc;
     }, {} as Record<string, { count: number; avgPrice: number; totalPrice: number }>);
@@ -161,10 +176,16 @@ export default function Reports() {
       { label: '> €500k', min: 500000, max: Infinity },
     ];
 
-    return ranges.map(range => ({
-      label: range.label,
-      count: props.filter(p => p.price >= range.min && p.price < range.max).length,
-    }));
+    return ranges.map(range => {
+      const count = props.filter(p => {
+        const price = typeof p.price === 'string' ? parseFloat(p.price) : (p.price || 0);
+        return price >= range.min && price < range.max;
+      }).length;
+      return {
+        label: range.label,
+        count,
+      };
+    });
   };
 
   const generateReport = async (type: string) => {
@@ -397,6 +418,12 @@ export default function Reports() {
 
   const t = translations[settings.language];
 
+  const filteredProperties = selectedAgency
+    ? properties.filter(p => p.agency_id === selectedAgency)
+    : properties;
+
+  const statsForDisplay = calculateStats(filteredProperties);
+
   return (
     <div className="flex-1 p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
@@ -410,7 +437,7 @@ export default function Reports() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">{t.totalProperties}</p>
-                <p className="text-2xl font-bold text-gray-900">{properties.length}</p>
+                <p className="text-2xl font-bold text-gray-900">{filteredProperties.length}</p>
               </div>
               <Building className="w-8 h-8 text-blue-600" />
             </div>
@@ -431,10 +458,7 @@ export default function Reports() {
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">{t.avgPrice}</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  €{properties.length > 0
-                    ? Math.round(properties.reduce((sum, p) => sum + p.price, 0) / properties.length).toLocaleString()
-                    : '0'
-                  }
+                  €{statsForDisplay.avgPrice.toLocaleString()}
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-orange-600" />
