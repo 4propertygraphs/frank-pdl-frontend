@@ -15,36 +15,26 @@ app.use(
   })
 );
 
-// Proxy pro Acquaint data (dynamické sitePrefix a siteId)
+// Proxy pro Acquaint data
 app.use(
   "/acquaint",
   createProxyMiddleware({
-    target: "https://www.acquaintcrm.co.uk", // Základní cíl pro Acquaint
+    target: "https://www.acquaintcrm.co.uk",
     changeOrigin: true,
     secure: true,
     logLevel: "debug",
     pathRewrite: {
-      "^/acquaint": "", // Odstraní "/acquaint" z URL před odesláním na cíl
-    },
-    router: (req) => {
-      // Extrahování sitePrefix a siteId z požadavku
-      const { sitePrefix, siteId } = req.query; // Předpokládáme, že sitePrefix a siteId jsou v query parametrech
-      if (sitePrefix && siteId) {
-        return `https://www.acquaintcrm.co.uk/datafeeds/standardxml/${sitePrefix}-${siteId}.xml`; // Sestavení konečné URL
-      } else {
-        // Fallback, pokud sitePrefix nebo siteId chybí
-        return "https://www.acquaintcrm.co.uk/datafeeds/standardxml/default.xml";
-      }
+      "^/acquaint": "",
     },
     onProxyReq: (proxyReq, req) => {
-      console.log(`➡️ Proxying to: ${proxyReq.url}`);
+      console.log(`➡️ Proxying to: https://www.acquaintcrm.co.uk${proxyReq.path}`);
     },
     onProxyRes: (proxyRes, req) => {
-      console.log(`⬅️ Response: ${proxyRes.statusCode} pro ${req.originalUrl}`);
+      console.log(`⬅️ Response: ${proxyRes.statusCode} for ${req.originalUrl}`);
     },
     onError: (err, req, res) => {
-      console.error("❌ Proxy chyba:", err.message);
-      res.status(500).json({ error: "Proxy chyba", message: err.message });
+      console.error("❌ Proxy error:", err.message);
+      res.status(500).json({ error: "Proxy error", message: err.message });
     },
   })
 );
