@@ -51,6 +51,7 @@ const buildAgencyKey = (agency: AgencyRecord | null | undefined) => {
     (agency as any)?.unique_key,
     (agency as any)?.Key,
     (agency as any)?.UUID,
+    (agency as any)?.SitePrefix,
     (agency as any)?.sitePrefix,
     (agency as any)?.acquaintSource?.sitePrefix,
   ];
@@ -64,7 +65,7 @@ const buildAgencyKey = (agency: AgencyRecord | null | undefined) => {
   });
 
   if (candidate) {
-    const unique = ensureUniqueAgencyKey(String(candidate).trim());
+    const unique = ensureUniqueAgencyKey(String(candidate).trim().toLowerCase());
     fallbackKeyCache.set(agency as object, unique);
     return unique;
   }

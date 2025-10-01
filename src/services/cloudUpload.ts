@@ -140,10 +140,11 @@ export class CloudUploadService {
       }
 
       for (const prop of data || []) {
-        const agencyId = prop.agency_id?.toLowerCase() || 'unknown';
+        const agencyId = (prop.agency_id || 'unknown').toLowerCase();
         counts[agencyId] = (counts[agencyId] || 0) + 1;
       }
 
+      console.log('📊 Property counts by agency:', counts);
       return counts;
     } catch (error: any) {
       console.warn('Error getting property counts:', error);
