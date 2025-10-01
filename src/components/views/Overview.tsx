@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
+import { propertySyncService } from "../../services/propertySync";
 import { Building, Users, DollarSign, TrendingUp } from "lucide-react";
 
 
@@ -50,8 +51,8 @@ export default function Overview() {
       const agencies = await apiService.getAgencies();
       console.log(`📁 Overview: Loaded ${agencies.length} agencies from JSON`);
 
-      // Načti nemovitosti pro každou agenturu
-      console.log("🌐 Overview: Loading properties from API...");
+      // Načti nemovitosti z databáze (s auto-sync pokud je potřeba)
+      console.log("🌐 Overview: Loading properties from database...");
       const propertiesByAgency = await Promise.all(
         agencies.map((agency) => {
           const lookupKey = resolveAgencyLookupKey(agency);
@@ -61,11 +62,11 @@ export default function Overview() {
             return Promise.resolve({ agencyId: null, properties: [] });
           }
 
-          return apiService
-            .getPropertiesForAgency(lookupKey)
+          return propertySyncService
+            .getPropertiesWithAutoSync(lookupKey)
             .then((props) => ({ agencyId: lookupKey, properties: props }))
             .catch((error) => {
-              console.warn(`⚠️ Overview: API failed for agency ${lookupKey}:`, error);
+              console.warn(`⚠️ Overview: Failed to load properties for agency ${lookupKey}:`, error);
               return { agencyId: lookupKey, properties: [] };
             });
         })

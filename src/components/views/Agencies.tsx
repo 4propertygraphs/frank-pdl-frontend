@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Building, Search, ArrowLeft } from 'lucide-react';
+import { Building, Search, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { apiService } from '../../services/api';
+import { propertySyncService } from '../../services/propertySync';
 
 type AgencyRecord = Awaited<ReturnType<typeof apiService.getAgencies>>[number];
 
@@ -163,7 +164,7 @@ export default function Agencies() {
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      const fetched = await apiService.getPropertiesForAgency(key);
+      const fetched = await propertySyncService.getPropertiesWithAutoSync(key);
       setPropertiesCache((prev) => ({ ...prev, [key]: fetched }));
       dispatch({ type: 'SET_PROPERTIES', payload: fetched as any });
     } catch (err: any) {
@@ -172,6 +173,30 @@ export default function Agencies() {
         payload: `Failed to load properties for ${getDisplayName(agency)}: ${err?.message ?? err}`,
       });
       dispatch({ type: 'SET_PROPERTIES', payload: [] });
+    } finally {
+      dispatch({ type: 'SET_LOADING', payload: false });
+    }
+  };
+
+  const handleForceSync = async (agency: AgencyRecord) => {
+    const key = resolveAgencyLookupKey(agency);
+    if (!key) {
+      console.warn('Cannot sync agency without lookup key');
+      return;
+    }
+
+    dispatch({ type: 'SET_LOADING', payload: true });
+    dispatch({ type: 'SET_ERROR', payload: null });
+
+    try {
+      const fetched = await propertySyncService.forceSync(key);
+      setPropertiesCache((prev) => ({ ...prev, [key]: fetched }));
+      dispatch({ type: 'SET_PROPERTIES', payload: fetched as any });
+    } catch (err: any) {
+      dispatch({
+        type: 'SET_ERROR',
+        payload: `Failed to sync properties for ${getDisplayName(agency)}: ${err?.message ?? err}`,
+      });
     } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
@@ -287,32 +312,47 @@ export default function Agencies() {
             return (
               <div
                 key={key}
-                onClick={() => loadPropertiesForAgency(agency)}
-                className="bg-white border rounded-lg p-4 cursor-pointer hover:shadow transition-shadow"
+                className="bg-white border rounded-lg p-4 hover:shadow transition-shadow"
               >
-                <div className="flex items-center gap-4 mb-2">
-                  <div className="w-12 h-12 bg-gray-100 flex items-center justify-center rounded overflow-hidden">
-                    {logoUrl ? (
-                      <img
-                        src={logoUrl}
-                        alt={displayName}
-                        className="w-full h-full object-cover"
-                        onError={(event) => {
-                          (event.target as HTMLImageElement).src =
-                            'https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg?auto=compress&cs=tinysrgb&w=100';
-                        }}
-                      />
-                    ) : (
-                      <Building className="w-6 h-6 text-blue-600" />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold">{displayName}</h3>
-                    <p className="text-sm text-gray-600">
-                      {propertyCount} {t.properties}
-                    </p>
+                <div
+                  onClick={() => loadPropertiesForAgency(agency)}
+                  className="cursor-pointer"
+                >
+                  <div className="flex items-center gap-4 mb-2">
+                    <div className="w-12 h-12 bg-gray-100 flex items-center justify-center rounded overflow-hidden">
+                      {logoUrl ? (
+                        <img
+                          src={logoUrl}
+                          alt={displayName}
+                          className="w-full h-full object-cover"
+                          onError={(event) => {
+                            (event.target as HTMLImageElement).src =
+                              'https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg?auto=compress&cs=tinysrgb&w=100';
+                          }}
+                        />
+                      ) : (
+                        <Building className="w-6 h-6 text-blue-600" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold">{displayName}</h3>
+                      <p className="text-sm text-gray-600">
+                        {propertyCount} {t.properties}
+                      </p>
+                    </div>
                   </div>
                 </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleForceSync(agency);
+                  }}
+                  className="w-full mt-2 px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded flex items-center justify-center gap-2 transition-colors"
+                  title="Force refresh from API"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  Sync Now
+                </button>
               </div>
             );
           })

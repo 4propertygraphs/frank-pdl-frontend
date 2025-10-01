@@ -243,7 +243,7 @@ class ApiService {
     }
   }
 
-  async getPropertiesForAgency(agencyId: string) {
+  async getPropertiesForAgency(agencyId: string, forceRefresh: boolean = false) {
     const agency = await this.getAgency(agencyId);
     if (!agency) {
       throw new Error(`Agentura ${agencyId} nebyla nalezena`);
