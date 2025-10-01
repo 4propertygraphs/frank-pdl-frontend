@@ -130,6 +130,9 @@ export class XMLPropertyParser {
       status: this.mapStatus(xmlProp.status, xmlProp.category),
       description: xmlProp.descriptionfull || xmlProp.descriptionbrief || '',
       images: images,
+      agent_name: xmlProp.username || undefined,
+      agent_email: xmlProp.useremail || undefined,
+      agent_phone: xmlProp.usertelephone || undefined,
       created_at: xmlProp.addeddate || new Date().toISOString(),
       updated_at: xmlProp.updateddate || new Date().toISOString(),
     };

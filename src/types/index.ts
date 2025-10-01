@@ -42,6 +42,9 @@ export interface Property {
   status?: string;
   description?: string;
   images?: string[];
+  agent_name?: string;
+  agent_email?: string;
+  agent_phone?: string;
   created_at?: string;
   updated_at?: string;
   synced_at?: string;

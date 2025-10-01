@@ -696,22 +696,36 @@ export default function PropertyDetail() {
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                    {selectedProperty.agency_id?.charAt(0).toUpperCase()}
+                    {selectedProperty.agent_name?.charAt(0).toUpperCase() || selectedProperty.agency_id?.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900">Strong Financial Consulting</p>
-                    <p className="text-sm text-gray-500">PSRA Licence: 001420</p>
+                    <p className="font-semibold text-gray-900">
+                      {selectedProperty.agent_name || 'Agent Information'}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Agency: {selectedProperty.agency_id}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 mb-3">
-                Call Agent: 01 293 6320
-              </button>
+              {selectedProperty.agent_phone && (
+                <a
+                  href={`tel:${selectedProperty.agent_phone}`}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 mb-3 block text-center"
+                >
+                  Call Agent: {selectedProperty.agent_phone}
+                </a>
+              )}
 
-              <button className="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50">
-                Email Agent
-              </button>
+              {selectedProperty.agent_email && (
+                <a
+                  href={`mailto:${selectedProperty.agent_email}`}
+                  className="w-full bg-white border-2 border-blue-600 text-blue-600 py-3 rounded-lg font-semibold hover:bg-blue-50 block text-center"
+                >
+                  Email Agent
+                </a>
+              )}
 
               <div className="mt-6 pt-6 border-t space-y-3">
                 <div>
