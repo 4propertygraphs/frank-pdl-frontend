@@ -69,10 +69,15 @@ export class XMLPropertyParser {
       }
     }
 
+    const titleParts = [xmlProp.propertyname, xmlProp.street].filter(Boolean);
+    const title = titleParts.length > 0
+      ? titleParts.join(' ')
+      : xmlProp.descriptionbrief || xmlProp.address1 || 'Untitled Property';
+
     return {
       id: xmlProp.referencenumber || `xml-${Date.now()}-${Math.random()}`,
       agency_id: agencyId,
-      title: xmlProp.descriptionbrief || xmlProp.address1 || 'Untitled Property',
+      title: title,
       address: [xmlProp.address1, xmlProp.address2, xmlProp.address3]
         .filter(Boolean)
         .join(', '),
