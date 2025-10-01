@@ -253,10 +253,15 @@ export default function ShareBank() {
                 <p className="text-sm text-gray-600">{t.synced}</p>
               </div>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            <a
+              href="https://drive.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            >
               <ExternalLink className="w-4 h-4" />
               {t.openInDrive}
-            </button>
+            </a>
           </div>
         </div>
 
@@ -356,7 +361,21 @@ export default function ShareBank() {
                           ) : (
                             <div className="w-5 h-5 bg-gray-300 rounded"></div>
                           )}
-                          <span className="font-medium text-gray-900">{file.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-gray-900">{file.name}</span>
+                            {file.google_drive_url && (
+                              <a
+                                href={file.google_drive_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800"
+                                title="Open in Google Drive"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </td>
                       <td className="px-4 py-3 text-gray-600">

@@ -6,6 +6,8 @@ export interface ShareBankFile {
   type: 'file' | 'folder';
   path: string;
   storage_path?: string;
+  google_drive_id?: string;
+  google_drive_url?: string;
   size?: number;
   mime_type?: string;
   parent_id?: string;
@@ -27,6 +29,7 @@ export interface ShareBankExport {
 
 class ShareBankService {
   private readonly BUCKET_NAME = 'sharebank';
+  private readonly GOOGLE_DRIVE_FOLDER_ID = '1_YOUR_FOLDER_ID_HERE';
 
   async ensureBucketExists(): Promise<void> {
     const { data: buckets } = await supabase.storage.listBuckets();
@@ -43,6 +46,25 @@ class ShareBankService {
         throw error;
       }
     }
+  }
+
+  private async uploadToGoogleDrive(file: File): Promise<{ id: string; webViewLink: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('folderId', this.GOOGLE_DRIVE_FOLDER_ID);
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const response = await fetch(`${supabaseUrl}/functions/v1/google-drive-upload`, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to upload to Google Drive');
+    }
+
+    return await response.json();
   }
 
   async listFiles(parentPath: string = '/'): Promise<ShareBankFile[]> {
@@ -94,6 +116,17 @@ class ShareBankService {
     const fileName = `${Date.now()}_${file.name}`;
     const storagePath = `${parentPath === '/' ? '' : parentPath}/${fileName}`;
 
+    let googleDriveId: string | undefined;
+    let googleDriveUrl: string | undefined;
+
+    try {
+      const driveResult = await this.uploadToGoogleDrive(file);
+      googleDriveId = driveResult.id;
+      googleDriveUrl = driveResult.webViewLink;
+    } catch (error) {
+      console.warn('Failed to upload to Google Drive, falling back to Supabase storage:', error);
+    }
+
     const { error: uploadError } = await supabase.storage
       .from(this.BUCKET_NAME)
       .upload(storagePath, file);
@@ -110,6 +143,8 @@ class ShareBankService {
         type: 'file',
         path: parentPath,
         storage_path: storagePath,
+        google_drive_id: googleDriveId,
+        google_drive_url: googleDriveUrl,
         size: file.size,
         mime_type: file.type,
       })
