@@ -129,7 +129,8 @@ export default function Agencies() {
   }, []);
 
   const loadPropertyCounts = async () => {
-    const counts = await cloudUploadService.getPropertyCountsByAgency();
+    await cloudUploadService.loadAllXMLFiles();
+    const counts = cloudUploadService.getPropertyCountsByAgency();
     setPropertyCounts(counts);
   };
 
@@ -175,7 +176,7 @@ export default function Agencies() {
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      const fetched = await propertySyncService.getPropertiesWithAutoSync(key);
+      const fetched = await cloudUploadService.getPropertiesByAgency(key);
       setPropertiesCache((prev) => ({ ...prev, [key]: fetched }));
       dispatch({ type: 'SET_PROPERTIES', payload: fetched as any });
     } catch (err: any) {
@@ -200,9 +201,12 @@ export default function Agencies() {
     dispatch({ type: 'SET_ERROR', payload: null });
 
     try {
-      const fetched = await propertySyncService.forceSync(key);
+      await cloudUploadService.loadAllXMLFiles();
+      const fetched = await cloudUploadService.getPropertiesByAgency(key);
       setPropertiesCache((prev) => ({ ...prev, [key]: fetched }));
       dispatch({ type: 'SET_PROPERTIES', payload: fetched as any });
+
+      await loadPropertyCounts();
     } catch (err: any) {
       dispatch({
         type: 'SET_ERROR',

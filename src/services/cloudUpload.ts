@@ -3,6 +3,9 @@ import { Property } from '../types';
 import { xmlParser } from './xmlParser';
 
 export class CloudUploadService {
+  private cachedProperties: Property[] = [];
+  private propertiesByAgency: Record<string, Property[]> = {};
+  private isLoaded = false;
   async uploadPropertiesFromXML(xmlFilename: string): Promise<{ success: number; failed: number; errors: string[] }> {
     const errors: string[] = [];
     let success = 0;
@@ -44,16 +47,16 @@ export class CloudUploadService {
     }
   }
 
-  async uploadAllXMLFiles(): Promise<{ total: number; success: number; failed: number; errors: string[] }> {
-    let totalSuccess = 0;
-    let totalFailed = 0;
+  async loadAllXMLFiles(): Promise<{ total: number; loaded: number; errors: string[] }> {
     const allErrors: string[] = [];
+    this.cachedProperties = [];
+    this.propertiesByAgency = {};
 
     try {
       const response = await fetch('/agencies.json');
       const agencies = await response.json();
 
-      console.log(`📋 Found ${agencies.length} agencies, loading all XML files...`);
+      console.log(`📋 Loading properties from ${agencies.length} agency XML files...`);
 
       for (const agency of agencies) {
         const sitePrefix = agency.SitePrefix?.toLowerCase();
@@ -64,29 +67,71 @@ export class CloudUploadService {
         try {
           const checkResponse = await fetch(`/${xmlFile}`, { method: 'HEAD' });
           if (!checkResponse.ok) {
-            console.log(`⏭️  Skipping ${xmlFile} (file not found)`);
             continue;
           }
 
-          console.log(`📤 Processing ${xmlFile} for ${agency.SiteName}...`);
-          const result = await this.uploadPropertiesFromXML(xmlFile);
-          totalSuccess += result.success;
-          totalFailed += result.failed;
-          allErrors.push(...result.errors);
+          const properties = await xmlParser.loadXMLFile(xmlFile);
 
-          if (result.success > 0) {
-            console.log(`✅ ${xmlFile}: ${result.success} properties loaded`);
+          if (properties.length > 0) {
+            this.cachedProperties.push(...properties);
+            this.propertiesByAgency[sitePrefix] = properties;
+            console.log(`✅ ${sitePrefix.toUpperCase()}: ${properties.length} properties`);
           }
         } catch (error: any) {
           console.log(`⏭️  Skipping ${xmlFile}: ${error.message}`);
         }
       }
+
+      this.isLoaded = true;
+      console.log(`\n🎉 Total loaded: ${this.cachedProperties.length} properties from ${Object.keys(this.propertiesByAgency).length} agencies`);
+
     } catch (error: any) {
       console.error('Failed to load agencies.json:', error);
       allErrors.push(`Failed to load agencies: ${error.message}`);
     }
 
-    console.log(`\n🎉 Total loaded: ${totalSuccess} properties from all XML files`);
+    return {
+      total: this.cachedProperties.length,
+      loaded: Object.keys(this.propertiesByAgency).length,
+      errors: allErrors,
+    };
+  }
+
+  async uploadAllXMLFiles(): Promise<{ total: number; success: number; failed: number; errors: string[] }> {
+    if (!this.isLoaded) {
+      await this.loadAllXMLFiles();
+    }
+
+    let totalSuccess = 0;
+    let totalFailed = 0;
+    const allErrors: string[] = [];
+
+    console.log(`📤 Uploading ${this.cachedProperties.length} properties to Supabase...`);
+
+    for (const property of this.cachedProperties) {
+      try {
+        const { error } = await supabase
+          .from('properties')
+          .upsert(property, {
+            onConflict: 'id',
+            ignoreDuplicates: false,
+          });
+
+        if (error) {
+          console.error(`❌ Failed to upload property ${property.id}:`, error);
+          allErrors.push(`Property ${property.id}: ${error.message}`);
+          totalFailed++;
+        } else {
+          totalSuccess++;
+        }
+      } catch (err: any) {
+        console.error(`❌ Error uploading property ${property.id}:`, err);
+        allErrors.push(`Property ${property.id}: ${err.message}`);
+        totalFailed++;
+      }
+    }
+
+    console.log(`✅ Upload complete: ${totalSuccess} successful, ${totalFailed} failed`);
 
     return {
       total: totalSuccess + totalFailed,
@@ -94,6 +139,29 @@ export class CloudUploadService {
       failed: totalFailed,
       errors: allErrors,
     };
+  }
+
+  async getAllProperties(): Promise<Property[]> {
+    if (!this.isLoaded) {
+      await this.loadAllXMLFiles();
+    }
+    return this.cachedProperties;
+  }
+
+  async getPropertiesByAgency(agencyKey: string): Promise<Property[]> {
+    if (!this.isLoaded) {
+      await this.loadAllXMLFiles();
+    }
+    return this.propertiesByAgency[agencyKey.toLowerCase()] || [];
+  }
+
+  getPropertyCountsByAgency(): Record<string, number> {
+    const counts: Record<string, number> = {};
+    for (const [agencyKey, properties] of Object.entries(this.propertiesByAgency)) {
+      counts[agencyKey] = properties.length;
+    }
+    console.log('📊 Property counts by agency:', counts);
+    return counts;
   }
 
   async getPropertiesFromDatabase(): Promise<Property[]> {
@@ -126,31 +194,6 @@ export class CloudUploadService {
     }
   }
 
-  async getPropertyCountsByAgency(): Promise<Record<string, number>> {
-    const counts: Record<string, number> = {};
-
-    try {
-      const { data, error } = await supabase
-        .from('properties')
-        .select('agency_id');
-
-      if (error) {
-        console.warn('Failed to fetch property counts:', error);
-        return counts;
-      }
-
-      for (const prop of data || []) {
-        const agencyId = (prop.agency_id || 'unknown').toLowerCase();
-        counts[agencyId] = (counts[agencyId] || 0) + 1;
-      }
-
-      console.log('📊 Property counts by agency:', counts);
-      return counts;
-    } catch (error: any) {
-      console.warn('Error getting property counts:', error);
-      return counts;
-    }
-  }
 }
 
 export const cloudUploadService = new CloudUploadService();

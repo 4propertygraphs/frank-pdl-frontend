@@ -63,37 +63,19 @@ export default function Overview() {
       console.log("📁 Loading agencies...");
       const agencies = await apiService.getAgencies();
 
-      console.log("🌐 Loading properties from database...");
-      let allProperties = await cloudUploadService.getPropertiesFromDatabase();
+      console.log("📋 Loading properties from XML files...");
+      setUploadProgress("Loading properties from XML...");
 
-      const needsReupload = localStorage.getItem('xmlParserUpdated') !== 'v5';
+      const result = await cloudUploadService.loadAllXMLFiles();
+      const allProperties = await cloudUploadService.getAllProperties();
 
-      if (allProperties.length === 0 || needsReupload) {
-        const reason = allProperties.length === 0 ? 'Database is empty' : 'XML parser updated, re-uploading';
-        console.log(`📤 ${reason}, auto-loading from XML...`);
-        setUploadProgress(`${reason}, loading...`);
-
-        try {
-          const result = await cloudUploadService.uploadAllXMLFiles();
-          console.log(`✅ Auto-upload complete: ${result.success} properties loaded`);
-
-          localStorage.setItem('xmlParserUpdated', 'v5');
-          localStorage.setItem('lastAutoSync', Date.now().toString());
-
-          allProperties = await cloudUploadService.getPropertiesFromDatabase();
-          setUploadProgress(`✅ Loaded ${result.success} properties from XML`);
-
-          setTimeout(() => setUploadProgress(""), 3000);
-        } catch (uploadError: any) {
-          console.warn("Auto-upload failed:", uploadError);
-          setUploadProgress("");
-        }
-      }
-
-      console.log(`✅ Loaded ${agencies.length} agencies and ${allProperties.length} properties`);
+      console.log(`✅ Loaded ${agencies.length} agencies and ${allProperties.length} properties from ${result.loaded} XML files`);
+      setUploadProgress(`✅ Loaded ${allProperties.length} properties from ${result.loaded} agencies`);
 
       dispatch({ type: "SET_AGENCIES", payload: agencies });
       dispatch({ type: "SET_PROPERTIES", payload: allProperties });
+
+      setTimeout(() => setUploadProgress(""), 3000);
     } catch (error: any) {
       console.error("💥 Data loading failed:", error);
       dispatch({
@@ -109,13 +91,13 @@ export default function Overview() {
     if (isUploading) return;
 
     const confirmed = window.confirm(
-      "This will upload all properties from XML files to the cloud database. Continue?"
+      `This will upload ${properties.length} properties from loaded XML files to Supabase. Continue?`
     );
 
     if (!confirmed) return;
 
     setIsUploading(true);
-    setUploadProgress("Uploading properties...");
+    setUploadProgress(`Uploading ${properties.length} properties to Supabase...`);
 
     try {
       const result = await cloudUploadService.uploadAllXMLFiles();
@@ -123,15 +105,12 @@ export default function Overview() {
       localStorage.setItem('lastAutoSync', Date.now().toString());
 
       setUploadProgress(
-        `✅ Upload complete: ${result.success} successful, ${result.failed} failed`
+        `✅ Sync complete: ${result.success} uploaded, ${result.failed} failed`
       );
 
       if (result.errors.length > 0) {
         console.error("Upload errors:", result.errors);
       }
-
-      setHasLoadedOnce(false);
-      await loadData();
 
       setTimeout(() => {
         setUploadProgress("");
@@ -243,7 +222,7 @@ export default function Overview() {
             ) : (
               <>
                 <Upload className="w-5 h-5" />
-                Upload to Cloud
+                Sync All to Cloud
               </>
             )}
           </button>
