@@ -28,6 +28,18 @@ type NormalizedAgency = RawAgency & {
 class ApiService {
   private cachedAgencies: NormalizedAgency[] | null = null;
 
+  async login(email: string, password: string) {
+    console.log('🔐 Login attempt:', { email });
+
+    if (email === 'tech@4pm.ie' && password === 'password') {
+      const token = 'demo-token-' + Date.now();
+      localStorage.setItem('auth_token', token);
+      return { token, user: { email } };
+    }
+
+    throw new Error('Invalid credentials');
+  }
+
   private normalizeAgencies(): NormalizedAgency[] {
     if (this.cachedAgencies) {
       return this.cachedAgencies;
