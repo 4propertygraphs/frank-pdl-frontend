@@ -64,7 +64,7 @@ Always be helpful, professional, and conversational.`;
           'Authorization': `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-5-codex',
+          model: 'gpt-5',
           messages,
           temperature: 0.7,
           max_tokens: 1500
