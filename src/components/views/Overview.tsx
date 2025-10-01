@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight, BarChart3, PieChart, Home } from "lucide-react";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight, BarChart3, PieChart, Home, Loader2 } from "lucide-react";
 
 export default function Overview() {
   const { state, dispatch } = useApp();
@@ -12,6 +12,8 @@ export default function Overview() {
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [totalPropertiesFromDB, setTotalPropertiesFromDB] = useState<number>(0);
   const [activeAgenciesFromDB, setActiveAgenciesFromDB] = useState<number>(0);
+  const [ckpProperties, setCkpProperties] = useState<any[]>([]);
+  const [loadingCkpProperties, setLoadingCkpProperties] = useState(true);
 
   useEffect(() => {
     // Don't auto-load - user must click button to load data
@@ -21,6 +23,8 @@ export default function Overview() {
     }
     // Load stats from database
     void loadStatsFromDatabase();
+    // Load CKP properties
+    void loadCkpProperties();
   }, [hasLoadedOnce, properties.length, loading]);
 
   const loadStatsFromDatabase = async () => {
@@ -47,6 +51,48 @@ export default function Overview() {
       }
     } catch (err: any) {
       console.error('Error loading stats from database:', err);
+    }
+  };
+
+  const loadCkpProperties = async () => {
+    try {
+      setLoadingCkpProperties(true);
+      const { supabase } = await import('../../services/supabase');
+
+      // Get CKP agency ID
+      const { data: agencyData, error: agencyError } = await supabase
+        .from('agencies')
+        .select('id')
+        .ilike('name', '%CKP%')
+        .limit(1)
+        .maybeSingle();
+
+      if (agencyError || !agencyData) {
+        console.log('CKP agency not found');
+        setLoadingCkpProperties(false);
+        return;
+      }
+
+      // Get properties from CKP
+      const { data: propertiesData, error: propertiesError } = await supabase
+        .from('properties')
+        .select('id, title, address, city, county, price, status')
+        .eq('agency_id', agencyData.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (propertiesError) {
+        console.error('Failed to load CKP properties:', propertiesError);
+        setLoadingCkpProperties(false);
+        return;
+      }
+
+      setCkpProperties(propertiesData || []);
+      setLoadingCkpProperties(false);
+      console.log(`📊 Loaded ${propertiesData?.length || 0} CKP properties`);
+    } catch (err: any) {
+      console.error('Error loading CKP properties:', err);
+      setLoadingCkpProperties(false);
     }
   };
 
@@ -164,7 +210,8 @@ export default function Overview() {
   const totalValue = properties.reduce((sum, p) => sum + p.price, 0);
   const availableProperties = properties.filter(p => p.status === 'available').length;
 
-  const propertiesByCounty = properties.length > 0 ? properties.reduce((acc, prop) => {
+  const allProperties = properties.length > 0 ? properties : ckpProperties;
+  const propertiesByCounty = allProperties.length > 0 ? allProperties.reduce((acc, prop) => {
     const county = prop.county || 'Unknown';
     if (!acc[county]) {
       acc[county] = { count: 0, totalPrice: 0, avgPrice: 0 };
@@ -185,8 +232,8 @@ export default function Overview() {
     .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 5);
 
-  const propertiesByType = properties.length > 0 ? (() => {
-    const result = properties.reduce((acc, prop) => {
+  const propertiesByType = allProperties.length > 0 ? (() => {
+    const result = allProperties.reduce((acc, prop) => {
       const type = prop.type || 'Unknown';
       if (!acc[type]) {
         acc[type] = { count: 0, avgPrice: 0 };
@@ -196,7 +243,7 @@ export default function Overview() {
     }, {} as Record<string, { count: number; avgPrice: number }>);
 
     Object.keys(result).forEach(type => {
-      const typeProps = properties.filter(p => (p.type || 'Unknown') === type);
+      const typeProps = allProperties.filter(p => (p.type || 'Unknown') === type);
       const avgPrice = typeProps.reduce((sum, p) => sum + (p.price || 0), 0) / typeProps.length;
       result[type].avgPrice = Math.round(avgPrice);
     });
@@ -222,10 +269,10 @@ export default function Overview() {
     { label: '> €500k', min: 500000, max: Infinity },
   ];
 
-  const propertiesByPriceRange = properties.length > 0
+  const propertiesByPriceRange = allProperties.length > 0
     ? priceRanges.map(range => ({
         ...range,
-        count: properties.filter(p => p.price >= range.min && p.price < range.max).length
+        count: allProperties.filter(p => p.price >= range.min && p.price < range.max).length
       }))
     : [
         { label: '< €100k', min: 0, max: 100000, count: 12 },
@@ -389,13 +436,11 @@ export default function Overview() {
             </button>
           </div>
           <div className="space-y-3">
-            {(properties.length > 0 ? properties.slice(0, 5) : [
-              { id: '1', title: 'Modern Apartment in City Center', address: '123 Main Street, Dublin', price: 285000, status: 'available' },
-              { id: '2', title: 'Luxury Villa with Sea View', address: '456 Coastal Road, Cork', price: 650000, status: 'available' },
-              { id: '3', title: 'Cozy Studio near University', address: '789 College Ave, Galway', price: 175000, status: 'sold' },
-              { id: '4', title: 'Family House with Garden', address: '321 Park Lane, Limerick', price: 395000, status: 'available' },
-              { id: '5', title: 'Renovated Duplex Downtown', address: '654 High Street, Waterford', price: 420000, status: 'available' },
-            ]).map((property) => (
+            {loadingCkpProperties ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+              </div>
+            ) : (ckpProperties.length > 0 ? ckpProperties : properties.slice(0, 5)).map((property) => (
               <div
                 key={property.id}
                 className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200 group"
@@ -481,6 +526,11 @@ export default function Overview() {
             <MapPin className="w-5 h-5 text-blue-600" />
             <h2 className="text-xl font-semibold text-gray-900">Properties by County</h2>
           </div>
+          {loadingCkpProperties && allProperties.length === 0 ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            </div>
+          ) : (
           <div className="space-y-4">
             {topCounties.map(([county, data], index) => {
               const maxCount = topCounties[0][1].count;
@@ -504,6 +554,7 @@ export default function Overview() {
               );
             })}
           </div>
+          )}
         </div>
 
         {/* Properties by Type */}
@@ -512,6 +563,11 @@ export default function Overview() {
             <Home className="w-5 h-5 text-purple-600" />
             <h2 className="text-xl font-semibold text-gray-900">Properties by Type</h2>
           </div>
+          {loadingCkpProperties && allProperties.length === 0 ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+            </div>
+          ) : (
           <div className="space-y-4">
             {topTypes.map(([type, data], index) => {
               const maxCount = topTypes[0][1].count;
@@ -535,6 +591,7 @@ export default function Overview() {
               );
             })}
           </div>
+          )}
         </div>
       </div>
 
@@ -544,6 +601,11 @@ export default function Overview() {
           <BarChart3 className="w-5 h-5 text-green-600" />
           <h2 className="text-xl font-semibold text-gray-900">Price Distribution</h2>
         </div>
+        {loadingCkpProperties && allProperties.length === 0 ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {propertiesByPriceRange.map((range, index) => {
             const maxCount = Math.max(...propertiesByPriceRange.map(r => r.count));
@@ -570,6 +632,7 @@ export default function Overview() {
             );
           })}
         </div>
+        )}
       </div>
     </div>
   );
