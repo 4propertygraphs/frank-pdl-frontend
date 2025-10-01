@@ -160,8 +160,8 @@ export default function Agencies() {
         return;
       }
 
+      console.log(`📋 Loaded ${data?.length || 0} agencies from database for reports:`, data);
       setDbAgencies(data || []);
-      console.log(`📋 Loaded ${data?.length || 0} agencies from database for reports`);
     } catch (err: any) {
       console.error('Error loading agencies:', err);
     }
@@ -444,6 +444,8 @@ export default function Agencies() {
       return;
     }
 
+    console.log('🏠 Loading properties for agency:', agencyId);
+
     try {
       const { supabase } = await import('../../services/supabase');
       const { data, error } = await supabase
@@ -457,6 +459,7 @@ export default function Agencies() {
         return;
       }
 
+      console.log(`✅ Loaded ${data?.length || 0} properties for report dropdown:`, data);
       setAgencyPropertiesList(data || []);
     } catch (err: any) {
       console.error('Error loading agency properties:', err);
@@ -600,7 +603,12 @@ export default function Agencies() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => setShowReportModal(true)}
+            onClick={() => {
+              setShowReportModal(true);
+              if (dbAgencies.length === 0) {
+                loadDbAgencies();
+              }
+            }}
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
           >
             <FileText className="w-4 h-4" />
@@ -762,13 +770,18 @@ export default function Agencies() {
                     }}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
-                    <option value="">Choose an agency...</option>
+                    <option value="">
+                      {dbAgencies.length === 0 ? 'Loading agencies...' : 'Choose an agency...'}
+                    </option>
                     {dbAgencies.map((agency) => (
                       <option key={agency.id} value={agency.id}>
-                        {agency.name} ({agency.property_count} properties)
+                        {agency.name || `Agency ${agency.site_prefix}`} ({agency.property_count} properties)
                       </option>
                     ))}
                   </select>
+                  {dbAgencies.length === 0 && (
+                    <p className="text-xs text-gray-500 mt-1">Loading agencies from database...</p>
+                  )}
                 </div>
 
                 <div>
