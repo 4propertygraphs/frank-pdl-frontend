@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
-import { FileText, Download, Calendar, Filter, TrendingUp, Building, DollarSign } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { FileText, Download, Calendar, Filter, TrendingUp, Building, DollarSign, BarChart3, Eye, Trash2 } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import { supabase } from '../../services/supabase';
+import { reportGeneratorService } from '../../services/reportGenerator';
+import ReportCharts from '../ReportCharts';
 
 interface Report {
   id: string;
   title: string;
   type: 'market-analysis' | 'property-report' | 'investment-summary' | 'trends';
-  generated: Date;
-  size: string;
+  agency_id: string;
+  property_id?: string;
+  data: any;
+  html_content?: string;
   status: 'completed' | 'generating' | 'error';
+  file_size: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function Reports() {
@@ -16,6 +24,10 @@ export default function Reports() {
   const { properties, agencies, settings } = state;
   const [selectedReportType, setSelectedReportType] = useState<string>('all');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [showCharts, setShowCharts] = useState(false);
 
   const reportTypes = [
     { id: 'market-analysis', name: 'Market Analysis', icon: TrendingUp },
@@ -24,54 +36,181 @@ export default function Reports() {
     { id: 'trends', name: 'Trends Report', icon: Calendar },
   ];
 
-  const [reports, setReports] = useState<Report[]>([
-    {
-      id: '1',
-      title: 'Q1 2024 Market Analysis',
-      type: 'market-analysis',
-      generated: new Date('2024-01-15'),
-      size: '2.4 MB',
-      status: 'completed',
-    },
-    {
-      id: '2',
-      title: 'Property Portfolio Report',
-      type: 'property-report',
-      generated: new Date('2024-01-20'),
-      size: '1.8 MB',
-      status: 'completed',
-    },
-    {
-      id: '3',
-      title: 'Investment Performance Summary',
-      type: 'investment-summary',
-      generated: new Date('2024-01-22'),
-      size: '912 KB',
-      status: 'completed',
-    },
-  ]);
+  useEffect(() => {
+    loadReports();
+  }, []);
 
-  const generateReport = async (type: string) => {
-    setIsGenerating(true);
-    
-    // Simulate report generation
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    
-    const newReport: Report = {
-      id: Date.now().toString(),
-      title: `${reportTypes.find(rt => rt.id === type)?.name} - ${new Date().toLocaleDateString()}`,
-      type: type as Report['type'],
-      generated: new Date(),
-      size: `${Math.floor(Math.random() * 3 + 1)}.${Math.floor(Math.random() * 9 + 1)} MB`,
-      status: 'completed',
-    };
-    
-    setReports([newReport, ...reports]);
-    setIsGenerating(false);
+  const loadReports = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('reports')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setReports(data || []);
+    } catch (error) {
+      console.error('Failed to load reports:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filteredReports = selectedReportType === 'all' 
-    ? reports 
+  const calculateStats = (props: any[]) => {
+    const totalProperties = props.length;
+    const totalValue = props.reduce((sum, p) => sum + (p.price || 0), 0);
+    const avgPrice = totalProperties > 0 ? Math.round(totalValue / totalProperties) : 0;
+    const availableCount = props.filter(p => p.status === 'available').length;
+    const soldCount = props.filter(p => p.status === 'sold').length;
+
+    return {
+      totalProperties,
+      avgPrice,
+      totalValue,
+      availableCount,
+      soldCount,
+    };
+  };
+
+  const groupByCounty = (props: any[]) => {
+    return props.reduce((acc, prop) => {
+      const county = prop.county || 'Unknown';
+      if (!acc[county]) {
+        acc[county] = { count: 0, avgPrice: 0, totalPrice: 0 };
+      }
+      acc[county].count++;
+      acc[county].totalPrice += prop.price || 0;
+      acc[county].avgPrice = Math.round(acc[county].totalPrice / acc[county].count);
+      return acc;
+    }, {} as Record<string, { count: number; avgPrice: number; totalPrice: number }>);
+  };
+
+  const groupByType = (props: any[]) => {
+    return props.reduce((acc, prop) => {
+      let type = 'Unknown';
+      if (prop.type) {
+        try {
+          const typeObj = typeof prop.type === 'string' ? JSON.parse(prop.type) : prop.type;
+          type = typeObj['#text'] || typeObj;
+        } catch {
+          type = prop.type;
+        }
+      }
+      if (!acc[type]) {
+        acc[type] = { count: 0, avgPrice: 0, totalPrice: 0 };
+      }
+      acc[type].count++;
+      acc[type].totalPrice += prop.price || 0;
+      acc[type].avgPrice = Math.round(acc[type].totalPrice / acc[type].count);
+      return acc;
+    }, {} as Record<string, { count: number; avgPrice: number; totalPrice: number }>);
+  };
+
+  const calculatePriceRanges = (props: any[]) => {
+    const ranges = [
+      { label: '< €100k', min: 0, max: 100000 },
+      { label: '€100k - €200k', min: 100000, max: 200000 },
+      { label: '€200k - €300k', min: 200000, max: 300000 },
+      { label: '€300k - €500k', min: 300000, max: 500000 },
+      { label: '> €500k', min: 500000, max: Infinity },
+    ];
+
+    return ranges.map(range => ({
+      label: range.label,
+      count: props.filter(p => p.price >= range.min && p.price < range.max).length,
+    }));
+  };
+
+  const generateReport = async (type: string) => {
+    if (agencies.length === 0) {
+      alert('No agencies available. Please add agencies first.');
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const agency = agencies[0];
+      const agencyProps = properties.filter(p => p.agency_id === agency.site_prefix);
+
+      const stats = calculateStats(agencyProps);
+      const byCounty = groupByCounty(agencyProps);
+      const byType = groupByType(agencyProps);
+      const priceRanges = calculatePriceRanges(agencyProps);
+
+      const reportData = {
+        stats,
+        byCounty,
+        byType,
+        priceRanges,
+        propertiesCount: agencyProps.length,
+      };
+
+      const { data, error } = await supabase
+        .from('reports')
+        .insert({
+          title: `${reportTypes.find(rt => rt.id === type)?.name} - ${new Date().toLocaleDateString()}`,
+          type: type,
+          agency_id: agency.site_prefix,
+          data: reportData,
+          status: 'completed',
+          file_size: `${Math.floor(Math.random() * 3 + 1)}.${Math.floor(Math.random() * 9 + 1)} MB`,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      await loadReports();
+    } catch (error) {
+      console.error('Failed to generate report:', error);
+      alert('Failed to generate report. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const deleteReport = async (reportId: string) => {
+    if (!confirm('Are you sure you want to delete this report?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('reports')
+        .delete()
+        .eq('id', reportId);
+
+      if (error) throw error;
+      await loadReports();
+    } catch (error) {
+      console.error('Failed to delete report:', error);
+      alert('Failed to delete report. Please try again.');
+    }
+  };
+
+  const viewReport = (report: Report) => {
+    setSelectedReport(report);
+    setShowCharts(true);
+  };
+
+  const downloadReport = async (report: Report) => {
+    try {
+      const blob = await reportGeneratorService.generateReport(report.agency_id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${report.title}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Failed to download report:', error);
+      alert('Failed to download report. Please try again.');
+    }
+  };
+
+  const filteredReports = selectedReportType === 'all'
+    ? reports
     : reports.filter(report => report.type === selectedReportType);
 
   const translations = {
@@ -82,7 +221,7 @@ export default function Reports() {
       generating: 'Generating...',
       reportType: 'Report Type',
       all: 'All Reports',
-      downloadReport: 'Download Report',
+      downloadReport: 'Download',
       generated: 'Generated',
       size: 'Size',
       status: 'Status',
@@ -99,6 +238,9 @@ export default function Reports() {
       completed: 'Completed',
       generating_status: 'Generating',
       error: 'Error',
+      viewCharts: 'View Charts',
+      hideCharts: 'Hide Charts',
+      delete: 'Delete',
     },
     cz: {
       title: 'Reporty',
@@ -107,7 +249,7 @@ export default function Reports() {
       generating: 'Generuji...',
       reportType: 'Typ reportu',
       all: 'Všechny reporty',
-      downloadReport: 'Stáhnout report',
+      downloadReport: 'Stáhnout',
       generated: 'Vygenerováno',
       size: 'Velikost',
       status: 'Stav',
@@ -124,6 +266,9 @@ export default function Reports() {
       completed: 'Dokončeno',
       generating_status: 'Generuji',
       error: 'Chyba',
+      viewCharts: 'Zobrazit grafy',
+      hideCharts: 'Skrýt grafy',
+      delete: 'Smazat',
     },
     ru: {
       title: 'Отчеты',
@@ -132,7 +277,7 @@ export default function Reports() {
       generating: 'Создание...',
       reportType: 'Тип отчета',
       all: 'Все отчеты',
-      downloadReport: 'Скачать отчет',
+      downloadReport: 'Скачать',
       generated: 'Создан',
       size: 'Размер',
       status: 'Статус',
@@ -149,6 +294,9 @@ export default function Reports() {
       completed: 'Завершен',
       generating_status: 'Создание',
       error: 'Ошибка',
+      viewCharts: 'Просмотр графиков',
+      hideCharts: 'Скрыть графики',
+      delete: 'Удалить',
     },
     fr: {
       title: 'Rapports',
@@ -157,7 +305,7 @@ export default function Reports() {
       generating: 'Génération...',
       reportType: 'Type de rapport',
       all: 'Tous les rapports',
-      downloadReport: 'Télécharger le rapport',
+      downloadReport: 'Télécharger',
       generated: 'Généré',
       size: 'Taille',
       status: 'Statut',
@@ -174,6 +322,9 @@ export default function Reports() {
       completed: 'Terminé',
       generating_status: 'Génération',
       error: 'Erreur',
+      viewCharts: 'Voir les graphiques',
+      hideCharts: 'Masquer les graphiques',
+      delete: 'Supprimer',
     },
   };
 
@@ -187,7 +338,6 @@ export default function Reports() {
           <p className="text-gray-600">{t.subtitle}</p>
         </div>
 
-        {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <div className="flex items-center justify-between">
@@ -198,7 +348,7 @@ export default function Reports() {
               <Building className="w-8 h-8 text-blue-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
@@ -208,24 +358,23 @@ export default function Reports() {
               <Building className="w-8 h-8 text-green-600" />
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-sm border">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600 mb-1">{t.avgPrice}</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ${properties.length > 0 
+                  €{properties.length > 0
                     ? Math.round(properties.reduce((sum, p) => sum + p.price, 0) / properties.length).toLocaleString()
                     : '0'
                   }
                 </p>
               </div>
-              <DollarSign className="w-8 h-8 text-purple-600" />
+              <DollarSign className="w-8 h-8 text-orange-600" />
             </div>
           </div>
         </div>
 
-        {/* Generate Report Section */}
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">{t.generateNew}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -255,7 +404,29 @@ export default function Reports() {
           </div>
         </div>
 
-        {/* Reports List */}
+        {showCharts && selectedReport && (
+          <div className="mb-8">
+            <div className="bg-white rounded-xl shadow-sm border p-6 mb-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {selectedReport.title} - Interactive Charts
+                </h2>
+                <button
+                  onClick={() => setShowCharts(false)}
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  {t.hideCharts}
+                </button>
+              </div>
+            </div>
+            <ReportCharts
+              byCounty={selectedReport.data?.byCounty || {}}
+              byType={selectedReport.data?.byType || {}}
+              priceRanges={selectedReport.data?.priceRanges || []}
+            />
+          </div>
+        )}
+
         <div className="bg-white rounded-xl shadow-sm border">
           <div className="p-6 border-b">
             <div className="flex items-center justify-between">
@@ -278,7 +449,12 @@ export default function Reports() {
             </div>
           </div>
 
-          {filteredReports.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-16">
+              <div className="animate-spin w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full mx-auto"></div>
+              <p className="text-gray-600 mt-4">Loading reports...</p>
+            </div>
+          ) : filteredReports.length === 0 ? (
             <div className="text-center py-16">
               <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.noReports}</h3>
@@ -310,9 +486,9 @@ export default function Reports() {
                         {t[report.type as keyof typeof t] || report.type}
                       </td>
                       <td className="px-6 py-4 text-gray-600">
-                        {report.generated.toLocaleDateString()}
+                        {new Date(report.created_at).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 text-gray-600">{report.size}</td>
+                      <td className="px-6 py-4 text-gray-600">{report.file_size}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 text-xs rounded-full ${
                           report.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -323,12 +499,33 @@ export default function Reports() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        {report.status === 'completed' && (
-                          <button className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors">
-                            <Download className="w-4 h-4" />
-                            <span className="text-sm">{t.downloadReport}</span>
-                          </button>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {report.status === 'completed' && (
+                            <>
+                              <button
+                                onClick={() => viewReport(report)}
+                                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 transition-colors p-2 hover:bg-blue-50 rounded"
+                                title={t.viewCharts}
+                              >
+                                <BarChart3 className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => downloadReport(report)}
+                                className="flex items-center gap-1 text-green-600 hover:text-green-800 transition-colors p-2 hover:bg-green-50 rounded"
+                                title={t.downloadReport}
+                              >
+                                <Download className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => deleteReport(report.id)}
+                                className="flex items-center gap-1 text-red-600 hover:text-red-800 transition-colors p-2 hover:bg-red-50 rounded"
+                                title={t.delete}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}
