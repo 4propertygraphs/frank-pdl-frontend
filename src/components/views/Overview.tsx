@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Activity, MapPin, Calendar, ArrowUpRight, ArrowDownRight, BarChart3, PieChart, Home } from "lucide-react";
 
 export default function Overview() {
   const { state, dispatch } = useApp();
@@ -163,6 +163,53 @@ export default function Overview() {
 
   const totalValue = properties.reduce((sum, p) => sum + p.price, 0);
   const availableProperties = properties.filter(p => p.status === 'available').length;
+
+  const propertiesByCounty = properties.reduce((acc, prop) => {
+    const county = prop.county || 'Unknown';
+    if (!acc[county]) {
+      acc[county] = { count: 0, totalPrice: 0, avgPrice: 0 };
+    }
+    acc[county].count++;
+    acc[county].totalPrice += prop.price || 0;
+    acc[county].avgPrice = Math.round(acc[county].totalPrice / acc[county].count);
+    return acc;
+  }, {} as Record<string, { count: number; totalPrice: number; avgPrice: number }>);
+
+  const topCounties = Object.entries(propertiesByCounty)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 5);
+
+  const propertiesByType = properties.reduce((acc, prop) => {
+    const type = prop.type || 'Unknown';
+    if (!acc[type]) {
+      acc[type] = { count: 0, avgPrice: 0 };
+    }
+    acc[type].count++;
+    return acc;
+  }, {} as Record<string, { count: number; avgPrice: number }>);
+
+  Object.keys(propertiesByType).forEach(type => {
+    const typeProps = properties.filter(p => (p.type || 'Unknown') === type);
+    const avgPrice = typeProps.reduce((sum, p) => sum + (p.price || 0), 0) / typeProps.length;
+    propertiesByType[type].avgPrice = Math.round(avgPrice);
+  });
+
+  const topTypes = Object.entries(propertiesByType)
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 5);
+
+  const priceRanges = [
+    { label: '< €100k', min: 0, max: 100000 },
+    { label: '€100k - €200k', min: 100000, max: 200000 },
+    { label: '€200k - €300k', min: 200000, max: 300000 },
+    { label: '€300k - €500k', min: 300000, max: 500000 },
+    { label: '> €500k', min: 500000, max: Infinity },
+  ];
+
+  const propertiesByPriceRange = priceRanges.map(range => ({
+    ...range,
+    count: properties.filter(p => p.price >= range.min && p.price < range.max).length
+  }));
 
   const stats = [
     {
@@ -393,6 +440,105 @@ export default function Overview() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Market Analysis Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Properties by County */}
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <MapPin className="w-5 h-5 text-blue-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Properties by County</h2>
+          </div>
+          <div className="space-y-4">
+            {topCounties.map(([county, data], index) => {
+              const maxCount = topCounties[0][1].count;
+              const percentage = (data.count / maxCount) * 100;
+              return (
+                <div key={county} className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">{county}</span>
+                    <div className="text-right">
+                      <span className="text-sm font-bold text-gray-900">{data.count} properties</span>
+                      <span className="text-xs text-gray-500 ml-2">Avg: €{data.avgPrice.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500 group-hover:from-blue-600 group-hover:to-blue-700"
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Properties by Type */}
+        <div className="bg-white rounded-xl shadow-sm border p-6">
+          <div className="flex items-center gap-2 mb-6">
+            <Home className="w-5 h-5 text-purple-600" />
+            <h2 className="text-xl font-semibold text-gray-900">Properties by Type</h2>
+          </div>
+          <div className="space-y-4">
+            {topTypes.map(([type, data], index) => {
+              const maxCount = topTypes[0][1].count;
+              const percentage = (data.count / maxCount) * 100;
+              return (
+                <div key={type} className="group">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">{type}</span>
+                    <div className="text-right">
+                      <span className="text-sm font-bold text-gray-900">{data.count} properties</span>
+                      <span className="text-xs text-gray-500 ml-2">Avg: €{data.avgPrice.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full transition-all duration-500 group-hover:from-purple-600 group-hover:to-purple-700"
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Price Distribution */}
+      <div className="bg-white rounded-xl shadow-sm border p-6">
+        <div className="flex items-center gap-2 mb-6">
+          <BarChart3 className="w-5 h-5 text-green-600" />
+          <h2 className="text-xl font-semibold text-gray-900">Price Distribution</h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {propertiesByPriceRange.map((range, index) => {
+            const maxCount = Math.max(...propertiesByPriceRange.map(r => r.count));
+            const heightPercentage = maxCount > 0 ? (range.count / maxCount) * 100 : 0;
+            return (
+              <div key={range.label} className="flex flex-col items-center group">
+                <div className="w-full h-48 flex items-end justify-center mb-3">
+                  <div
+                    className="w-full bg-gradient-to-t from-green-500 to-green-400 rounded-t-lg transition-all duration-500 group-hover:from-green-600 group-hover:to-green-500 relative"
+                    style={{ height: `${heightPercentage}%`, minHeight: range.count > 0 ? '20px' : '0' }}
+                  >
+                    {range.count > 0 && (
+                      <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                        {range.count} properties
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs font-medium text-gray-700">{range.label}</p>
+                  <p className="text-lg font-bold text-gray-900 mt-1">{range.count}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     </div>
