@@ -40,6 +40,7 @@ export default function Reports() {
 
   useEffect(() => {
     loadAgencies();
+    loadProperties();
     loadReports();
   }, []);
 
@@ -54,6 +55,7 @@ export default function Reports() {
       const { data, error } = await supabase
         .from('agencies')
         .select('*')
+        .eq('is_active', true)
         .order('name');
 
       if (error) throw error;
@@ -63,6 +65,23 @@ export default function Reports() {
       }
     } catch (error) {
       console.error('Failed to load agencies:', error);
+    }
+  };
+
+  const loadProperties = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        dispatch({ type: 'SET_PROPERTIES', payload: data });
+      }
+    } catch (error) {
+      console.error('Failed to load properties:', error);
     }
   };
 
