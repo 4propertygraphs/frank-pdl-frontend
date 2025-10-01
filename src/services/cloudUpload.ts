@@ -45,22 +45,48 @@ export class CloudUploadService {
   }
 
   async uploadAllXMLFiles(): Promise<{ total: number; success: number; failed: number; errors: string[] }> {
-    const xmlFiles = ['knam-0.xml'];
     let totalSuccess = 0;
     let totalFailed = 0;
     const allErrors: string[] = [];
 
-    for (const file of xmlFiles) {
-      try {
-        const result = await this.uploadPropertiesFromXML(file);
-        totalSuccess += result.success;
-        totalFailed += result.failed;
-        allErrors.push(...result.errors);
-      } catch (error: any) {
-        console.error(`Failed to process ${file}:`, error);
-        allErrors.push(`File ${file}: ${error.message}`);
+    try {
+      const response = await fetch('/agencies.json');
+      const agencies = await response.json();
+
+      console.log(`📋 Found ${agencies.length} agencies, loading all XML files...`);
+
+      for (const agency of agencies) {
+        const sitePrefix = agency.SitePrefix?.toLowerCase();
+        if (!sitePrefix) continue;
+
+        const xmlFile = `${sitePrefix}-0.xml`;
+
+        try {
+          const checkResponse = await fetch(`/${xmlFile}`, { method: 'HEAD' });
+          if (!checkResponse.ok) {
+            console.log(`⏭️  Skipping ${xmlFile} (file not found)`);
+            continue;
+          }
+
+          console.log(`📤 Processing ${xmlFile} for ${agency.SiteName}...`);
+          const result = await this.uploadPropertiesFromXML(xmlFile);
+          totalSuccess += result.success;
+          totalFailed += result.failed;
+          allErrors.push(...result.errors);
+
+          if (result.success > 0) {
+            console.log(`✅ ${xmlFile}: ${result.success} properties loaded`);
+          }
+        } catch (error: any) {
+          console.log(`⏭️  Skipping ${xmlFile}: ${error.message}`);
+        }
       }
+    } catch (error: any) {
+      console.error('Failed to load agencies.json:', error);
+      allErrors.push(`Failed to load agencies: ${error.message}`);
     }
+
+    console.log(`\n🎉 Total loaded: ${totalSuccess} properties from all XML files`);
 
     return {
       total: totalSuccess + totalFailed,
@@ -97,6 +123,31 @@ export class CloudUploadService {
 
     if (error) {
       throw error;
+    }
+  }
+
+  async getPropertyCountsByAgency(): Promise<Record<string, number>> {
+    const counts: Record<string, number> = {};
+
+    try {
+      const { data, error } = await supabase
+        .from('properties')
+        .select('agency_id');
+
+      if (error) {
+        console.warn('Failed to fetch property counts:', error);
+        return counts;
+      }
+
+      for (const prop of data || []) {
+        const agencyId = prop.agency_id?.toLowerCase() || 'unknown';
+        counts[agencyId] = (counts[agencyId] || 0) + 1;
+      }
+
+      return counts;
+    } catch (error: any) {
+      console.warn('Error getting property counts:', error);
+      return counts;
     }
   }
 }

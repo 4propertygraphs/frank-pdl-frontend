@@ -3,6 +3,7 @@ import { Building, Search, ArrowLeft, RefreshCw } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { apiService } from '../../services/api';
 import { propertySyncService } from '../../services/propertySync';
+import { cloudUploadService } from '../../services/cloudUpload';
 
 type AgencyRecord = Awaited<ReturnType<typeof apiService.getAgencies>>[number];
 
@@ -103,6 +104,7 @@ export default function Agencies() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [propertiesCache, setPropertiesCache] = useState<PropertiesCache>({});
+  const [propertyCounts, setPropertyCounts] = useState<Record<string, number>>({});
 
   const selectedAgencyKey = useMemo(() => buildAgencyKey(selectedAgency), [selectedAgency]);
 
@@ -122,7 +124,13 @@ export default function Agencies() {
     if (agencies.length === 0) {
       void loadAgencies();
     }
+    void loadPropertyCounts();
   }, []);
+
+  const loadPropertyCounts = async () => {
+    const counts = await cloudUploadService.getPropertyCountsByAgency();
+    setPropertyCounts(counts);
+  };
 
   const loadAgencies = async () => {
     dispatch({ type: 'SET_LOADING', payload: true });
@@ -137,6 +145,8 @@ export default function Agencies() {
       dispatch({ type: 'SET_SELECTED_PROPERTY', payload: null });
       dispatch({ type: 'SET_PROPERTIES', payload: [] });
       dispatch({ type: 'SET_AGENCIES', payload: fetchedAgencies as any });
+
+      await loadPropertyCounts();
     } catch (err: any) {
       dispatch({
         type: 'SET_ERROR',
@@ -280,7 +290,7 @@ export default function Agencies() {
               onClick={() => dispatch({ type: 'SET_SELECTED_PROPERTY', payload: property })}
               className="bg-white border rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
             >
-              <div className="aspect-square bg-gray-200">
+              <div className="aspect-square bg-gray-200 relative">
                 {property.images && property.images.length > 0 ? (
                   <img
                     src={property.images[0]}
@@ -295,6 +305,9 @@ export default function Agencies() {
                     <Building className="w-12 h-12 text-gray-400" />
                   </div>
                 )}
+                <div className="absolute top-2 left-2 bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm font-bold shadow-lg">
+                  €{(property.price || 0).toLocaleString()}
+                </div>
               </div>
               <div className="p-3">
                 <h3 className="font-semibold text-sm line-clamp-2">{property.title}</h3>
@@ -354,7 +367,8 @@ export default function Agencies() {
 
             const displayName = getDisplayName(agency);
             const cachedCount = propertiesCache[key]?.length ?? 0;
-            const propertyCount = key === selectedAgencyKey ? properties.length : cachedCount;
+            const dbCount = propertyCounts[key] || 0;
+            const propertyCount = key === selectedAgencyKey ? properties.length : (cachedCount || dbCount);
             const logoUrl = (agency as any)?.logo ?? (agency as any)?.Logo ?? null;
 
             return (
