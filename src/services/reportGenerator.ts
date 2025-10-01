@@ -23,11 +23,19 @@ export class ReportGeneratorService {
   }
 
   private async collectData(agencyId: string, propertyId?: string): Promise<ReportData> {
-    const { data: agency } = await supabase
+    console.log('🔍 Collecting report data for agency:', agencyId, 'property:', propertyId);
+
+    const { data: agency, error: agencyError } = await supabase
       .from('agencies')
       .select('*')
       .eq('id', agencyId)
       .maybeSingle();
+
+    if (agencyError) {
+      console.error('Failed to load agency:', agencyError);
+    }
+
+    console.log('📊 Agency data:', agency);
 
     let propertiesQuery = supabase
       .from('properties')
@@ -38,12 +46,21 @@ export class ReportGeneratorService {
       propertiesQuery = propertiesQuery.eq('id', propertyId);
     }
 
-    const { data: properties } = await propertiesQuery;
+    const { data: properties, error: propertiesError } = await propertiesQuery;
+
+    if (propertiesError) {
+      console.error('Failed to load properties:', propertiesError);
+    }
+
+    console.log('📋 Properties loaded:', properties?.length || 0, 'properties');
+    console.log('Properties data:', properties);
 
     const stats = this.calculateStats(properties || []);
     const byCounty = this.groupByCounty(properties || []);
     const byType = this.groupByType(properties || []);
     const priceRanges = this.calculatePriceRanges(properties || []);
+
+    console.log('📈 Stats calculated:', stats);
 
     return {
       agency: agency || {},

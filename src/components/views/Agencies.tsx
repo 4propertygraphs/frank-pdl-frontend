@@ -117,6 +117,7 @@ export default function Agencies() {
   const [reportProgress, setReportProgress] = useState(0);
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
   const [agencyPropertiesList, setAgencyPropertiesList] = useState<any[]>([]);
+  const [dbAgencies, setDbAgencies] = useState<any[]>([]);
 
   const selectedAgencyKey = useMemo(() => buildAgencyKey(selectedAgency), [selectedAgency]);
 
@@ -141,7 +142,30 @@ export default function Agencies() {
       void loadAgencies();
     }
     void loadPropertyCountsFromDatabase();
+    void loadDbAgencies();
   }, []);
+
+  const loadDbAgencies = async () => {
+    try {
+      const { supabase } = await import('../../services/supabase');
+      const { data, error } = await supabase
+        .from('agencies')
+        .select('id, name, site_prefix, property_count')
+        .eq('is_active', true)
+        .gt('property_count', 0)
+        .order('name', { ascending: true });
+
+      if (error) {
+        console.error('Failed to load agencies from database:', error);
+        return;
+      }
+
+      setDbAgencies(data || []);
+      console.log(`📋 Loaded ${data?.length || 0} agencies from database for reports`);
+    } catch (err: any) {
+      console.error('Error loading agencies:', err);
+    }
+  };
 
   const loadPropertyCountsFromDatabase = async () => {
     try {
@@ -364,6 +388,9 @@ export default function Agencies() {
       return;
     }
 
+    console.log('🚀 Starting report generation for agency:', selectedAgencyForReport);
+    console.log('Property selection:', selectedPropertyForReport);
+
     setIsGeneratingReport(true);
     setReportProgress(0);
 
@@ -405,7 +432,7 @@ export default function Agencies() {
       }, 500);
     } catch (error) {
       console.error('Failed to generate report:', error);
-      alert('Failed to generate report');
+      alert('Failed to generate report: ' + (error as Error).message);
       setIsGeneratingReport(false);
       setReportProgress(0);
     }
@@ -736,9 +763,9 @@ export default function Agencies() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   >
                     <option value="">Choose an agency...</option>
-                    {agencies.map((agency) => (
-                      <option key={(agency as any).id} value={(agency as any).id}>
-                        {getDisplayName(agency)}
+                    {dbAgencies.map((agency) => (
+                      <option key={agency.id} value={agency.id}>
+                        {agency.name} ({agency.property_count} properties)
                       </option>
                     ))}
                   </select>
