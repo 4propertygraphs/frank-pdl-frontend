@@ -53,6 +53,13 @@ export class CloudUploadService {
     this.propertiesByAgency = {};
 
     try {
+      // Debug: Check if Electron API is available
+      const electronAPI = (window as any).electron || (window as any).electronAPI;
+      console.log('🔍 Electron API available:', !!electronAPI);
+      if (electronAPI) {
+        console.log('🔍 fetchAcquaintData available:', !!electronAPI.fetchAcquaintData);
+      }
+
       const response = await fetch('/A-data.json');
       const agencyUrls = await response.json();
 
@@ -67,11 +74,14 @@ export class CloudUploadService {
         try {
           let xmlText: string;
 
-          // Check if running in Electron
-          if (window.electron && window.electron.fetchAcquaintData) {
-            // Use Electron IPC to fetch without CORS issues
-            xmlText = await window.electron.fetchAcquaintData(sitePrefix.toUpperCase(), siteId);
+          // Check if running in Electron (check both electron and electronAPI)
+          const electronAPI = (window as any).electron || (window as any).electronAPI;
+
+          if (electronAPI && electronAPI.fetchAcquaintData) {
+            console.log(`🔌 Using Electron IPC for ${sitePrefix.toUpperCase()}`);
+            xmlText = await electronAPI.fetchAcquaintData(sitePrefix.toUpperCase(), siteId);
           } else {
+            console.log(`🌐 Direct fetch for ${sitePrefix.toUpperCase()} (no Electron API)`);
             // Fallback to direct fetch (for web version)
             const xmlUrl = agencyData.url;
             const xmlResponse = await fetch(xmlUrl);
