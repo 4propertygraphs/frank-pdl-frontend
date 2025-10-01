@@ -1,0 +1,2717 @@
+[
+  {
+    "SitePrefix": "1STC",
+    "SiteID": 0,
+    "SiteName": "1st Class Letting & Property Management"
+  },
+  {
+    "SitePrefix": "4PMA",
+    "SiteID": 0,
+    "SiteName": "4pm Azure Test A"
+  },
+  {
+    "SitePrefix": "4PMB",
+    "SiteID": 0,
+    "SiteName": "4pm Azure Test B"
+  },
+  {
+    "SitePrefix": "4PMC",
+    "SiteID": 0,
+    "SiteName": "4pm Azure Test C"
+  },
+  {
+    "SitePrefix": "4PM3",
+    "SiteID": 0,
+    "SiteName": "4pm Demo Data"
+  },
+  {
+    "SitePrefix": "4PM2",
+    "SiteID": 0,
+    "SiteName": "4PM Demo Estate Agents"
+  },
+  {
+    "SitePrefix": "4PM1",
+    "SiteID": 0,
+    "SiteName": "4PM Demo Estates"
+  },
+  {
+    "SitePrefix": "AJAC",
+    "SiteID": 0,
+    "SiteName": "A&J Estates"
+  },
+  {
+    "SitePrefix": "EGAN",
+    "SiteID": 0,
+    "SiteName": "Aiden Egan Auctioneers Ltd"
+  },
+  {
+    "SitePrefix": "AGOU",
+    "SiteID": 0,
+    "SiteName": "Alexander Gourley"
+  },
+  {
+    "SitePrefix": "AAUC",
+    "SiteID": 0,
+    "SiteName": "Alliance Auctioneers"
+  },
+  {
+    "SitePrefix": "ACAR",
+    "SiteID": 0,
+    "SiteName": "Allied Care"
+  },
+  {
+    "SitePrefix": "AREY",
+    "SiteID": 0,
+    "SiteName": "Allman Reynolds"
+  },
+  {
+    "SitePrefix": "AMLP",
+    "SiteID": 0,
+    "SiteName": "AML Property Services"
+  },
+  {
+    "SitePrefix": "ANSM",
+    "SiteID": 0,
+    "SiteName": "An Sean Mhuileann"
+  },
+  {
+    "SitePrefix": "AGAL",
+    "SiteID": 0,
+    "SiteName": "Anthony Galvin Property Management"
+  },
+  {
+    "SitePrefix": "ARCT",
+    "SiteID": 0,
+    "SiteName": "Arcourt Ltd"
+  },
+  {
+    "SitePrefix": "ELET",
+    "SiteID": 0,
+    "SiteName": "Atlantic Estate Agents Ltd"
+  },
+  {
+    "SitePrefix": "ATFL",
+    "SiteID": 0,
+    "SiteName": "Attracta Farrell"
+  },
+  {
+    "SitePrefix": "BCPS",
+    "SiteID": 0,
+    "SiteName": "Ballincastle Property Services"
+  },
+  {
+    "SitePrefix": "BAXT",
+    "SiteID": 0,
+    "SiteName": "Baxter Real Estate"
+  },
+  {
+    "SitePrefix": "BIGY",
+    "SiteID": 0,
+    "SiteName": "Behan Irwin & Gosling"
+  },
+  {
+    "SitePrefix": "BELG",
+    "SiteID": 0,
+    "SiteName": "Belgravia Estate Agents"
+  },
+  {
+    "SitePrefix": "BVEA",
+    "SiteID": 0,
+    "SiteName": "Bergins Valuers and Estate Agents Ltd"
+  },
+  {
+    "SitePrefix": "BERK",
+    "SiteID": 0,
+    "SiteName": "Berkeley & Associates"
+  },
+  {
+    "SitePrefix": "BERN",
+    "SiteID": 0,
+    "SiteName": "Bernadette Denby"
+  },
+  {
+    "SitePrefix": "BLOM",
+    "SiteID": 0,
+    "SiteName": "Bloomfields Property Management Limited"
+  },
+  {
+    "SitePrefix": "BFRD",
+    "SiteID": 0,
+    "SiteName": "Bloomford Property Management Ltd"
+  },
+  {
+    "SitePrefix": "BLUE",
+    "SiteID": 0,
+    "SiteName": "Blue Property Rentals"
+  },
+  {
+    "SitePrefix": "BSKY",
+    "SiteID": 0,
+    "SiteName": "Blue Sky Property"
+  },
+  {
+    "SitePrefix": "BSKY",
+    "SiteID": 1,
+    "SiteName": "Blue Sky Property"
+  },
+  {
+    "SitePrefix": "BOOK",
+    "SiteID": 0,
+    "SiteName": "Bookaroom"
+  },
+  {
+    "SitePrefix": "BOOK",
+    "SiteID": 1,
+    "SiteName": "Bookaroom"
+  },
+  {
+    "SitePrefix": "BORG",
+    "SiteID": 0,
+    "SiteName": "Borgman Earls"
+  },
+  {
+    "SitePrefix": "BOWD",
+    "SiteID": 0,
+    "SiteName": "Bowdens Estate Agents"
+  },
+  {
+    "SitePrefix": "BOWE",
+    "SiteID": 0,
+    "SiteName": "Bowe Property"
+  },
+  {
+    "SitePrefix": "BOWE",
+    "SiteID": 1,
+    "SiteName": "Bowe Property"
+  },
+  {
+    "SitePrefix": "BOWE",
+    "SiteID": 2,
+    "SiteName": "Bowe Property"
+  },
+  {
+    "SitePrefix": "BOYD",
+    "SiteID": 0,
+    "SiteName": "Boyds"
+  },
+  {
+    "SitePrefix": "BRAH",
+    "SiteID": 0,
+    "SiteName": "Bradley Homes"
+  },
+  {
+    "SitePrefix": "BMEA",
+    "SiteID": 0,
+    "SiteName": "Brady & McCarthy Estate Agents"
+  },
+  {
+    "SitePrefix": "BDPM",
+    "SiteID": 0,
+    "SiteName": "Brady Property Management"
+  },
+  {
+    "SitePrefix": "BRAN",
+    "SiteID": 0,
+    "SiteName": "Brant Higgins"
+  },
+  {
+    "SitePrefix": "BMCG",
+    "SiteID": 0,
+    "SiteName": "Brendan McGlynn Associates Ltd"
+  },
+  {
+    "SitePrefix": "BREN",
+    "SiteID": 0,
+    "SiteName": "Brennan Property Consultants"
+  },
+  {
+    "SitePrefix": "BGLE",
+    "SiteID": 0,
+    "SiteName": "Brian Gleeson Property Ltd"
+  },
+  {
+    "SitePrefix": "BROE",
+    "SiteID": 0,
+    "SiteName": "Broe Auctioneers"
+  },
+  {
+    "SitePrefix": "BCUS",
+    "SiteID": 0,
+    "SiteName": "Brophy Cusack"
+  },
+  {
+    "SitePrefix": "BROP",
+    "SiteID": 0,
+    "SiteName": "Brophy Estates"
+  },
+  {
+    "SitePrefix": "BJCA",
+    "SiteID": 0,
+    "SiteName": "Bryan J Corcoran Auctionneer"
+  },
+  {
+    "SitePrefix": "BUCK",
+    "SiteID": 0,
+    "SiteName": "Buckley Estate Agents Ltd"
+  },
+  {
+    "SitePrefix": "BURR",
+    "SiteID": 0,
+    "SiteName": "Burrows Estates"
+  },
+  {
+    "SitePrefix": "BVCM",
+    "SiteID": 0,
+    "SiteName": "BV Commercial"
+  },
+  {
+    "SitePrefix": "CALI",
+    "SiteID": 0,
+    "SiteName": "Calicon Property Management"
+  },
+  {
+    "SitePrefix": "CAMP",
+    "SiteID": 0,
+    "SiteName": "Campbells"
+  },
+  {
+    "SitePrefix": "CMPP",
+    "SiteID": 0,
+    "SiteName": "Campion Property"
+  },
+  {
+    "SitePrefix": "CAPA",
+    "SiteID": 0,
+    "SiteName": "Capel Abbey Ltd"
+  },
+  {
+    "SitePrefix": "SATI",
+    "SiteID": 0,
+    "SiteName": "Carberry Gallagher"
+  },
+  {
+    "SitePrefix": "CPMA",
+    "SiteID": 0,
+    "SiteName": "Carlow Property Management"
+  },
+  {
+    "SitePrefix": "CRIG",
+    "SiteID": 0,
+    "SiteName": "Carrolls Irish Gifts"
+  },
+  {
+    "SitePrefix": "CART",
+    "SiteID": 0,
+    "SiteName": "Carty Property Advisors"
+  },
+  {
+    "SitePrefix": "KNAM",
+    "SiteID": 0,
+    "SiteName": "Casey Kennedy Estate Agents"
+  },
+  {
+    "SitePrefix": "CKPM",
+    "SiteID": 1,
+    "SiteName": "Casey Kennedy Properties"
+  },
+  {
+    "SitePrefix": "CASE",
+    "SiteID": 0,
+    "SiteName": "Casey Properties"
+  },
+  {
+    "SitePrefix": "CBPM",
+    "SiteID": 0,
+    "SiteName": "CBPM Real Estate"
+  },
+  {
+    "SitePrefix": "CCEM",
+    "SiteID": 0,
+    "SiteName": "CCEM Ltd"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 3,
+    "SiteName": "CCM Property Cahir"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 0,
+    "SiteName": "CCM Property Network"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 1,
+    "SiteName": "CCM Property Network"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 2,
+    "SiteName": "CCM Property Network"
+  },
+  {
+    "SitePrefix": "CEL2",
+    "SiteID": 1,
+    "SiteName": "Celmarnes Property Services"
+  },
+  {
+    "SitePrefix": "CELM",
+    "SiteID": 0,
+    "SiteName": "Celmarnes Property Services"
+  },
+  {
+    "SitePrefix": "CHAP",
+    "SiteID": 0,
+    "SiteName": "Chapperral Property"
+  },
+  {
+    "SitePrefix": "CHPA",
+    "SiteID": 0,
+    "SiteName": "Charlene Patton Auctioneers"
+  },
+  {
+    "SitePrefix": "CMMC",
+    "SiteID": 0,
+    "SiteName": "Charles McCarthy Auctioneer"
+  },
+  {
+    "SitePrefix": "CHAZ",
+    "SiteID": 0,
+    "SiteName": "Chazey Properties"
+  },
+  {
+    "SitePrefix": "CHSA",
+    "SiteID": 0,
+    "SiteName": "Chesser Auctioneers"
+  },
+  {
+    "SitePrefix": "CPMP",
+    "SiteID": 5,
+    "SiteName": "Christies PMP"
+  },
+  {
+    "SitePrefix": "CHUR",
+    "SiteID": 0,
+    "SiteName": "Churches Estate Agents"
+  },
+  {
+    "SitePrefix": "CITA",
+    "SiteID": 0,
+    "SiteName": "Citadel Property Management Limited"
+  },
+  {
+    "SitePrefix": "CHOM",
+    "SiteID": 0,
+    "SiteName": "City Homes"
+  },
+  {
+    "SitePrefix": "CKPR",
+    "SiteID": 0,
+    "SiteName": "Ck Properties"
+  },
+  {
+    "SitePrefix": "CCP2",
+    "SiteID": 0,
+    "SiteName": "Clare Connolly"
+  },
+  {
+    "SitePrefix": "CCPC",
+    "SiteID": 0,
+    "SiteName": "Clare Connolly OLD DO NOT USE"
+  },
+  {
+    "SitePrefix": "CTIP",
+    "SiteID": 0,
+    "SiteName": "Clare Tipp Properties"
+  },
+  {
+    "SitePrefix": "CLAR",
+    "SiteID": 0,
+    "SiteName": "Clarke Auctioneers"
+  },
+  {
+    "SitePrefix": "CKIN",
+    "SiteID": 0,
+    "SiteName": "Clarkin Properties"
+  },
+  {
+    "SitePrefix": "CLAS",
+    "SiteID": 0,
+    "SiteName": "Clashaphuca PAL Holdings Limited"
+  },
+  {
+    "SitePrefix": "CHER",
+    "SiteID": 0,
+    "SiteName": "Clement Herron Real Estate"
+  },
+  {
+    "SitePrefix": "CMEE",
+    "SiteID": 0,
+    "SiteName": "CME Estate Agents"
+  },
+  {
+    "SitePrefix": "CMEE",
+    "SiteID": 1,
+    "SiteName": "CME Estate Agents"
+  },
+  {
+    "SitePrefix": "CMEE",
+    "SiteID": 2,
+    "SiteName": "CME Estate Agents"
+  },
+  {
+    "SitePrefix": "COHD",
+    "SiteID": 0,
+    "SiteName": "Cohalan Downing"
+  },
+  {
+    "SitePrefix": "COLD",
+    "SiteID": 0,
+    "SiteName": "Coldec"
+  },
+  {
+    "SitePrefix": "CBCE",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Carlton Estates"
+  },
+  {
+    "SitePrefix": "CBCP",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Coastal Properties"
+  },
+  {
+    "SitePrefix": "CBEX",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Estates"
+  },
+  {
+    "SitePrefix": "CBES",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Estates & Homes"
+  },
+  {
+    "SitePrefix": "GATE",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Gate Properties"
+  },
+  {
+    "SitePrefix": "CBKY",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Kelly & Co"
+  },
+  {
+    "SitePrefix": "STRA",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker PA - Strand Palace Management"
+  },
+  {
+    "SitePrefix": "STRC",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker PA - Strand Palace Management Cork"
+  },
+  {
+    "SitePrefix": "CBPO",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Penrose & O`Sullivan"
+  },
+  {
+    "SitePrefix": "CBPA",
+    "SiteID": 0,
+    "SiteName": "Coldwell Banker Property Associates"
+  },
+  {
+    "SitePrefix": "COLA",
+    "SiteID": 0,
+    "SiteName": "Colleran Auctioneers"
+  },
+  {
+    "SitePrefix": "COLL",
+    "SiteID": 0,
+    "SiteName": "Colliers International Dublin"
+  },
+  {
+    "SitePrefix": "COLC",
+    "SiteID": 0,
+    "SiteName": "Collins & Co"
+  },
+  {
+    "SitePrefix": "CEIE",
+    "SiteID": 0,
+    "SiteName": "Columbia Ireland"
+  },
+  {
+    "SitePrefix": "COMP",
+    "SiteID": 0,
+    "SiteName": "Complete Property"
+  },
+  {
+    "SitePrefix": "CONE",
+    "SiteID": 0,
+    "SiteName": "Conerney Estate Agents"
+  },
+  {
+    "SitePrefix": "CONN",
+    "SiteID": 0,
+    "SiteName": "Connaughton Auctioneers"
+  },
+  {
+    "SitePrefix": "CONA",
+    "SiteID": 0,
+    "SiteName": "Conway Auctioneers"
+  },
+  {
+    "SitePrefix": "CONA",
+    "SiteID": 1,
+    "SiteName": "Conway Property Management"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 0,
+    "SiteName": "Coonan Property"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 1,
+    "SiteName": "Coonan Property"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 2,
+    "SiteName": "Coonan Property"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 3,
+    "SiteName": "Coonan Property"
+  },
+  {
+    "SitePrefix": "CORE",
+    "SiteID": 0,
+    "SiteName": "Core Lettings"
+  },
+  {
+    "SitePrefix": "CORR",
+    "SiteID": 0,
+    "SiteName": "Corry Estates"
+  },
+  {
+    "SitePrefix": "COST",
+    "SiteID": 0,
+    "SiteName": "Costello Estates"
+  },
+  {
+    "SitePrefix": "COXW",
+    "SiteID": 0,
+    "SiteName": "Cox & Walsh"
+  },
+  {
+    "SitePrefix": "CMCP",
+    "SiteID": 0,
+    "SiteName": "Crean McCann Property"
+  },
+  {
+    "SitePrefix": "CREA",
+    "SiteID": 0,
+    "SiteName": "Create Real Estate"
+  },
+  {
+    "SitePrefix": "DALY",
+    "SiteID": 0,
+    "SiteName": "Daly Auctioneers"
+  },
+  {
+    "SitePrefix": "DARC",
+    "SiteID": 0,
+    "SiteName": "Darcy Property Management"
+  },
+  {
+    "SitePrefix": "DASL",
+    "SiteID": 0,
+    "SiteName": "DASL Residential Lettings"
+  },
+  {
+    "SitePrefix": "DOCA",
+    "SiteID": 0,
+    "SiteName": "David O`Connor Auctioneering"
+  },
+  {
+    "SitePrefix": "DODL",
+    "SiteID": 0,
+    "SiteName": "David O`Driscoll Associates"
+  },
+  {
+    "SitePrefix": "DREY",
+    "SiteID": 0,
+    "SiteName": "David Reynolds"
+  },
+  {
+    "SitePrefix": "DLAN",
+    "SiteID": 0,
+    "SiteName": "Delaney Estates"
+  },
+  {
+    "SitePrefix": "DENR",
+    "SiteID": 0,
+    "SiteName": "Denise Radley Auctioneers"
+  },
+  {
+    "SitePrefix": "DMGL",
+    "SiteID": 0,
+    "SiteName": "Dermot McGettigan Lettings Ltd"
+  },
+  {
+    "SitePrefix": "DFPR",
+    "SiteID": 0,
+    "SiteName": "DF Properties"
+  },
+  {
+    "SitePrefix": "DFMI",
+    "SiteID": 0,
+    "SiteName": "DFM Davy Freeman Mitten"
+  },
+  {
+    "SitePrefix": "DBAS",
+    "SiteID": 0,
+    "SiteName": "Dick Barry & Son"
+  },
+  {
+    "SitePrefix": "DILM",
+    "SiteID": 0,
+    "SiteName": "Dillon Marshall Property Consultants"
+  },
+  {
+    "SitePrefix": "DKOB",
+    "SiteID": 0,
+    "SiteName": "DK O`Brien Properties"
+  },
+  {
+    "SitePrefix": "DKPA",
+    "SiteID": 0,
+    "SiteName": "Dkp Auctioneers"
+  },
+  {
+    "SitePrefix": "DMCL",
+    "SiteID": 0,
+    "SiteName": "DMcL Estates"
+  },
+  {
+    "SitePrefix": "BOYG",
+    "SiteID": 0,
+    "SiteName": "DNG Boyce Gallagher"
+  },
+  {
+    "SitePrefix": "CUSD",
+    "SiteID": 0,
+    "SiteName": "DNG Cusack Dunne"
+  },
+  {
+    "SitePrefix": "DECW",
+    "SiteID": 0,
+    "SiteName": "DNG Declan Woulfe"
+  },
+  {
+    "SitePrefix": "FARR",
+    "SiteID": 0,
+    "SiteName": "DNG Farrell"
+  },
+  {
+    "SitePrefix": "FRKR",
+    "SiteID": 0,
+    "SiteName": "DNG Frank Regan"
+  },
+  {
+    "SitePrefix": "GCOR",
+    "SiteID": 0,
+    "SiteName": "DNG Glen Corcoran"
+  },
+  {
+    "SitePrefix": "CAUC",
+    "SiteID": 0,
+    "SiteName": "DNG Ivan Connaughton"
+  },
+  {
+    "SitePrefix": "LOGA",
+    "SiteID": 0,
+    "SiteName": "DNG Liam O`Grady"
+  },
+  {
+    "SitePrefix": "LYBR",
+    "SiteID": 0,
+    "SiteName": "DNG Lyons & Bracken Auctioneers"
+  },
+  {
+    "SitePrefix": "MGIL",
+    "SiteID": 0,
+    "SiteName": "DNG McGill"
+  },
+  {
+    "SitePrefix": "MICB",
+    "SiteID": 0,
+    "SiteName": "Dng Michael Boland"
+  },
+  {
+    "SitePrefix": "MGAV",
+    "SiteID": 0,
+    "SiteName": "Dng Michael Galvin"
+  },
+  {
+    "SitePrefix": "CREE",
+    "SiteID": 0,
+    "SiteName": "DNG O`Connor Finn"
+  },
+  {
+    "SitePrefix": "OHUR",
+    "SiteID": 0,
+    "SiteName": "DNG O`Sullivan Hurley"
+  },
+  {
+    "SitePrefix": "RCNT",
+    "SiteID": 0,
+    "SiteName": "DNG Royal County"
+  },
+  {
+    "SitePrefix": "SPIL",
+    "SiteID": 0,
+    "SiteName": "DNG Spillane"
+  },
+  {
+    "SitePrefix": "DNGS",
+    "SiteID": 0,
+    "SiteName": "Dng Stack"
+  },
+  {
+    "SitePrefix": "AWAL",
+    "SiteID": 0,
+    "SiteName": "DNG Wall Tuckey"
+  },
+  {
+    "SitePrefix": "GILE",
+    "SiteID": 0,
+    "SiteName": "Dng Wh Giles"
+  },
+  {
+    "SitePrefix": "WCAR",
+    "SiteID": 0,
+    "SiteName": "DNG William Carroll"
+  },
+  {
+    "SitePrefix": "DONR",
+    "SiteID": 0,
+    "SiteName": "Donegal Rentals"
+  },
+  {
+    "SitePrefix": "DONN",
+    "SiteID": 0,
+    "SiteName": "Donnelly Property Services"
+  },
+  {
+    "SitePrefix": "DONO",
+    "SiteID": 0,
+    "SiteName": "Donovans Auctioneers"
+  },
+  {
+    "SitePrefix": "DOOH",
+    "SiteID": 0,
+    "SiteName": "Dooley & Howard"
+  },
+  {
+    "SitePrefix": "DOOL",
+    "SiteID": 0,
+    "SiteName": "Dooley Group"
+  },
+  {
+    "SitePrefix": "DOOL",
+    "SiteID": 1,
+    "SiteName": "Dooley Group"
+  },
+  {
+    "SitePrefix": "DOOL",
+    "SiteID": 2,
+    "SiteName": "Dooley Group"
+  },
+  {
+    "SitePrefix": "DRWP",
+    "SiteID": 0,
+    "SiteName": "Drewsman Properties Ltd"
+  },
+  {
+    "SitePrefix": "DWEL",
+    "SiteID": 0,
+    "SiteName": "Dwella"
+  },
+  {
+    "SitePrefix": "EARN",
+    "SiteID": 0,
+    "SiteName": "Earnest"
+  },
+  {
+    "SitePrefix": "ECLP",
+    "SiteID": 0,
+    "SiteName": "East Cork Lettings & Property Management"
+  },
+  {
+    "SitePrefix": "EQNP",
+    "SiteID": 0,
+    "SiteName": "Edel Quinn Properties"
+  },
+  {
+    "SitePrefix": "EROL",
+    "SiteID": 0,
+    "SiteName": "Edel Rolston Property"
+  },
+  {
+    "SitePrefix": "ELDR",
+    "SiteID": 0,
+    "SiteName": "Eldron Property Consultants"
+  },
+  {
+    "SitePrefix": "ELIT",
+    "SiteID": 0,
+    "SiteName": "Elite Estate Agents"
+  },
+  {
+    "SitePrefix": "ELLI",
+    "SiteID": 0,
+    "SiteName": "Ellis Quay Apartments"
+  },
+  {
+    "SitePrefix": "EMGP",
+    "SiteID": 0,
+    "SiteName": "EMG Property"
+  },
+  {
+    "SitePrefix": "ENAU",
+    "SiteID": 0,
+    "SiteName": "English Auctioneers"
+  },
+  {
+    "SitePrefix": "ENNG",
+    "SiteID": 0,
+    "SiteName": "Ennis Gough"
+  },
+  {
+    "SitePrefix": "EONP",
+    "SiteID": 0,
+    "SiteName": "Eoin O`Neill Property Advisers"
+  },
+  {
+    "SitePrefix": "ERRI",
+    "SiteID": 0,
+    "SiteName": "Errigal Properties"
+  },
+  {
+    "SitePrefix": "EXCL",
+    "SiteID": 0,
+    "SiteName": "Exclusive Properties"
+  },
+  {
+    "SitePrefix": "FALC",
+    "SiteID": 0,
+    "SiteName": "Falcondale Properties Ltd"
+  },
+  {
+    "SitePrefix": "CFLA",
+    "SiteID": 0,
+    "SiteName": "Farrell Auctioneers, Valuers & Estate Agents Ltd"
+  },
+  {
+    "SitePrefix": "FEEP",
+    "SiteID": 0,
+    "SiteName": "Feerick Property"
+  },
+  {
+    "SitePrefix": "FHEE",
+    "SiteID": 0,
+    "SiteName": "Fidelma Heeney Lettings"
+  },
+  {
+    "SitePrefix": "FINC",
+    "SiteID": 0,
+    "SiteName": "Fintan Cahill Auctioneers"
+  },
+  {
+    "SitePrefix": "FITA",
+    "SiteID": 0,
+    "SiteName": "Fitzgerald"
+  },
+  {
+    "SitePrefix": "FTZA",
+    "SiteID": 0,
+    "SiteName": "FitzGerald Auctioneers"
+  },
+  {
+    "SitePrefix": "FLAN",
+    "SiteID": 0,
+    "SiteName": "Flannelly Auctioneers"
+  },
+  {
+    "SitePrefix": "FLEM",
+    "SiteID": 0,
+    "SiteName": "Fleming Estate Agents"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 0,
+    "SiteName": "Flynn & Associates"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 1,
+    "SiteName": "Flynn & Associates"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 2,
+    "SiteName": "Flynn & Associates"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 3,
+    "SiteName": "Flynn & Associates"
+  },
+  {
+    "SitePrefix": "FOBO",
+    "SiteID": 0,
+    "SiteName": "Forbes Boyle"
+  },
+  {
+    "SitePrefix": "FOXG",
+    "SiteID": 0,
+    "SiteName": "Fox & Gallagher"
+  },
+  {
+    "SitePrefix": "FFLM",
+    "SiteID": 0,
+    "SiteName": "Frank Fleming Estate Ageny"
+  },
+  {
+    "SitePrefix": "FGRE",
+    "SiteID": 0,
+    "SiteName": "Frank Greene"
+  },
+  {
+    "SitePrefix": "FVMY",
+    "SiteID": 0,
+    "SiteName": "Frank V Murphy & Company Ltd"
+  },
+  {
+    "SitePrefix": "FRN2",
+    "SiteID": 0,
+    "SiteName": "Franklins"
+  },
+  {
+    "SitePrefix": "FRNK",
+    "SiteID": 0,
+    "SiteName": "Franklins"
+  },
+  {
+    "SitePrefix": "FREN",
+    "SiteID": 0,
+    "SiteName": "French Estates"
+  },
+  {
+    "SitePrefix": "GALA",
+    "SiteID": 0,
+    "SiteName": "Gallagher Auctioneers Ltd"
+  },
+  {
+    "SitePrefix": "GODL",
+    "SiteID": 0,
+    "SiteName": "Gary O`Driscoll & Co Ltd"
+  },
+  {
+    "SitePrefix": "GERA",
+    "SiteID": 0,
+    "SiteName": "Geraldine O`Reilly Auctioneers & Valuers"
+  },
+  {
+    "SitePrefix": "GETL",
+    "SiteID": 0,
+    "SiteName": "Get Let"
+  },
+  {
+    "SitePrefix": "GILH",
+    "SiteID": 0,
+    "SiteName": "Gillian Hayes Property Letting"
+  },
+  {
+    "SitePrefix": "GLE2",
+    "SiteID": 0,
+    "SiteName": "Glen Estates"
+  },
+  {
+    "SitePrefix": "GLEN",
+    "SiteID": 0,
+    "SiteName": "Glen Estates"
+  },
+  {
+    "SitePrefix": "GPIE",
+    "SiteID": 0,
+    "SiteName": "Global Properties"
+  },
+  {
+    "SitePrefix": "GPON",
+    "SiteID": 0,
+    "SiteName": "Global Properties"
+  },
+  {
+    "SitePrefix": "GODG",
+    "SiteID": 0,
+    "SiteName": "Godfrey & Grant"
+  },
+  {
+    "SitePrefix": "GOFF",
+    "SiteID": 0,
+    "SiteName": "Goffs Country Property Consultants Ltd"
+  },
+  {
+    "SitePrefix": "GHPR",
+    "SiteID": 0,
+    "SiteName": "Gordon Hughes Estate Agents"
+  },
+  {
+    "SitePrefix": "GREE",
+    "SiteID": 0,
+    "SiteName": "Greene Property"
+  },
+  {
+    "SitePrefix": "GAUC",
+    "SiteID": 0,
+    "SiteName": "Griffin Auctioneers"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 0,
+    "SiteName": "Grimes"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 3,
+    "SiteName": "Grimes Clontarf"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 2,
+    "SiteName": "Grimes Dublin"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 1,
+    "SiteName": "Grimes Skerries"
+  },
+  {
+    "SitePrefix": "GUI2",
+    "SiteID": 0,
+    "SiteName": "Guiry Auctioneers Limited"
+  },
+  {
+    "SitePrefix": "GUIR",
+    "SiteID": 0,
+    "SiteName": "Guiry Auctioneers Limited"
+  },
+  {
+    "SitePrefix": "GUAS",
+    "SiteID": 0,
+    "SiteName": "Guiry Students"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 0,
+    "SiteName": "GVM Auctioneers"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 1,
+    "SiteName": "GVM Auctioneers"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 2,
+    "SiteName": "GVM Auctioneers"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 3,
+    "SiteName": "GVM Auctioneers"
+  },
+  {
+    "SitePrefix": "HABI",
+    "SiteID": 0,
+    "SiteName": "Habitat Property"
+  },
+  {
+    "SitePrefix": "HADN",
+    "SiteID": 0,
+    "SiteName": "Haden Properties"
+  },
+  {
+    "SitePrefix": "HHMN",
+    "SiteID": 0,
+    "SiteName": "Haines Home Managers"
+  },
+  {
+    "SitePrefix": "HOCR",
+    "SiteID": 0,
+    "SiteName": "Halligan O`Connor Property Consultants"
+  },
+  {
+    "SitePrefix": "HEFF",
+    "SiteID": 0,
+    "SiteName": "Heffernan Estates"
+  },
+  {
+    "SitePrefix": "HFBS",
+    "SiteID": 0,
+    "SiteName": "Heffron Business Services"
+  },
+  {
+    "SitePrefix": "MCEA",
+    "SiteID": 0,
+    "SiteName": "Helen McCormack Estate Agents"
+  },
+  {
+    "SitePrefix": "HENO",
+    "SiteID": 0,
+    "SiteName": "Henry O`Leary Real Estate Agents"
+  },
+  {
+    "SitePrefix": "HLEA",
+    "SiteID": 0,
+    "SiteName": "Herbert & Lansdowne Estate Agents"
+  },
+  {
+    "SitePrefix": "HERB",
+    "SiteID": 0,
+    "SiteName": "Herbert Property Service"
+  },
+  {
+    "SitePrefix": "HERW",
+    "SiteID": 0,
+    "SiteName": "Herman White Estates"
+  },
+  {
+    "SitePrefix": "HIBA",
+    "SiteID": 0,
+    "SiteName": "Hibernian Auctioneers"
+  },
+  {
+    "SitePrefix": "HIBE",
+    "SiteID": 0,
+    "SiteName": "Hibernian Estates"
+  },
+  {
+    "SitePrefix": "HICD",
+    "SiteID": 0,
+    "SiteName": "Hickey O`Donoghue"
+  },
+  {
+    "SitePrefix": "HOGD",
+    "SiteID": 0,
+    "SiteName": "Hogan Durkan"
+  },
+  {
+    "SitePrefix": "HEST",
+    "SiteID": 0,
+    "SiteName": "Hogan Estates"
+  },
+  {
+    "SitePrefix": "HMES",
+    "SiteID": 0,
+    "SiteName": "Home Estates"
+  },
+  {
+    "SitePrefix": "HOMX",
+    "SiteID": 0,
+    "SiteName": "Home Xperts"
+  },
+  {
+    "SitePrefix": "HFHS",
+    "SiteID": 0,
+    "SiteName": "Homes From Holmes"
+  },
+  {
+    "SitePrefix": "HMCD",
+    "SiteID": 0,
+    "SiteName": "Hooke & MacDonald"
+  },
+  {
+    "SitePrefix": "HOPW",
+    "SiteID": 0,
+    "SiteName": "Hopkins Ward Estate Agents"
+  },
+  {
+    "SitePrefix": "HORN",
+    "SiteID": 0,
+    "SiteName": "Horan Estates & Letting Agents"
+  },
+  {
+    "SitePrefix": "HORG",
+    "SiteID": 0,
+    "SiteName": "Horgan Properties"
+  },
+  {
+    "SitePrefix": "HORB",
+    "SiteID": 0,
+    "SiteName": "Hornibrook & Associates"
+  },
+  {
+    "SitePrefix": "HOSF",
+    "SiteID": 0,
+    "SiteName": "Hosford Property Consultants"
+  },
+  {
+    "SitePrefix": "HLET",
+    "SiteID": 0,
+    "SiteName": "House-Let"
+  },
+  {
+    "SitePrefix": "HYDE",
+    "SiteID": 0,
+    "SiteName": "Hyde Property"
+  },
+  {
+    "SitePrefix": "IMIE",
+    "SiteID": 0,
+    "SiteName": "iMOVE"
+  },
+  {
+    "SitePrefix": "IREE",
+    "SiteID": 0,
+    "SiteName": "Ireland Test"
+  },
+  {
+    "SitePrefix": "IRSL",
+    "SiteID": 0,
+    "SiteName": "Irish Relocation Services Ltd"
+  },
+  {
+    "SitePrefix": "ISLH",
+    "SiteID": 0,
+    "SiteName": "Island Homes"
+  },
+  {
+    "SitePrefix": "OM2M",
+    "SiteID": 0,
+    "SiteName": "J & M O`Mahony OM2"
+  },
+  {
+    "SitePrefix": "MURT",
+    "SiteID": 0,
+    "SiteName": "James L Murtagh"
+  },
+  {
+    "SitePrefix": "JMUR",
+    "SiteID": 0,
+    "SiteName": "James Murphy & Co Auctioneers and Valuers"
+  },
+  {
+    "SitePrefix": "JCES",
+    "SiteID": 0,
+    "SiteName": "Janet Carroll Estate Agents"
+  },
+  {
+    "SitePrefix": "JANU",
+    "SiteID": 0,
+    "SiteName": "Janus Estates ltd"
+  },
+  {
+    "SitePrefix": "JBKY",
+    "SiteID": 0,
+    "SiteName": "JB Kelly"
+  },
+  {
+    "SitePrefix": "JMLP",
+    "SiteID": 0,
+    "SiteName": "JML Property Solutions"
+  },
+  {
+    "SitePrefix": "JOEN",
+    "SiteID": 0,
+    "SiteName": "Joe Naughton Auctioneers"
+  },
+  {
+    "SitePrefix": "JDSC",
+    "SiteID": 0,
+    "SiteName": "John D Sullivan & Co Ltd"
+  },
+  {
+    "SitePrefix": "JDOP",
+    "SiteID": 0,
+    "SiteName": "John Diony O Connor"
+  },
+  {
+    "SitePrefix": "JDOL",
+    "SiteID": 0,
+    "SiteName": "John Dolan"
+  },
+  {
+    "SitePrefix": "JMYA",
+    "SiteID": 0,
+    "SiteName": "John Murphy Auctioneers"
+  },
+  {
+    "SitePrefix": "JRYN",
+    "SiteID": 0,
+    "SiteName": "John Ryan"
+  },
+  {
+    "SitePrefix": "JPMD",
+    "SiteID": 0,
+    "SiteName": "JP&M Doyle"
+  },
+  {
+    "SitePrefix": "JUND",
+    "SiteID": 0,
+    "SiteName": "June Doran Properties"
+  },
+  {
+    "SitePrefix": "JMCE",
+    "SiteID": 0,
+    "SiteName": "June McConnell Estate Agents"
+  },
+  {
+    "SitePrefix": "JUST",
+    "SiteID": 0,
+    "SiteName": "Just Property"
+  },
+  {
+    "SitePrefix": "GORE",
+    "SiteID": 0,
+    "SiteName": "Kavanagh Estates"
+  },
+  {
+    "SitePrefix": "KAUC",
+    "SiteID": 0,
+    "SiteName": "Keane Auctioneers"
+  },
+  {
+    "SitePrefix": "KMSA",
+    "SiteID": 0,
+    "SiteName": "Keane Mahony Smith Auctioneers"
+  },
+  {
+    "SitePrefix": "KEAN",
+    "SiteID": 0,
+    "SiteName": "Keane Thompson"
+  },
+  {
+    "SitePrefix": "KEHA",
+    "SiteID": 0,
+    "SiteName": "Kehoe & Assoc"
+  },
+  {
+    "SitePrefix": "KEHO",
+    "SiteID": 0,
+    "SiteName": "Kehoe Auctioneers Ltd."
+  },
+  {
+    "SitePrefix": "KELH",
+    "SiteID": 0,
+    "SiteName": "Kelland Homes"
+  },
+  {
+    "SitePrefix": "KBDA",
+    "SiteID": 0,
+    "SiteName": "Kelly Bradshaw Dalton"
+  },
+  {
+    "SitePrefix": "KELL",
+    "SiteID": 0,
+    "SiteName": "Kelly Estates"
+  },
+  {
+    "SitePrefix": "KENN",
+    "SiteID": 0,
+    "SiteName": "Kennedy Property Management"
+  },
+  {
+    "SitePrefix": "KENW",
+    "SiteID": 0,
+    "SiteName": "Kennedy Wright Estate Agents"
+  },
+  {
+    "SitePrefix": "KENP",
+    "SiteID": 0,
+    "SiteName": "Kenny Properties"
+  },
+  {
+    "SitePrefix": "KERP",
+    "SiteID": 0,
+    "SiteName": "Kerry Property"
+  },
+  {
+    "SitePrefix": "KEVB",
+    "SiteID": 0,
+    "SiteName": "Kevin Beirne Auctioneers"
+  },
+  {
+    "SitePrefix": "KWAL",
+    "SiteID": 0,
+    "SiteName": "Kiersey Walker & Associates"
+  },
+  {
+    "SitePrefix": "KPML",
+    "SiteID": 0,
+    "SiteName": "Killarney Property Managment and Lettings"
+  },
+  {
+    "SitePrefix": "KINS",
+    "SiteID": 0,
+    "SiteName": "Kinsella Estates"
+  },
+  {
+    "SitePrefix": "KIRA",
+    "SiteID": 0,
+    "SiteName": "Kirrane Auctioneering"
+  },
+  {
+    "SitePrefix": "KMUL",
+    "SiteID": 0,
+    "SiteName": "KM Property"
+  },
+  {
+    "SitePrefix": "HTMO",
+    "SiteID": 0,
+    "SiteName": "Knight Frank"
+  },
+  {
+    "SitePrefix": "LAND",
+    "SiteID": 0,
+    "SiteName": "Lansdowne Partnership"
+  },
+  {
+    "SitePrefix": "LCM2",
+    "SiteID": 0,
+    "SiteName": "Lawrence & McDonald Estate Agents"
+  },
+  {
+    "SitePrefix": "LEAH",
+    "SiteID": 0,
+    "SiteName": "Leahy Residential"
+  },
+  {
+    "SitePrefix": "LEEP",
+    "SiteID": 0,
+    "SiteName": "Lee Property"
+  },
+  {
+    "SitePrefix": "LEIN",
+    "SiteID": 0,
+    "SiteName": "Leinster Property"
+  },
+  {
+    "SitePrefix": "LEPC",
+    "SiteID": 0,
+    "SiteName": "Leinster Property Consultants"
+  },
+  {
+    "SitePrefix": "LWKN",
+    "SiteID": 0,
+    "SiteName": "Leonard Wilson Keenan"
+  },
+  {
+    "SitePrefix": "LMSO",
+    "SiteID": 0,
+    "SiteName": "Letting & Managements Solutions"
+  },
+  {
+    "SitePrefix": "LREI",
+    "SiteID": 0,
+    "SiteName": "Liam Reilly Auctioneer Ltd"
+  },
+  {
+    "SitePrefix": "LIST",
+    "SiteID": 0,
+    "SiteName": "Liston Auctioneers"
+  },
+  {
+    "SitePrefix": "LOLO",
+    "SiteID": 0,
+    "SiteName": "Location Location"
+  },
+  {
+    "SitePrefix": "LOCA",
+    "SiteID": 0,
+    "SiteName": "Locations"
+  },
+  {
+    "SitePrefix": "LOCG",
+    "SiteID": 0,
+    "SiteName": "Lock Garman Locations"
+  },
+  {
+    "SitePrefix": "RLNG",
+    "SiteID": 0,
+    "SiteName": "Long & Co."
+  },
+  {
+    "SitePrefix": "LBEA",
+    "SiteID": 0,
+    "SiteName": "Louis Boyce Estate Agents"
+  },
+  {
+    "SitePrefix": "LRCG",
+    "SiteID": 0,
+    "SiteName": "LRC Ireland"
+  },
+  {
+    "SitePrefix": "LYNM",
+    "SiteID": 0,
+    "SiteName": "Lynam Auctioneers Ltd"
+  },
+  {
+    "SitePrefix": "MACP",
+    "SiteID": 0,
+    "SiteName": "M&C Property"
+  },
+  {
+    "SitePrefix": "MADD",
+    "SiteID": 0,
+    "SiteName": "Madden Property Consultants"
+  },
+  {
+    "SitePrefix": "MAHE",
+    "SiteID": 0,
+    "SiteName": "Maher Auctioneers"
+  },
+  {
+    "SitePrefix": "MNEU",
+    "SiteID": 0,
+    "SiteName": "Maison Neuve"
+  },
+  {
+    "SitePrefix": "MANL",
+    "SiteID": 0,
+    "SiteName": "Manley Homes"
+  },
+  {
+    "SitePrefix": "MANX",
+    "SiteID": 0,
+    "SiteName": "Mannix Property Services"
+  },
+  {
+    "SitePrefix": "MANP",
+    "SiteID": 0,
+    "SiteName": "Manor Properties"
+  },
+  {
+    "SitePrefix": "MANP",
+    "SiteID": 1,
+    "SiteName": "Manor Properties"
+  },
+  {
+    "SitePrefix": "MACS",
+    "SiteID": 0,
+    "SiteName": "Marc Mac Sharry Properties"
+  },
+  {
+    "SitePrefix": "MKEL",
+    "SiteID": 0,
+    "SiteName": "Mark Kelly & Associates"
+  },
+  {
+    "SitePrefix": "MLAW",
+    "SiteID": 0,
+    "SiteName": "Mark Lawless Auctioneers"
+  },
+  {
+    "SitePrefix": "MNES",
+    "SiteID": 0,
+    "SiteName": "Mark Nestor Property Services Ltd"
+  },
+  {
+    "SitePrefix": "MMOR",
+    "SiteID": 0,
+    "SiteName": "Martin & Moran Property Advisors"
+  },
+  {
+    "SitePrefix": "MKPS",
+    "SiteID": 0,
+    "SiteName": "Martin Kelleher Property Services"
+  },
+  {
+    "SitePrefix": "MMCG",
+    "SiteID": 0,
+    "SiteName": "Martin McGowan Properties"
+  },
+  {
+    "SitePrefix": "MPCS",
+    "SiteID": 0,
+    "SiteName": "Martin Property Consultants"
+  },
+  {
+    "SitePrefix": "MEST",
+    "SiteID": 0,
+    "SiteName": "Mason Estates"
+  },
+  {
+    "SitePrefix": "MEST",
+    "SiteID": 1,
+    "SiteName": "Mason Estates"
+  },
+  {
+    "SitePrefix": "MEST",
+    "SiteID": 2,
+    "SiteName": "Mason Estates"
+  },
+  {
+    "SitePrefix": "MAST",
+    "SiteID": 0,
+    "SiteName": "Masterpiece Property"
+  },
+  {
+    "SitePrefix": "MATD",
+    "SiteID": 0,
+    "SiteName": "Matt Dunne & Associates"
+  },
+  {
+    "SitePrefix": "MMCK",
+    "SiteID": 0,
+    "SiteName": "Maureen McKeown Estate Agents"
+  },
+  {
+    "SitePrefix": "MAYO",
+    "SiteID": 0,
+    "SiteName": "Mayo Property"
+  },
+  {
+    "SitePrefix": "MCCA",
+    "SiteID": 0,
+    "SiteName": "McCauley Properties"
+  },
+  {
+    "SitePrefix": "MCGO",
+    "SiteID": 0,
+    "SiteName": "McGovern Estate Agents"
+  },
+  {
+    "SitePrefix": "MCGU",
+    "SiteID": 0,
+    "SiteName": "McGuire Estates Management Limited"
+  },
+  {
+    "SitePrefix": "MCHG",
+    "SiteID": 0,
+    "SiteName": "McHugh Property Lettings"
+  },
+  {
+    "SitePrefix": "MCPK",
+    "SiteID": 0,
+    "SiteName": "McPeake Auctioneers"
+  },
+  {
+    "SitePrefix": "MENA",
+    "SiteID": 0,
+    "SiteName": "Menapia Properties"
+  },
+  {
+    "SitePrefix": "MGMS",
+    "SiteID": 0,
+    "SiteName": "MGMS Property Management Ltd"
+  },
+  {
+    "SitePrefix": "LAVE",
+    "SiteID": 0,
+    "SiteName": "Michael Lavelle Estate Agents"
+  },
+  {
+    "SitePrefix": "MRGN",
+    "SiteID": 0,
+    "SiteName": "Michael Regan Auctioneering Ltd"
+  },
+  {
+    "SitePrefix": "MREA",
+    "SiteID": 0,
+    "SiteName": "Michael Roberts Estate Agents"
+  },
+  {
+    "SitePrefix": "MICR",
+    "SiteID": 0,
+    "SiteName": "Michael Russell & Co"
+  },
+  {
+    "SitePrefix": "MBAL",
+    "SiteID": 0,
+    "SiteName": "Michelle Burke Auctioneer & Letting Agent"
+  },
+  {
+    "SitePrefix": "MICO",
+    "SiteID": 0,
+    "SiteName": "Micol Property Ltd"
+  },
+  {
+    "SitePrefix": "MIDE",
+    "SiteID": 0,
+    "SiteName": "Midlands Real Estate"
+  },
+  {
+    "SitePrefix": "MDOU",
+    "SiteID": 0,
+    "SiteName": "Mitchell Douglas"
+  },
+  {
+    "SitePrefix": "MMWD",
+    "SiteID": 0,
+    "SiteName": "MM Ward"
+  },
+  {
+    "SitePrefix": "MOLL",
+    "SiteID": 0,
+    "SiteName": "Molloy Auctioneers"
+  },
+  {
+    "SitePrefix": "MOOV",
+    "SiteID": 0,
+    "SiteName": "Moove"
+  },
+  {
+    "SitePrefix": "MOVH",
+    "SiteID": 0,
+    "SiteName": "MoveHome.ie"
+  },
+  {
+    "SitePrefix": "MULA",
+    "SiteID": 0,
+    "SiteName": "Mullery Auctioneers"
+  },
+  {
+    "SitePrefix": "MULT",
+    "SiteID": 0,
+    "SiteName": "MultiUnit Management Services"
+  },
+  {
+    "SitePrefix": "MBRO",
+    "SiteID": 0,
+    "SiteName": "Murray Browne"
+  },
+  {
+    "SitePrefix": "PJMC",
+    "SiteID": 0,
+    "SiteName": "Murtagh Bros"
+  },
+  {
+    "SitePrefix": "NATW",
+    "SiteID": 0,
+    "SiteName": "Nationwide Property Management & Estate Agent"
+  },
+  {
+    "SitePrefix": "NDOH",
+    "SiteID": 0,
+    "SiteName": "Neal J Doherty & Son Auctioneers And Valuers"
+  },
+  {
+    "SitePrefix": "NEPT",
+    "SiteID": 0,
+    "SiteName": "Neptune"
+  },
+  {
+    "SitePrefix": "PRLK",
+    "SiteID": 0,
+    "SiteName": "Neptune Property"
+  },
+  {
+    "SitePrefix": "NEST",
+    "SiteID": 0,
+    "SiteName": "Nest Estate Agents"
+  },
+  {
+    "SitePrefix": "NSHN",
+    "SiteID": 0,
+    "SiteName": "Nestor Shanahan"
+  },
+  {
+    "SitePrefix": "NKEY",
+    "SiteID": 0,
+    "SiteName": "Newkey Lettings Ltd"
+  },
+  {
+    "SitePrefix": "NORD",
+    "SiteID": 0,
+    "SiteName": "Nordan Properties"
+  },
+  {
+    "SitePrefix": "NOVA",
+    "SiteID": 0,
+    "SiteName": "Nova Property Managment"
+  },
+  {
+    "SitePrefix": "OCES",
+    "SiteID": 0,
+    "SiteName": "O`Connor Estates"
+  },
+  {
+    "SitePrefix": "OMUR",
+    "SiteID": 0,
+    "SiteName": "O`Connor Murphy Chartered Surveyors"
+  },
+  {
+    "SitePrefix": "ODON",
+    "SiteID": 0,
+    "SiteName": "O`Donovan & Associates"
+  },
+  {
+    "SitePrefix": "OFCA",
+    "SiteID": 0,
+    "SiteName": "O`Farrell Cleere Auctioneers"
+  },
+  {
+    "SitePrefix": "OKEE",
+    "SiteID": 0,
+    "SiteName": "O`Keeffe Estates"
+  },
+  {
+    "SitePrefix": "OMAH",
+    "SiteID": 0,
+    "SiteName": "O`Mahony Property"
+  },
+  {
+    "SitePrefix": "ONEI",
+    "SiteID": 0,
+    "SiteName": "O`Neill & Co"
+  },
+  {
+    "SitePrefix": "ORIA",
+    "SiteID": 0,
+    "SiteName": "O`Riain Auctioneers t/a Easy Let"
+  },
+  {
+    "SitePrefix": "OAKV",
+    "SiteID": 0,
+    "SiteName": "Oakview Properties"
+  },
+  {
+    "SitePrefix": "OBRB",
+    "SiteID": 0,
+    "SiteName": "OBR Builders and Maintenance Ltd"
+  },
+  {
+    "SitePrefix": "OCEA",
+    "SiteID": 0,
+    "SiteName": "Ocean Property Management"
+  },
+  {
+    "SitePrefix": "OGOR",
+    "SiteID": 0,
+    "SiteName": "O'Gorman Properties"
+  },
+  {
+    "SitePrefix": "OMDE",
+    "SiteID": 0,
+    "SiteName": "OMD Estate Agents"
+  },
+  {
+    "SitePrefix": "ONEL",
+    "SiteID": 0,
+    "SiteName": "One Living"
+  },
+  {
+    "SitePrefix": "ORRE",
+    "SiteID": 0,
+    "SiteName": "Orchard Residential & Commercial Ltd"
+  },
+  {
+    "SitePrefix": "OWEN",
+    "SiteID": 0,
+    "SiteName": "Owen Reilly"
+  },
+  {
+    "SitePrefix": "PFQC",
+    "SiteID": 0,
+    "SiteName": "P F Quirke & Co Ltd"
+  },
+  {
+    "SitePrefix": "PMCD",
+    "SiteID": 0,
+    "SiteName": "P McDermott Property & Mortgages"
+  },
+  {
+    "SitePrefix": "PWAT",
+    "SiteID": 0,
+    "SiteName": "Paddy Watters"
+  },
+  {
+    "SitePrefix": "PARA",
+    "SiteID": 0,
+    "SiteName": "Park Auctioneers"
+  },
+  {
+    "SitePrefix": "PCAS",
+    "SiteID": 0,
+    "SiteName": "Park Castletroy"
+  },
+  {
+    "SitePrefix": "PATC",
+    "SiteID": 0,
+    "SiteName": "Pat Considine Auctioneers"
+  },
+  {
+    "SitePrefix": "PATG",
+    "SiteID": 0,
+    "SiteName": "Pat Gannon Auctioneers"
+  },
+  {
+    "SitePrefix": "PONL",
+    "SiteID": 0,
+    "SiteName": "Paul O`Neill"
+  },
+  {
+    "SitePrefix": "PTOB",
+    "SiteID": 0,
+    "SiteName": "Paul Tobin Estate Agents"
+  },
+  {
+    "SitePrefix": "PBAR",
+    "SiteID": 0,
+    "SiteName": "Peter Barry"
+  },
+  {
+    "SitePrefix": "PMIL",
+    "SiteID": 0,
+    "SiteName": "Peter Mills Property"
+  },
+  {
+    "SitePrefix": "WYSE",
+    "SiteID": 0,
+    "SiteName": "Peter Wyse"
+  },
+  {
+    "SitePrefix": "PHOC",
+    "SiteID": 0,
+    "SiteName": "Philip O`Callaghan Properties"
+  },
+  {
+    "SitePrefix": "PLKM",
+    "SiteID": 0,
+    "SiteName": "PLK MAX"
+  },
+  {
+    "SitePrefix": "PMCR",
+    "SiteID": 0,
+    "SiteName": "PMC Real Estate"
+  },
+  {
+    "SitePrefix": "PCML",
+    "SiteID": 0,
+    "SiteName": "Premier Campus Management Ltd"
+  },
+  {
+    "SitePrefix": "PPIE",
+    "SiteID": 0,
+    "SiteName": "Premier Properties"
+  },
+  {
+    "SitePrefix": "PPCL",
+    "SiteID": 0,
+    "SiteName": "Prestige Property Consultants Limited"
+  },
+  {
+    "SitePrefix": "PPCL",
+    "SiteID": 1,
+    "SiteName": "Prestige Property Consultants Limited"
+  },
+  {
+    "SitePrefix": "PMIE",
+    "SiteID": 0,
+    "SiteName": "Property Management Ireland"
+  },
+  {
+    "SitePrefix": "PPBH",
+    "SiteID": 0,
+    "SiteName": "Property Partners Barry Herterich"
+  },
+  {
+    "SitePrefix": "BRAD",
+    "SiteID": 0,
+    "SiteName": "Property Partners Brady"
+  },
+  {
+    "SitePrefix": "PPBY",
+    "SiteID": 0,
+    "SiteName": "Property Partners Buggy"
+  },
+  {
+    "SitePrefix": "PPBY",
+    "SiteID": 1,
+    "SiteName": "Property Partners Buggy Portaloise"
+  },
+  {
+    "SitePrefix": "GALL",
+    "SiteID": 0,
+    "SiteName": "Property Partners Gallivan"
+  },
+  {
+    "SitePrefix": "RPRO",
+    "SiteID": 0,
+    "SiteName": "Property Partners Gill & Glynn"
+  },
+  {
+    "SitePrefix": "RPRO",
+    "SiteID": 1,
+    "SiteName": "Property Partners Gill & Glynn"
+  },
+  {
+    "SitePrefix": "PPMF",
+    "SiteID": 0,
+    "SiteName": "Property Partners Matt Fallon"
+  },
+  {
+    "SitePrefix": "MCDL",
+    "SiteID": 0,
+    "SiteName": "Property Partners McDonnell & Co"
+  },
+  {
+    "SitePrefix": "PPML",
+    "SiteID": 0,
+    "SiteName": "Property Partners Moore Larkin"
+  },
+  {
+    "SitePrefix": "OBSW",
+    "SiteID": 0,
+    "SiteName": "Property Partners O`Brien Swaine"
+  },
+  {
+    "SitePrefix": "OBSW",
+    "SiteID": 1,
+    "SiteName": "Property Partners O`Brien Swaine"
+  },
+  {
+    "SitePrefix": "PPBH",
+    "SiteID": 1,
+    "SiteName": "Property Partners Phelan Herterich"
+  },
+  {
+    "SitePrefix": "QBRO",
+    "SiteID": 0,
+    "SiteName": "Property Partners Quinn"
+  },
+  {
+    "SitePrefix": "PPRC",
+    "SiteID": 0,
+    "SiteName": "Property Partners Richard Cleary"
+  },
+  {
+    "SitePrefix": "PPSO",
+    "SiteID": 0,
+    "SiteName": "Property Partners Seamus O`Keeffe"
+  },
+  {
+    "SitePrefix": "PTNK",
+    "SiteID": 0,
+    "SiteName": "Property Team Noel Kelly"
+  },
+  {
+    "SitePrefix": "PROP",
+    "SiteID": 0,
+    "SiteName": "Pro-Plan Property Management"
+  },
+  {
+    "SitePrefix": "QUAN",
+    "SiteID": 0,
+    "SiteName": "Quantum Property Consultants"
+  },
+  {
+    "SitePrefix": "QUIK",
+    "SiteID": 0,
+    "SiteName": "Quicklisters Estate Agents"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 0,
+    "SiteName": "Quillsen"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 1,
+    "SiteName": "Quillsen"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 2,
+    "SiteName": "Quillsen"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 3,
+    "SiteName": "Quillsen"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 4,
+    "SiteName": "Quillsen"
+  },
+  {
+    "SitePrefix": "QUIN",
+    "SiteID": 0,
+    "SiteName": "Quinn Property"
+  },
+  {
+    "SitePrefix": "BKCM",
+    "SiteID": 0,
+    "SiteName": "Rangewell Estates Ltd"
+  },
+  {
+    "SitePrefix": "RAYW",
+    "SiteID": 0,
+    "SiteName": "Raymond White Auctioneering"
+  },
+  {
+    "SitePrefix": "RWHT",
+    "SiteID": 0,
+    "SiteName": "RAYWHITE·IE Property"
+  },
+  {
+    "SitePrefix": "RDCP",
+    "SiteID": 0,
+    "SiteName": "RDCP"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 0,
+    "SiteName": "RE/MAX"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 1,
+    "SiteName": "RE/MAX"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 2,
+    "SiteName": "RE/MAX"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 3,
+    "SiteName": "RE/MAX"
+  },
+  {
+    "SitePrefix": "RMTC",
+    "SiteID": 0,
+    "SiteName": "RE/MAX Properties - Team Citywide"
+  },
+  {
+    "SitePrefix": "BQUK",
+    "SiteID": 0,
+    "SiteName": "REA Byrne and Quirke"
+  },
+  {
+    "SitePrefix": "COYC",
+    "SiteID": 0,
+    "SiteName": "REA Coyne and Culloty"
+  },
+  {
+    "SitePrefix": "EDDM",
+    "SiteID": 0,
+    "SiteName": "REA Ed Dempsey"
+  },
+  {
+    "SitePrefix": "EDDM",
+    "SiteID": 1,
+    "SiteName": "REA Ed Dempsey"
+  },
+  {
+    "SitePrefix": "EDIL",
+    "SiteID": 0,
+    "SiteName": "REA Eoin Dillon"
+  },
+  {
+    "SitePrefix": "HFIT",
+    "SiteID": 0,
+    "SiteName": "REA Fitzgerald Chambers"
+  },
+  {
+    "SitePrefix": "FORK",
+    "SiteID": 0,
+    "SiteName": "REA Forkin"
+  },
+  {
+    "SitePrefix": "FORK",
+    "SiteID": 1,
+    "SiteName": "REA Forkin"
+  },
+  {
+    "SitePrefix": "HALN",
+    "SiteID": 0,
+    "SiteName": "REA Halnon McKenna"
+  },
+  {
+    "SitePrefix": "HYNE",
+    "SiteID": 0,
+    "SiteName": "REA Hynes"
+  },
+  {
+    "SitePrefix": "MCDD",
+    "SiteID": 0,
+    "SiteName": "REA McDonald"
+  },
+  {
+    "SitePrefix": "MCGE",
+    "SiteID": 0,
+    "SiteName": "REA McGee"
+  },
+  {
+    "SitePrefix": "MBUR",
+    "SiteID": 0,
+    "SiteName": "REA McGreal Burke"
+  },
+  {
+    "SitePrefix": "MBUR",
+    "SiteID": 1,
+    "SiteName": "REA McGreal Burke"
+  },
+  {
+    "SitePrefix": "MURP",
+    "SiteID": 0,
+    "SiteName": "REA Murphy"
+  },
+  {
+    "SitePrefix": "OMUR",
+    "SiteID": 2,
+    "SiteName": "Rea O`Connor Murphy Chartered Surveyors"
+  },
+  {
+    "SitePrefix": "PBWN",
+    "SiteID": 0,
+    "SiteName": "REA Paddy Browne"
+  },
+  {
+    "SitePrefix": "SEAB",
+    "SiteID": 0,
+    "SiteName": "Rea Seamus Browne"
+  },
+  {
+    "SitePrefix": "TJGV",
+    "SiteID": 0,
+    "SiteName": "REA T&J Gavigan"
+  },
+  {
+    "SitePrefix": "REAN",
+    "SiteID": 0,
+    "SiteName": "Reaney Property Management"
+  },
+  {
+    "SitePrefix": "REDM",
+    "SiteID": 0,
+    "SiteName": "Redmond Property Group"
+  },
+  {
+    "SitePrefix": "RTIE",
+    "SiteID": 0,
+    "SiteName": "rentals.ie"
+  },
+  {
+    "SitePrefix": "RESF",
+    "SiteID": 0,
+    "SiteName": "Residential First Property Management Ltd"
+  },
+  {
+    "SitePrefix": "REPM",
+    "SiteID": 0,
+    "SiteName": "Resource Property Management"
+  },
+  {
+    "SitePrefix": "RHAT",
+    "SiteID": 0,
+    "SiteName": "Rhatigan Real Estate"
+  },
+  {
+    "SitePrefix": "RIVW",
+    "SiteID": 0,
+    "SiteName": "Riverwalk Accommodation"
+  },
+  {
+    "SitePrefix": "RNOB",
+    "SiteID": 0,
+    "SiteName": "Rob Noble Property Consultants"
+  },
+  {
+    "SitePrefix": "ROBL",
+    "SiteID": 0,
+    "SiteName": "Robert Lowry Properties"
+  },
+  {
+    "SitePrefix": "LIME",
+    "SiteID": 0,
+    "SiteName": "Rooney Auctioneers"
+  },
+  {
+    "SitePrefix": "LIME",
+    "SiteID": 1,
+    "SiteName": "Rooney Auctioneers"
+  },
+  {
+    "SitePrefix": "LIME",
+    "SiteID": 2,
+    "SiteName": "Rooney Auctioneers"
+  },
+  {
+    "SitePrefix": "ROON",
+    "SiteID": 0,
+    "SiteName": "Rooney Auctioneers & Chartered Surveyors"
+  },
+  {
+    "SitePrefix": "RFOR",
+    "SiteID": 0,
+    "SiteName": "Rory Forde"
+  },
+  {
+    "SitePrefix": "ROTH",
+    "SiteID": 0,
+    "SiteName": "Rothwell Staunton & Associates"
+  },
+  {
+    "SitePrefix": "ROWN",
+    "SiteID": 0,
+    "SiteName": "Rowan Fitzgerald Auctioneers"
+  },
+  {
+    "SitePrefix": "ROYR",
+    "SiteID": 0,
+    "SiteName": "Royal Rentals"
+  },
+  {
+    "SitePrefix": "RUSS",
+    "SiteID": 0,
+    "SiteName": "Russell Estate Agents Ltd"
+  },
+  {
+    "SitePrefix": "RYAN",
+    "SiteID": 0,
+    "SiteName": "Ryan Estate Agents"
+  },
+  {
+    "SitePrefix": "SRPE",
+    "SiteID": 0,
+    "SiteName": "S&R Property Experts"
+  },
+  {
+    "SitePrefix": "SCAN",
+    "SiteID": 0,
+    "SiteName": "Scandik Property Services"
+  },
+  {
+    "SitePrefix": "SCKP",
+    "SiteID": 0,
+    "SiteName": "SCK Property"
+  },
+  {
+    "SitePrefix": "FURY",
+    "SiteID": 0,
+    "SiteName": "Sean Furey Auctioneer"
+  },
+  {
+    "SitePrefix": "SBOY",
+    "SiteID": 0,
+    "SiteName": "Sean O`Boyle"
+  },
+  {
+    "SitePrefix": "SOHN",
+    "SiteID": 0,
+    "SiteName": "Shane O`Hanlon Limited"
+  },
+  {
+    "SitePrefix": "SFTG",
+    "SiteID": 0,
+    "SiteName": "Sherry FitzGerald Lettings"
+  },
+  {
+    "SitePrefix": "SFTG",
+    "SiteID": 1,
+    "SiteName": "Sherry FitzGerald Lettings"
+  },
+  {
+    "SitePrefix": "SFOD",
+    "SiteID": 0,
+    "SiteName": "Sherry Fitzgerald O`Donovan"
+  },
+  {
+    "SitePrefix": "SHER",
+    "SiteID": 0,
+    "SiteName": "Sherry Property"
+  },
+  {
+    "SitePrefix": "SINC",
+    "SiteID": 0,
+    "SiteName": "Sinclair Property"
+  },
+  {
+    "SitePrefix": "SBUT",
+    "SiteID": 0,
+    "SiteName": "Smith & Butler Estates"
+  },
+  {
+    "SitePrefix": "SKST",
+    "SiteID": 0,
+    "SiteName": "Smith Kelly Scott"
+  },
+  {
+    "SitePrefix": "PADS",
+    "SiteID": 0,
+    "SiteName": "Smith Property"
+  },
+  {
+    "SitePrefix": "PADS",
+    "SiteID": 1,
+    "SiteName": "Smith Property"
+  },
+  {
+    "SitePrefix": "SOLG",
+    "SiteID": 0,
+    "SiteName": "Só Living"
+  },
+  {
+    "SitePrefix": "SEES",
+    "SiteID": 0,
+    "SiteName": "South East Estates"
+  },
+  {
+    "SitePrefix": "SPSH",
+    "SiteID": 0,
+    "SiteName": "Spain Property Shop"
+  },
+  {
+    "SitePrefix": "SPEC",
+    "SiteID": 0,
+    "SiteName": "Spectre Investments Ltd"
+  },
+  {
+    "SitePrefix": "SPEN",
+    "SiteID": 0,
+    "SiteName": "Spencer Auctioneers"
+  },
+  {
+    "SitePrefix": "STEA",
+    "SiteID": 0,
+    "SiteName": "Stanley Estate Agents"
+  },
+  {
+    "SitePrefix": "STEL",
+    "SiteID": 0,
+    "SiteName": "Stellar Property"
+  },
+  {
+    "SitePrefix": "STOK",
+    "SiteID": 0,
+    "SiteName": "Stokes Property"
+  },
+  {
+    "SitePrefix": "STON",
+    "SiteID": 0,
+    "SiteName": "Stone Property"
+  },
+  {
+    "SitePrefix": "STUA",
+    "SiteID": 0,
+    "SiteName": "Stuart Auctioneers"
+  },
+  {
+    "SitePrefix": "SMCD",
+    "SiteID": 0,
+    "SiteName": "Stuart McDonnell Properties"
+  },
+  {
+    "SitePrefix": "SULL",
+    "SiteID": 0,
+    "SiteName": "Sullivan Property Consultants"
+  },
+  {
+    "SitePrefix": "SUPL",
+    "SiteID": 0,
+    "SiteName": "Sullivan Property Lettings"
+  },
+  {
+    "SitePrefix": "TFAR",
+    "SiteID": 0,
+    "SiteName": "T Farrell Properties"
+  },
+  {
+    "SitePrefix": "TJGN",
+    "SiteID": 0,
+    "SiteName": "T&J Gavigan"
+  },
+  {
+    "SitePrefix": "TAMI",
+    "SiteID": 0,
+    "SiteName": "Tameric Investments"
+  },
+  {
+    "SitePrefix": "TARP",
+    "SiteID": 0,
+    "SiteName": "Tarpey Maloney Properties"
+  },
+  {
+    "SitePrefix": "LMUL",
+    "SiteID": 0,
+    "SiteName": "Team Lorraine Mulligan"
+  },
+  {
+    "SitePrefix": "TENR",
+    "SiteID": 0,
+    "SiteName": "Tenant Ready"
+  },
+  {
+    "SitePrefix": "LOTP",
+    "SiteID": 0,
+    "SiteName": "Tenerife Property Center"
+  },
+  {
+    "SitePrefix": "HLAN",
+    "SiteID": 0,
+    "SiteName": "Terry Hyland Estate Agents"
+  },
+  {
+    "SitePrefix": "TDPS",
+    "SiteID": 0,
+    "SiteName": "The Drogheda Property Shop"
+  },
+  {
+    "SitePrefix": "TPCO",
+    "SiteID": 0,
+    "SiteName": "The Property Co."
+  },
+  {
+    "SitePrefix": "TPSM",
+    "SiteID": 0,
+    "SiteName": "The Property Shop"
+  },
+  {
+    "SitePrefix": "TPSP",
+    "SiteID": 1,
+    "SiteName": "The Property Shop"
+  },
+  {
+    "SitePrefix": "TPSP",
+    "SiteID": 0,
+    "SiteName": "The Property Shop Ongar"
+  },
+  {
+    "SitePrefix": "TJOD",
+    "SiteID": 0,
+    "SiteName": "Thomas J O Driscoll"
+  },
+  {
+    "SitePrefix": "TIMD",
+    "SiteID": 0,
+    "SiteName": "Tim Dwyer Property Management & Sales Limited"
+  },
+  {
+    "SitePrefix": "TOMM",
+    "SiteID": 0,
+    "SiteName": "Tom Maher & Company"
+  },
+  {
+    "SitePrefix": "TOMH",
+    "SiteID": 0,
+    "SiteName": "Tom O`Higgins Estate Agent"
+  },
+  {
+    "SitePrefix": "TORM",
+    "SiteID": 0,
+    "SiteName": "Tormey Auctioneers"
+  },
+  {
+    "SitePrefix": "TURL",
+    "SiteID": 0,
+    "SiteName": "Turley & Associates"
+  },
+  {
+    "SitePrefix": "URIE",
+    "SiteID": 0,
+    "SiteName": "Urban Ireland"
+  },
+  {
+    "SitePrefix": "URBL",
+    "SiteID": 0,
+    "SiteName": "Urban Link"
+  },
+  {
+    "SitePrefix": "VMIC",
+    "SiteID": 0,
+    "SiteName": "Victor Mitchell"
+  },
+  {
+    "SitePrefix": "VCOL",
+    "SiteID": 0,
+    "SiteName": "Vincent & Co Limited"
+  },
+  {
+    "SitePrefix": "VINC",
+    "SiteID": 0,
+    "SiteName": "Vincent McKeon Auctioneering"
+  },
+  {
+    "SitePrefix": "VINW",
+    "SiteID": 0,
+    "SiteName": "Vincent Walsh Auctioneers"
+  },
+  {
+    "SitePrefix": "WALS",
+    "SiteID": 0,
+    "SiteName": "Walsh & Co"
+  },
+  {
+    "SitePrefix": "WOSU",
+    "SiteID": 0,
+    "SiteName": "Walsh O`Sullivan Ltd"
+  },
+  {
+    "SitePrefix": "WALP",
+    "SiteID": 0,
+    "SiteName": "Walsh Properties"
+  },
+  {
+    "SitePrefix": "WARN",
+    "SiteID": 0,
+    "SiteName": "Warren Estates"
+  },
+  {
+    "SitePrefix": "WARE",
+    "SiteID": 0,
+    "SiteName": "Warren Estates Limited"
+  },
+  {
+    "SitePrefix": "WMCC",
+    "SiteID": 0,
+    "SiteName": "Warren McCreery"
+  },
+  {
+    "SitePrefix": "WATT",
+    "SiteID": 0,
+    "SiteName": "Watters Property Sales"
+  },
+  {
+    "SitePrefix": "WPGP",
+    "SiteID": 0,
+    "SiteName": "West Property Group"
+  },
+  {
+    "SitePrefix": "WESW",
+    "SiteID": 0,
+    "SiteName": "Weston & Wellington"
+  },
+  {
+    "SitePrefix": "WILH",
+    "SiteID": 0,
+    "SiteName": "William Harvey"
+  },
+  {
+    "SitePrefix": "WRIG",
+    "SiteID": 0,
+    "SiteName": "Wright & Co"
+  },
+  {
+    "SitePrefix": "YNGS",
+    "SiteID": 0,
+    "SiteName": "Young`s Estate Agent"
+  },
+  {
+    "SitePrefix": "YMPI",
+    "SiteID": 0,
+    "SiteName": "Your Move Properties"
+  },
+  {
+    "SitePrefix": "ZERM",
+    "SiteID": 0,
+    "SiteName": "Zermatt Property Limited"
+  }
+]

@@ -1,0 +1,2717 @@
+[
+  {
+    "SitePrefix": "1STC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/1STC-0.xml"
+  },
+  {
+    "SitePrefix": "4PMA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/4PMA-0.xml"
+  },
+  {
+    "SitePrefix": "4PMB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/4PMB-0.xml"
+  },
+  {
+    "SitePrefix": "4PMC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/4PMC-0.xml"
+  },
+  {
+    "SitePrefix": "4PM3",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/4PM3-0.xml"
+  },
+  {
+    "SitePrefix": "4PM2",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/4PM2-0.xml"
+  },
+  {
+    "SitePrefix": "4PM1",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/4PM1-0.xml"
+  },
+  {
+    "SitePrefix": "AJAC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AJAC-0.xml"
+  },
+  {
+    "SitePrefix": "EGAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EGAN-0.xml"
+  },
+  {
+    "SitePrefix": "AGOU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AGOU-0.xml"
+  },
+  {
+    "SitePrefix": "AAUC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AAUC-0.xml"
+  },
+  {
+    "SitePrefix": "ACAR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ACAR-0.xml"
+  },
+  {
+    "SitePrefix": "AREY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AREY-0.xml"
+  },
+  {
+    "SitePrefix": "AMLP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AMLP-0.xml"
+  },
+  {
+    "SitePrefix": "ANSM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ANSM-0.xml"
+  },
+  {
+    "SitePrefix": "AGAL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AGAL-0.xml"
+  },
+  {
+    "SitePrefix": "ARCT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ARCT-0.xml"
+  },
+  {
+    "SitePrefix": "ELET",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ELET-0.xml"
+  },
+  {
+    "SitePrefix": "ATFL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ATFL-0.xml"
+  },
+  {
+    "SitePrefix": "BCPS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BCPS-0.xml"
+  },
+  {
+    "SitePrefix": "BAXT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BAXT-0.xml"
+  },
+  {
+    "SitePrefix": "BIGY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BIGY-0.xml"
+  },
+  {
+    "SitePrefix": "BELG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BELG-0.xml"
+  },
+  {
+    "SitePrefix": "BVEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BVEA-0.xml"
+  },
+  {
+    "SitePrefix": "BERK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BERK-0.xml"
+  },
+  {
+    "SitePrefix": "BERN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BERN-0.xml"
+  },
+  {
+    "SitePrefix": "BLOM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BLOM-0.xml"
+  },
+  {
+    "SitePrefix": "BFRD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BFRD-0.xml"
+  },
+  {
+    "SitePrefix": "BLUE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BLUE-0.xml"
+  },
+  {
+    "SitePrefix": "BSKY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BSKY-0.xml"
+  },
+  {
+    "SitePrefix": "BSKY",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BSKY-1.xml"
+  },
+  {
+    "SitePrefix": "BOOK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOOK-0.xml"
+  },
+  {
+    "SitePrefix": "BOOK",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOOK-1.xml"
+  },
+  {
+    "SitePrefix": "BORG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BORG-0.xml"
+  },
+  {
+    "SitePrefix": "BOWD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOWD-0.xml"
+  },
+  {
+    "SitePrefix": "BOWE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOWE-0.xml"
+  },
+  {
+    "SitePrefix": "BOWE",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOWE-1.xml"
+  },
+  {
+    "SitePrefix": "BOWE",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOWE-2.xml"
+  },
+  {
+    "SitePrefix": "BOYD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOYD-0.xml"
+  },
+  {
+    "SitePrefix": "BRAH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BRAH-0.xml"
+  },
+  {
+    "SitePrefix": "BMEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BMEA-0.xml"
+  },
+  {
+    "SitePrefix": "BDPM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BDPM-0.xml"
+  },
+  {
+    "SitePrefix": "BRAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BRAN-0.xml"
+  },
+  {
+    "SitePrefix": "BMCG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BMCG-0.xml"
+  },
+  {
+    "SitePrefix": "BREN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BREN-0.xml"
+  },
+  {
+    "SitePrefix": "BGLE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BGLE-0.xml"
+  },
+  {
+    "SitePrefix": "BROE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BROE-0.xml"
+  },
+  {
+    "SitePrefix": "BCUS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BCUS-0.xml"
+  },
+  {
+    "SitePrefix": "BROP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BROP-0.xml"
+  },
+  {
+    "SitePrefix": "BJCA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BJCA-0.xml"
+  },
+  {
+    "SitePrefix": "BUCK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BUCK-0.xml"
+  },
+  {
+    "SitePrefix": "BURR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BURR-0.xml"
+  },
+  {
+    "SitePrefix": "BVCM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BVCM-0.xml"
+  },
+  {
+    "SitePrefix": "CALI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CALI-0.xml"
+  },
+  {
+    "SitePrefix": "CAMP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CAMP-0.xml"
+  },
+  {
+    "SitePrefix": "CMPP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CMPP-0.xml"
+  },
+  {
+    "SitePrefix": "CAPA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CAPA-0.xml"
+  },
+  {
+    "SitePrefix": "SATI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SATI-0.xml"
+  },
+  {
+    "SitePrefix": "CPMA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CPMA-0.xml"
+  },
+  {
+    "SitePrefix": "CRIG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CRIG-0.xml"
+  },
+  {
+    "SitePrefix": "CART",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CART-0.xml"
+  },
+  {
+    "SitePrefix": "KNAM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KNAM-0.xml"
+  },
+  {
+    "SitePrefix": "CKPM",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CKPM-1.xml"
+  },
+  {
+    "SitePrefix": "CASE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CASE-0.xml"
+  },
+  {
+    "SitePrefix": "CBPM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBPM-0.xml"
+  },
+  {
+    "SitePrefix": "CCEM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCEM-0.xml"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCMP-3.xml"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCMP-0.xml"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCMP-1.xml"
+  },
+  {
+    "SitePrefix": "CCMP",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCMP-2.xml"
+  },
+  {
+    "SitePrefix": "CEL2",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CEL2-1.xml"
+  },
+  {
+    "SitePrefix": "CELM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CELM-0.xml"
+  },
+  {
+    "SitePrefix": "CHAP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHAP-0.xml"
+  },
+  {
+    "SitePrefix": "CHPA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHPA-0.xml"
+  },
+  {
+    "SitePrefix": "CMMC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CMMC-0.xml"
+  },
+  {
+    "SitePrefix": "CHAZ",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHAZ-0.xml"
+  },
+  {
+    "SitePrefix": "CHSA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHSA-0.xml"
+  },
+  {
+    "SitePrefix": "CPMP",
+    "SiteID": 5,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CPMP-5.xml"
+  },
+  {
+    "SitePrefix": "CHUR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHUR-0.xml"
+  },
+  {
+    "SitePrefix": "CITA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CITA-0.xml"
+  },
+  {
+    "SitePrefix": "CHOM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHOM-0.xml"
+  },
+  {
+    "SitePrefix": "CKPR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CKPR-0.xml"
+  },
+  {
+    "SitePrefix": "CCP2",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCP2-0.xml"
+  },
+  {
+    "SitePrefix": "CCPC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CCPC-0.xml"
+  },
+  {
+    "SitePrefix": "CTIP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CTIP-0.xml"
+  },
+  {
+    "SitePrefix": "CLAR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CLAR-0.xml"
+  },
+  {
+    "SitePrefix": "CKIN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CKIN-0.xml"
+  },
+  {
+    "SitePrefix": "CLAS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CLAS-0.xml"
+  },
+  {
+    "SitePrefix": "CHER",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CHER-0.xml"
+  },
+  {
+    "SitePrefix": "CMEE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CMEE-0.xml"
+  },
+  {
+    "SitePrefix": "CMEE",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CMEE-1.xml"
+  },
+  {
+    "SitePrefix": "CMEE",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CMEE-2.xml"
+  },
+  {
+    "SitePrefix": "COHD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COHD-0.xml"
+  },
+  {
+    "SitePrefix": "COLD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COLD-0.xml"
+  },
+  {
+    "SitePrefix": "CBCE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBCE-0.xml"
+  },
+  {
+    "SitePrefix": "CBCP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBCP-0.xml"
+  },
+  {
+    "SitePrefix": "CBEX",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBEX-0.xml"
+  },
+  {
+    "SitePrefix": "CBES",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBES-0.xml"
+  },
+  {
+    "SitePrefix": "GATE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GATE-0.xml"
+  },
+  {
+    "SitePrefix": "CBKY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBKY-0.xml"
+  },
+  {
+    "SitePrefix": "STRA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STRA-0.xml"
+  },
+  {
+    "SitePrefix": "STRC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STRC-0.xml"
+  },
+  {
+    "SitePrefix": "CBPO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBPO-0.xml"
+  },
+  {
+    "SitePrefix": "CBPA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CBPA-0.xml"
+  },
+  {
+    "SitePrefix": "COLA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COLA-0.xml"
+  },
+  {
+    "SitePrefix": "COLL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COLL-0.xml"
+  },
+  {
+    "SitePrefix": "COLC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COLC-0.xml"
+  },
+  {
+    "SitePrefix": "CEIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CEIE-0.xml"
+  },
+  {
+    "SitePrefix": "COMP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COMP-0.xml"
+  },
+  {
+    "SitePrefix": "CONE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CONE-0.xml"
+  },
+  {
+    "SitePrefix": "CONN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CONN-0.xml"
+  },
+  {
+    "SitePrefix": "CONA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CONA-0.xml"
+  },
+  {
+    "SitePrefix": "CONA",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CONA-1.xml"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COON-0.xml"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COON-1.xml"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COON-2.xml"
+  },
+  {
+    "SitePrefix": "COON",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COON-3.xml"
+  },
+  {
+    "SitePrefix": "CORE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CORE-0.xml"
+  },
+  {
+    "SitePrefix": "CORR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CORR-0.xml"
+  },
+  {
+    "SitePrefix": "COST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COST-0.xml"
+  },
+  {
+    "SitePrefix": "COXW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COXW-0.xml"
+  },
+  {
+    "SitePrefix": "CMCP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CMCP-0.xml"
+  },
+  {
+    "SitePrefix": "CREA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CREA-0.xml"
+  },
+  {
+    "SitePrefix": "DALY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DALY-0.xml"
+  },
+  {
+    "SitePrefix": "DARC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DARC-0.xml"
+  },
+  {
+    "SitePrefix": "DASL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DASL-0.xml"
+  },
+  {
+    "SitePrefix": "DOCA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DOCA-0.xml"
+  },
+  {
+    "SitePrefix": "DODL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DODL-0.xml"
+  },
+  {
+    "SitePrefix": "DREY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DREY-0.xml"
+  },
+  {
+    "SitePrefix": "DLAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DLAN-0.xml"
+  },
+  {
+    "SitePrefix": "DENR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DENR-0.xml"
+  },
+  {
+    "SitePrefix": "DMGL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DMGL-0.xml"
+  },
+  {
+    "SitePrefix": "DFPR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DFPR-0.xml"
+  },
+  {
+    "SitePrefix": "DFMI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DFMI-0.xml"
+  },
+  {
+    "SitePrefix": "DBAS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DBAS-0.xml"
+  },
+  {
+    "SitePrefix": "DILM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DILM-0.xml"
+  },
+  {
+    "SitePrefix": "DKOB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DKOB-0.xml"
+  },
+  {
+    "SitePrefix": "DKPA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DKPA-0.xml"
+  },
+  {
+    "SitePrefix": "DMCL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DMCL-0.xml"
+  },
+  {
+    "SitePrefix": "BOYG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BOYG-0.xml"
+  },
+  {
+    "SitePrefix": "CUSD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CUSD-0.xml"
+  },
+  {
+    "SitePrefix": "DECW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DECW-0.xml"
+  },
+  {
+    "SitePrefix": "FARR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FARR-0.xml"
+  },
+  {
+    "SitePrefix": "FRKR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FRKR-0.xml"
+  },
+  {
+    "SitePrefix": "GCOR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GCOR-0.xml"
+  },
+  {
+    "SitePrefix": "CAUC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CAUC-0.xml"
+  },
+  {
+    "SitePrefix": "LOGA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LOGA-0.xml"
+  },
+  {
+    "SitePrefix": "LYBR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LYBR-0.xml"
+  },
+  {
+    "SitePrefix": "MGIL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MGIL-0.xml"
+  },
+  {
+    "SitePrefix": "MICB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MICB-0.xml"
+  },
+  {
+    "SitePrefix": "MGAV",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MGAV-0.xml"
+  },
+  {
+    "SitePrefix": "CREE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CREE-0.xml"
+  },
+  {
+    "SitePrefix": "OHUR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OHUR-0.xml"
+  },
+  {
+    "SitePrefix": "RCNT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RCNT-0.xml"
+  },
+  {
+    "SitePrefix": "SPIL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SPIL-0.xml"
+  },
+  {
+    "SitePrefix": "DNGS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DNGS-0.xml"
+  },
+  {
+    "SitePrefix": "AWAL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/AWAL-0.xml"
+  },
+  {
+    "SitePrefix": "GILE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GILE-0.xml"
+  },
+  {
+    "SitePrefix": "WCAR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WCAR-0.xml"
+  },
+  {
+    "SitePrefix": "DONR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DONR-0.xml"
+  },
+  {
+    "SitePrefix": "DONN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DONN-0.xml"
+  },
+  {
+    "SitePrefix": "DONO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DONO-0.xml"
+  },
+  {
+    "SitePrefix": "DOOH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DOOH-0.xml"
+  },
+  {
+    "SitePrefix": "DOOL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DOOL-0.xml"
+  },
+  {
+    "SitePrefix": "DOOL",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DOOL-1.xml"
+  },
+  {
+    "SitePrefix": "DOOL",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DOOL-2.xml"
+  },
+  {
+    "SitePrefix": "DRWP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DRWP-0.xml"
+  },
+  {
+    "SitePrefix": "DWEL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/DWEL-0.xml"
+  },
+  {
+    "SitePrefix": "EARN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EARN-0.xml"
+  },
+  {
+    "SitePrefix": "ECLP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ECLP-0.xml"
+  },
+  {
+    "SitePrefix": "EQNP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EQNP-0.xml"
+  },
+  {
+    "SitePrefix": "EROL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EROL-0.xml"
+  },
+  {
+    "SitePrefix": "ELDR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ELDR-0.xml"
+  },
+  {
+    "SitePrefix": "ELIT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ELIT-0.xml"
+  },
+  {
+    "SitePrefix": "ELLI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ELLI-0.xml"
+  },
+  {
+    "SitePrefix": "EMGP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EMGP-0.xml"
+  },
+  {
+    "SitePrefix": "ENAU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ENAU-0.xml"
+  },
+  {
+    "SitePrefix": "ENNG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ENNG-0.xml"
+  },
+  {
+    "SitePrefix": "EONP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EONP-0.xml"
+  },
+  {
+    "SitePrefix": "ERRI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ERRI-0.xml"
+  },
+  {
+    "SitePrefix": "EXCL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EXCL-0.xml"
+  },
+  {
+    "SitePrefix": "FALC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FALC-0.xml"
+  },
+  {
+    "SitePrefix": "CFLA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/CFLA-0.xml"
+  },
+  {
+    "SitePrefix": "FEEP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FEEP-0.xml"
+  },
+  {
+    "SitePrefix": "FHEE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FHEE-0.xml"
+  },
+  {
+    "SitePrefix": "FINC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FINC-0.xml"
+  },
+  {
+    "SitePrefix": "FITA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FITA-0.xml"
+  },
+  {
+    "SitePrefix": "FTZA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FTZA-0.xml"
+  },
+  {
+    "SitePrefix": "FLAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FLAN-0.xml"
+  },
+  {
+    "SitePrefix": "FLEM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FLEM-0.xml"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FLYN-0.xml"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FLYN-1.xml"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FLYN-2.xml"
+  },
+  {
+    "SitePrefix": "FLYN",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FLYN-3.xml"
+  },
+  {
+    "SitePrefix": "FOBO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FOBO-0.xml"
+  },
+  {
+    "SitePrefix": "FOXG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FOXG-0.xml"
+  },
+  {
+    "SitePrefix": "FFLM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FFLM-0.xml"
+  },
+  {
+    "SitePrefix": "FGRE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FGRE-0.xml"
+  },
+  {
+    "SitePrefix": "FVMY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FVMY-0.xml"
+  },
+  {
+    "SitePrefix": "FRN2",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FRN2-0.xml"
+  },
+  {
+    "SitePrefix": "FRNK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FRNK-0.xml"
+  },
+  {
+    "SitePrefix": "FREN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FREN-0.xml"
+  },
+  {
+    "SitePrefix": "GALA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GALA-0.xml"
+  },
+  {
+    "SitePrefix": "GODL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GODL-0.xml"
+  },
+  {
+    "SitePrefix": "GERA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GERA-0.xml"
+  },
+  {
+    "SitePrefix": "GETL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GETL-0.xml"
+  },
+  {
+    "SitePrefix": "GILH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GILH-0.xml"
+  },
+  {
+    "SitePrefix": "GLE2",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GLE2-0.xml"
+  },
+  {
+    "SitePrefix": "GLEN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GLEN-0.xml"
+  },
+  {
+    "SitePrefix": "GPIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GPIE-0.xml"
+  },
+  {
+    "SitePrefix": "GPON",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GPON-0.xml"
+  },
+  {
+    "SitePrefix": "GODG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GODG-0.xml"
+  },
+  {
+    "SitePrefix": "GOFF",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GOFF-0.xml"
+  },
+  {
+    "SitePrefix": "GHPR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GHPR-0.xml"
+  },
+  {
+    "SitePrefix": "GREE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GREE-0.xml"
+  },
+  {
+    "SitePrefix": "GAUC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GAUC-0.xml"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GRIM-0.xml"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GRIM-3.xml"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GRIM-2.xml"
+  },
+  {
+    "SitePrefix": "GRIM",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GRIM-1.xml"
+  },
+  {
+    "SitePrefix": "GUI2",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GUI2-0.xml"
+  },
+  {
+    "SitePrefix": "GUIR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GUIR-0.xml"
+  },
+  {
+    "SitePrefix": "GUAS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GUAS-0.xml"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GVMA-0.xml"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GVMA-1.xml"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GVMA-2.xml"
+  },
+  {
+    "SitePrefix": "GVMA",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GVMA-3.xml"
+  },
+  {
+    "SitePrefix": "HABI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HABI-0.xml"
+  },
+  {
+    "SitePrefix": "HADN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HADN-0.xml"
+  },
+  {
+    "SitePrefix": "HHMN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HHMN-0.xml"
+  },
+  {
+    "SitePrefix": "HOCR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HOCR-0.xml"
+  },
+  {
+    "SitePrefix": "HEFF",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HEFF-0.xml"
+  },
+  {
+    "SitePrefix": "HFBS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HFBS-0.xml"
+  },
+  {
+    "SitePrefix": "MCEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCEA-0.xml"
+  },
+  {
+    "SitePrefix": "HENO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HENO-0.xml"
+  },
+  {
+    "SitePrefix": "HLEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HLEA-0.xml"
+  },
+  {
+    "SitePrefix": "HERB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HERB-0.xml"
+  },
+  {
+    "SitePrefix": "HERW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HERW-0.xml"
+  },
+  {
+    "SitePrefix": "HIBA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HIBA-0.xml"
+  },
+  {
+    "SitePrefix": "HIBE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HIBE-0.xml"
+  },
+  {
+    "SitePrefix": "HICD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HICD-0.xml"
+  },
+  {
+    "SitePrefix": "HOGD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HOGD-0.xml"
+  },
+  {
+    "SitePrefix": "HEST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HEST-0.xml"
+  },
+  {
+    "SitePrefix": "HMES",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HMES-0.xml"
+  },
+  {
+    "SitePrefix": "HOMX",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HOMX-0.xml"
+  },
+  {
+    "SitePrefix": "HFHS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HFHS-0.xml"
+  },
+  {
+    "SitePrefix": "HMCD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HMCD-0.xml"
+  },
+  {
+    "SitePrefix": "HOPW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HOPW-0.xml"
+  },
+  {
+    "SitePrefix": "HORN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HORN-0.xml"
+  },
+  {
+    "SitePrefix": "HORG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HORG-0.xml"
+  },
+  {
+    "SitePrefix": "HORB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HORB-0.xml"
+  },
+  {
+    "SitePrefix": "HOSF",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HOSF-0.xml"
+  },
+  {
+    "SitePrefix": "HLET",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HLET-0.xml"
+  },
+  {
+    "SitePrefix": "HYDE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HYDE-0.xml"
+  },
+  {
+    "SitePrefix": "IMIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/IMIE-0.xml"
+  },
+  {
+    "SitePrefix": "IREE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/IREE-0.xml"
+  },
+  {
+    "SitePrefix": "IRSL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/IRSL-0.xml"
+  },
+  {
+    "SitePrefix": "ISLH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ISLH-0.xml"
+  },
+  {
+    "SitePrefix": "OM2M",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OM2M-0.xml"
+  },
+  {
+    "SitePrefix": "MURT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MURT-0.xml"
+  },
+  {
+    "SitePrefix": "JMUR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JMUR-0.xml"
+  },
+  {
+    "SitePrefix": "JCES",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JCES-0.xml"
+  },
+  {
+    "SitePrefix": "JANU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JANU-0.xml"
+  },
+  {
+    "SitePrefix": "JBKY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JBKY-0.xml"
+  },
+  {
+    "SitePrefix": "JMLP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JMLP-0.xml"
+  },
+  {
+    "SitePrefix": "JOEN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JOEN-0.xml"
+  },
+  {
+    "SitePrefix": "JDSC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JDSC-0.xml"
+  },
+  {
+    "SitePrefix": "JDOP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JDOP-0.xml"
+  },
+  {
+    "SitePrefix": "JDOL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JDOL-0.xml"
+  },
+  {
+    "SitePrefix": "JMYA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JMYA-0.xml"
+  },
+  {
+    "SitePrefix": "JRYN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JRYN-0.xml"
+  },
+  {
+    "SitePrefix": "JPMD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JPMD-0.xml"
+  },
+  {
+    "SitePrefix": "JUND",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JUND-0.xml"
+  },
+  {
+    "SitePrefix": "JMCE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JMCE-0.xml"
+  },
+  {
+    "SitePrefix": "JUST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/JUST-0.xml"
+  },
+  {
+    "SitePrefix": "GORE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GORE-0.xml"
+  },
+  {
+    "SitePrefix": "KAUC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KAUC-0.xml"
+  },
+  {
+    "SitePrefix": "KMSA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KMSA-0.xml"
+  },
+  {
+    "SitePrefix": "KEAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KEAN-0.xml"
+  },
+  {
+    "SitePrefix": "KEHA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KEHA-0.xml"
+  },
+  {
+    "SitePrefix": "KEHO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KEHO-0.xml"
+  },
+  {
+    "SitePrefix": "KELH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KELH-0.xml"
+  },
+  {
+    "SitePrefix": "KBDA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KBDA-0.xml"
+  },
+  {
+    "SitePrefix": "KELL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KELL-0.xml"
+  },
+  {
+    "SitePrefix": "KENN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KENN-0.xml"
+  },
+  {
+    "SitePrefix": "KENW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KENW-0.xml"
+  },
+  {
+    "SitePrefix": "KENP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KENP-0.xml"
+  },
+  {
+    "SitePrefix": "KERP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KERP-0.xml"
+  },
+  {
+    "SitePrefix": "KEVB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KEVB-0.xml"
+  },
+  {
+    "SitePrefix": "KWAL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KWAL-0.xml"
+  },
+  {
+    "SitePrefix": "KPML",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KPML-0.xml"
+  },
+  {
+    "SitePrefix": "KINS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KINS-0.xml"
+  },
+  {
+    "SitePrefix": "KIRA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KIRA-0.xml"
+  },
+  {
+    "SitePrefix": "KMUL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/KMUL-0.xml"
+  },
+  {
+    "SitePrefix": "HTMO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HTMO-0.xml"
+  },
+  {
+    "SitePrefix": "LAND",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LAND-0.xml"
+  },
+  {
+    "SitePrefix": "LCM2",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LCM2-0.xml"
+  },
+  {
+    "SitePrefix": "LEAH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LEAH-0.xml"
+  },
+  {
+    "SitePrefix": "LEEP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LEEP-0.xml"
+  },
+  {
+    "SitePrefix": "LEIN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LEIN-0.xml"
+  },
+  {
+    "SitePrefix": "LEPC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LEPC-0.xml"
+  },
+  {
+    "SitePrefix": "LWKN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LWKN-0.xml"
+  },
+  {
+    "SitePrefix": "LMSO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LMSO-0.xml"
+  },
+  {
+    "SitePrefix": "LREI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LREI-0.xml"
+  },
+  {
+    "SitePrefix": "LIST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LIST-0.xml"
+  },
+  {
+    "SitePrefix": "LOLO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LOLO-0.xml"
+  },
+  {
+    "SitePrefix": "LOCA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LOCA-0.xml"
+  },
+  {
+    "SitePrefix": "LOCG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LOCG-0.xml"
+  },
+  {
+    "SitePrefix": "RLNG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RLNG-0.xml"
+  },
+  {
+    "SitePrefix": "LBEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LBEA-0.xml"
+  },
+  {
+    "SitePrefix": "LRCG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LRCG-0.xml"
+  },
+  {
+    "SitePrefix": "LYNM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LYNM-0.xml"
+  },
+  {
+    "SitePrefix": "MACP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MACP-0.xml"
+  },
+  {
+    "SitePrefix": "MADD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MADD-0.xml"
+  },
+  {
+    "SitePrefix": "MAHE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MAHE-0.xml"
+  },
+  {
+    "SitePrefix": "MNEU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MNEU-0.xml"
+  },
+  {
+    "SitePrefix": "MANL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MANL-0.xml"
+  },
+  {
+    "SitePrefix": "MANX",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MANX-0.xml"
+  },
+  {
+    "SitePrefix": "MANP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MANP-0.xml"
+  },
+  {
+    "SitePrefix": "MANP",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MANP-1.xml"
+  },
+  {
+    "SitePrefix": "MACS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MACS-0.xml"
+  },
+  {
+    "SitePrefix": "MKEL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MKEL-0.xml"
+  },
+  {
+    "SitePrefix": "MLAW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MLAW-0.xml"
+  },
+  {
+    "SitePrefix": "MNES",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MNES-0.xml"
+  },
+  {
+    "SitePrefix": "MMOR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MMOR-0.xml"
+  },
+  {
+    "SitePrefix": "MKPS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MKPS-0.xml"
+  },
+  {
+    "SitePrefix": "MMCG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MMCG-0.xml"
+  },
+  {
+    "SitePrefix": "MPCS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MPCS-0.xml"
+  },
+  {
+    "SitePrefix": "MEST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MEST-0.xml"
+  },
+  {
+    "SitePrefix": "MEST",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MEST-1.xml"
+  },
+  {
+    "SitePrefix": "MEST",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MEST-2.xml"
+  },
+  {
+    "SitePrefix": "MAST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MAST-0.xml"
+  },
+  {
+    "SitePrefix": "MATD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MATD-0.xml"
+  },
+  {
+    "SitePrefix": "MMCK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MMCK-0.xml"
+  },
+  {
+    "SitePrefix": "MAYO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MAYO-0.xml"
+  },
+  {
+    "SitePrefix": "MCCA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCCA-0.xml"
+  },
+  {
+    "SitePrefix": "MCGO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCGO-0.xml"
+  },
+  {
+    "SitePrefix": "MCGU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCGU-0.xml"
+  },
+  {
+    "SitePrefix": "MCHG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCHG-0.xml"
+  },
+  {
+    "SitePrefix": "MCPK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCPK-0.xml"
+  },
+  {
+    "SitePrefix": "MENA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MENA-0.xml"
+  },
+  {
+    "SitePrefix": "MGMS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MGMS-0.xml"
+  },
+  {
+    "SitePrefix": "LAVE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LAVE-0.xml"
+  },
+  {
+    "SitePrefix": "MRGN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MRGN-0.xml"
+  },
+  {
+    "SitePrefix": "MREA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MREA-0.xml"
+  },
+  {
+    "SitePrefix": "MICR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MICR-0.xml"
+  },
+  {
+    "SitePrefix": "MBAL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MBAL-0.xml"
+  },
+  {
+    "SitePrefix": "MICO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MICO-0.xml"
+  },
+  {
+    "SitePrefix": "MIDE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MIDE-0.xml"
+  },
+  {
+    "SitePrefix": "MDOU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MDOU-0.xml"
+  },
+  {
+    "SitePrefix": "MMWD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MMWD-0.xml"
+  },
+  {
+    "SitePrefix": "MOLL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MOLL-0.xml"
+  },
+  {
+    "SitePrefix": "MOOV",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MOOV-0.xml"
+  },
+  {
+    "SitePrefix": "MOVH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MOVH-0.xml"
+  },
+  {
+    "SitePrefix": "MULA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MULA-0.xml"
+  },
+  {
+    "SitePrefix": "MULT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MULT-0.xml"
+  },
+  {
+    "SitePrefix": "MBRO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MBRO-0.xml"
+  },
+  {
+    "SitePrefix": "PJMC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PJMC-0.xml"
+  },
+  {
+    "SitePrefix": "NATW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NATW-0.xml"
+  },
+  {
+    "SitePrefix": "NDOH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NDOH-0.xml"
+  },
+  {
+    "SitePrefix": "NEPT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NEPT-0.xml"
+  },
+  {
+    "SitePrefix": "PRLK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PRLK-0.xml"
+  },
+  {
+    "SitePrefix": "NEST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NEST-0.xml"
+  },
+  {
+    "SitePrefix": "NSHN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NSHN-0.xml"
+  },
+  {
+    "SitePrefix": "NKEY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NKEY-0.xml"
+  },
+  {
+    "SitePrefix": "NORD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NORD-0.xml"
+  },
+  {
+    "SitePrefix": "NOVA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/NOVA-0.xml"
+  },
+  {
+    "SitePrefix": "OCES",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OCES-0.xml"
+  },
+  {
+    "SitePrefix": "OMUR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OMUR-0.xml"
+  },
+  {
+    "SitePrefix": "ODON",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ODON-0.xml"
+  },
+  {
+    "SitePrefix": "OFCA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OFCA-0.xml"
+  },
+  {
+    "SitePrefix": "OKEE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OKEE-0.xml"
+  },
+  {
+    "SitePrefix": "OMAH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OMAH-0.xml"
+  },
+  {
+    "SitePrefix": "ONEI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ONEI-0.xml"
+  },
+  {
+    "SitePrefix": "ORIA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ORIA-0.xml"
+  },
+  {
+    "SitePrefix": "OAKV",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OAKV-0.xml"
+  },
+  {
+    "SitePrefix": "OBRB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OBRB-0.xml"
+  },
+  {
+    "SitePrefix": "OCEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OCEA-0.xml"
+  },
+  {
+    "SitePrefix": "OGOR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OGOR-0.xml"
+  },
+  {
+    "SitePrefix": "OMDE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OMDE-0.xml"
+  },
+  {
+    "SitePrefix": "ONEL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ONEL-0.xml"
+  },
+  {
+    "SitePrefix": "ORRE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ORRE-0.xml"
+  },
+  {
+    "SitePrefix": "OWEN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OWEN-0.xml"
+  },
+  {
+    "SitePrefix": "PFQC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PFQC-0.xml"
+  },
+  {
+    "SitePrefix": "PMCD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PMCD-0.xml"
+  },
+  {
+    "SitePrefix": "PWAT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PWAT-0.xml"
+  },
+  {
+    "SitePrefix": "PARA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PARA-0.xml"
+  },
+  {
+    "SitePrefix": "PCAS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PCAS-0.xml"
+  },
+  {
+    "SitePrefix": "PATC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PATC-0.xml"
+  },
+  {
+    "SitePrefix": "PATG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PATG-0.xml"
+  },
+  {
+    "SitePrefix": "PONL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PONL-0.xml"
+  },
+  {
+    "SitePrefix": "PTOB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PTOB-0.xml"
+  },
+  {
+    "SitePrefix": "PBAR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PBAR-0.xml"
+  },
+  {
+    "SitePrefix": "PMIL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PMIL-0.xml"
+  },
+  {
+    "SitePrefix": "WYSE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WYSE-0.xml"
+  },
+  {
+    "SitePrefix": "PHOC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PHOC-0.xml"
+  },
+  {
+    "SitePrefix": "PLKM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PLKM-0.xml"
+  },
+  {
+    "SitePrefix": "PMCR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PMCR-0.xml"
+  },
+  {
+    "SitePrefix": "PCML",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PCML-0.xml"
+  },
+  {
+    "SitePrefix": "PPIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPIE-0.xml"
+  },
+  {
+    "SitePrefix": "PPCL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPCL-0.xml"
+  },
+  {
+    "SitePrefix": "PPCL",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPCL-1.xml"
+  },
+  {
+    "SitePrefix": "PMIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PMIE-0.xml"
+  },
+  {
+    "SitePrefix": "PPBH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPBH-0.xml"
+  },
+  {
+    "SitePrefix": "BRAD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BRAD-0.xml"
+  },
+  {
+    "SitePrefix": "PPBY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPBY-0.xml"
+  },
+  {
+    "SitePrefix": "PPBY",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPBY-1.xml"
+  },
+  {
+    "SitePrefix": "GALL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/GALL-0.xml"
+  },
+  {
+    "SitePrefix": "RPRO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RPRO-0.xml"
+  },
+  {
+    "SitePrefix": "RPRO",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RPRO-1.xml"
+  },
+  {
+    "SitePrefix": "PPMF",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPMF-0.xml"
+  },
+  {
+    "SitePrefix": "MCDL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCDL-0.xml"
+  },
+  {
+    "SitePrefix": "PPML",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPML-0.xml"
+  },
+  {
+    "SitePrefix": "OBSW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OBSW-0.xml"
+  },
+  {
+    "SitePrefix": "OBSW",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OBSW-1.xml"
+  },
+  {
+    "SitePrefix": "PPBH",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPBH-1.xml"
+  },
+  {
+    "SitePrefix": "QBRO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QBRO-0.xml"
+  },
+  {
+    "SitePrefix": "PPRC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPRC-0.xml"
+  },
+  {
+    "SitePrefix": "PPSO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PPSO-0.xml"
+  },
+  {
+    "SitePrefix": "PTNK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PTNK-0.xml"
+  },
+  {
+    "SitePrefix": "PROP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PROP-0.xml"
+  },
+  {
+    "SitePrefix": "QUAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUAN-0.xml"
+  },
+  {
+    "SitePrefix": "QUIK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIK-0.xml"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIL-0.xml"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIL-1.xml"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIL-2.xml"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIL-3.xml"
+  },
+  {
+    "SitePrefix": "QUIL",
+    "SiteID": 4,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIL-4.xml"
+  },
+  {
+    "SitePrefix": "QUIN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/QUIN-0.xml"
+  },
+  {
+    "SitePrefix": "BKCM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BKCM-0.xml"
+  },
+  {
+    "SitePrefix": "RAYW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RAYW-0.xml"
+  },
+  {
+    "SitePrefix": "RWHT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RWHT-0.xml"
+  },
+  {
+    "SitePrefix": "RDCP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RDCP-0.xml"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RMAT-0.xml"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RMAT-1.xml"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RMAT-2.xml"
+  },
+  {
+    "SitePrefix": "RMAT",
+    "SiteID": 3,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RMAT-3.xml"
+  },
+  {
+    "SitePrefix": "RMTC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RMTC-0.xml"
+  },
+  {
+    "SitePrefix": "BQUK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/BQUK-0.xml"
+  },
+  {
+    "SitePrefix": "COYC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/COYC-0.xml"
+  },
+  {
+    "SitePrefix": "EDDM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EDDM-0.xml"
+  },
+  {
+    "SitePrefix": "EDDM",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EDDM-1.xml"
+  },
+  {
+    "SitePrefix": "EDIL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/EDIL-0.xml"
+  },
+  {
+    "SitePrefix": "HFIT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HFIT-0.xml"
+  },
+  {
+    "SitePrefix": "FORK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FORK-0.xml"
+  },
+  {
+    "SitePrefix": "FORK",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FORK-1.xml"
+  },
+  {
+    "SitePrefix": "HALN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HALN-0.xml"
+  },
+  {
+    "SitePrefix": "HYNE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HYNE-0.xml"
+  },
+  {
+    "SitePrefix": "MCDD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCDD-0.xml"
+  },
+  {
+    "SitePrefix": "MCGE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MCGE-0.xml"
+  },
+  {
+    "SitePrefix": "MBUR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MBUR-0.xml"
+  },
+  {
+    "SitePrefix": "MBUR",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MBUR-1.xml"
+  },
+  {
+    "SitePrefix": "MURP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/MURP-0.xml"
+  },
+  {
+    "SitePrefix": "OMUR",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/OMUR-2.xml"
+  },
+  {
+    "SitePrefix": "PBWN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PBWN-0.xml"
+  },
+  {
+    "SitePrefix": "SEAB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SEAB-0.xml"
+  },
+  {
+    "SitePrefix": "TJGV",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TJGV-0.xml"
+  },
+  {
+    "SitePrefix": "REAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/REAN-0.xml"
+  },
+  {
+    "SitePrefix": "REDM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/REDM-0.xml"
+  },
+  {
+    "SitePrefix": "RTIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RTIE-0.xml"
+  },
+  {
+    "SitePrefix": "RESF",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RESF-0.xml"
+  },
+  {
+    "SitePrefix": "REPM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/REPM-0.xml"
+  },
+  {
+    "SitePrefix": "RHAT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RHAT-0.xml"
+  },
+  {
+    "SitePrefix": "RIVW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RIVW-0.xml"
+  },
+  {
+    "SitePrefix": "RNOB",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RNOB-0.xml"
+  },
+  {
+    "SitePrefix": "ROBL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ROBL-0.xml"
+  },
+  {
+    "SitePrefix": "LIME",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LIME-0.xml"
+  },
+  {
+    "SitePrefix": "LIME",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LIME-1.xml"
+  },
+  {
+    "SitePrefix": "LIME",
+    "SiteID": 2,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LIME-2.xml"
+  },
+  {
+    "SitePrefix": "ROON",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ROON-0.xml"
+  },
+  {
+    "SitePrefix": "RFOR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RFOR-0.xml"
+  },
+  {
+    "SitePrefix": "ROTH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ROTH-0.xml"
+  },
+  {
+    "SitePrefix": "ROWN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ROWN-0.xml"
+  },
+  {
+    "SitePrefix": "ROYR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ROYR-0.xml"
+  },
+  {
+    "SitePrefix": "RUSS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RUSS-0.xml"
+  },
+  {
+    "SitePrefix": "RYAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/RYAN-0.xml"
+  },
+  {
+    "SitePrefix": "SRPE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SRPE-0.xml"
+  },
+  {
+    "SitePrefix": "SCAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SCAN-0.xml"
+  },
+  {
+    "SitePrefix": "SCKP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SCKP-0.xml"
+  },
+  {
+    "SitePrefix": "FURY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/FURY-0.xml"
+  },
+  {
+    "SitePrefix": "SBOY",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SBOY-0.xml"
+  },
+  {
+    "SitePrefix": "SOHN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SOHN-0.xml"
+  },
+  {
+    "SitePrefix": "SFTG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SFTG-0.xml"
+  },
+  {
+    "SitePrefix": "SFTG",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SFTG-1.xml"
+  },
+  {
+    "SitePrefix": "SFOD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SFOD-0.xml"
+  },
+  {
+    "SitePrefix": "SHER",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SHER-0.xml"
+  },
+  {
+    "SitePrefix": "SINC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SINC-0.xml"
+  },
+  {
+    "SitePrefix": "SBUT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SBUT-0.xml"
+  },
+  {
+    "SitePrefix": "SKST",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SKST-0.xml"
+  },
+  {
+    "SitePrefix": "PADS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PADS-0.xml"
+  },
+  {
+    "SitePrefix": "PADS",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/PADS-1.xml"
+  },
+  {
+    "SitePrefix": "SOLG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SOLG-0.xml"
+  },
+  {
+    "SitePrefix": "SEES",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SEES-0.xml"
+  },
+  {
+    "SitePrefix": "SPSH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SPSH-0.xml"
+  },
+  {
+    "SitePrefix": "SPEC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SPEC-0.xml"
+  },
+  {
+    "SitePrefix": "SPEN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SPEN-0.xml"
+  },
+  {
+    "SitePrefix": "STEA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STEA-0.xml"
+  },
+  {
+    "SitePrefix": "STEL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STEL-0.xml"
+  },
+  {
+    "SitePrefix": "STOK",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STOK-0.xml"
+  },
+  {
+    "SitePrefix": "STON",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STON-0.xml"
+  },
+  {
+    "SitePrefix": "STUA",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/STUA-0.xml"
+  },
+  {
+    "SitePrefix": "SMCD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SMCD-0.xml"
+  },
+  {
+    "SitePrefix": "SULL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SULL-0.xml"
+  },
+  {
+    "SitePrefix": "SUPL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/SUPL-0.xml"
+  },
+  {
+    "SitePrefix": "TFAR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TFAR-0.xml"
+  },
+  {
+    "SitePrefix": "TJGN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TJGN-0.xml"
+  },
+  {
+    "SitePrefix": "TAMI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TAMI-0.xml"
+  },
+  {
+    "SitePrefix": "TARP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TARP-0.xml"
+  },
+  {
+    "SitePrefix": "LMUL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LMUL-0.xml"
+  },
+  {
+    "SitePrefix": "TENR",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TENR-0.xml"
+  },
+  {
+    "SitePrefix": "LOTP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/LOTP-0.xml"
+  },
+  {
+    "SitePrefix": "HLAN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/HLAN-0.xml"
+  },
+  {
+    "SitePrefix": "TDPS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TDPS-0.xml"
+  },
+  {
+    "SitePrefix": "TPCO",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TPCO-0.xml"
+  },
+  {
+    "SitePrefix": "TPSM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TPSM-0.xml"
+  },
+  {
+    "SitePrefix": "TPSP",
+    "SiteID": 1,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TPSP-1.xml"
+  },
+  {
+    "SitePrefix": "TPSP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TPSP-0.xml"
+  },
+  {
+    "SitePrefix": "TJOD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TJOD-0.xml"
+  },
+  {
+    "SitePrefix": "TIMD",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TIMD-0.xml"
+  },
+  {
+    "SitePrefix": "TOMM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TOMM-0.xml"
+  },
+  {
+    "SitePrefix": "TOMH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TOMH-0.xml"
+  },
+  {
+    "SitePrefix": "TORM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TORM-0.xml"
+  },
+  {
+    "SitePrefix": "TURL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/TURL-0.xml"
+  },
+  {
+    "SitePrefix": "URIE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/URIE-0.xml"
+  },
+  {
+    "SitePrefix": "URBL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/URBL-0.xml"
+  },
+  {
+    "SitePrefix": "VMIC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/VMIC-0.xml"
+  },
+  {
+    "SitePrefix": "VCOL",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/VCOL-0.xml"
+  },
+  {
+    "SitePrefix": "VINC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/VINC-0.xml"
+  },
+  {
+    "SitePrefix": "VINW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/VINW-0.xml"
+  },
+  {
+    "SitePrefix": "WALS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WALS-0.xml"
+  },
+  {
+    "SitePrefix": "WOSU",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WOSU-0.xml"
+  },
+  {
+    "SitePrefix": "WALP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WALP-0.xml"
+  },
+  {
+    "SitePrefix": "WARN",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WARN-0.xml"
+  },
+  {
+    "SitePrefix": "WARE",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WARE-0.xml"
+  },
+  {
+    "SitePrefix": "WMCC",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WMCC-0.xml"
+  },
+  {
+    "SitePrefix": "WATT",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WATT-0.xml"
+  },
+  {
+    "SitePrefix": "WPGP",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WPGP-0.xml"
+  },
+  {
+    "SitePrefix": "WESW",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WESW-0.xml"
+  },
+  {
+    "SitePrefix": "WILH",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WILH-0.xml"
+  },
+  {
+    "SitePrefix": "WRIG",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/WRIG-0.xml"
+  },
+  {
+    "SitePrefix": "YNGS",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/YNGS-0.xml"
+  },
+  {
+    "SitePrefix": "YMPI",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/YMPI-0.xml"
+  },
+  {
+    "SitePrefix": "ZERM",
+    "SiteID": 0,
+    "url": "https://www.acquaintcrm.co.uk/datafeeds/standardxml/ZERM-0.xml"
+  }
+]
