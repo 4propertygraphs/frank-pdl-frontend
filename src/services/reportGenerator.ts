@@ -149,6 +149,42 @@ export class ReportGeneratorService {
     return blob;
   }
 
+  private formatPropertyTitle(prop: any): string {
+    let displayTitle = '';
+
+    if (prop.bedrooms) {
+      displayTitle += `${prop.bedrooms} bed `;
+    }
+
+    if (prop.type) {
+      try {
+        const typeObj = typeof prop.type === 'string' ? JSON.parse(prop.type) : prop.type;
+        displayTitle += typeObj['#text'] || typeObj;
+      } catch {
+        displayTitle += prop.type;
+      }
+      displayTitle += ' ';
+    }
+
+    if (prop.city) {
+      displayTitle += `in ${prop.city} `;
+    } else if (prop.address) {
+      displayTitle += `at ${prop.address.substring(0, 30)} `;
+    }
+
+    if (prop.price) {
+      displayTitle += `- €${Number(prop.price).toLocaleString()}`;
+    }
+
+    if (!displayTitle.trim()) {
+      displayTitle = prop.title?.length > 50
+        ? prop.title.substring(0, 50) + '...'
+        : (prop.title || 'Property');
+    }
+
+    return displayTitle.trim();
+  }
+
   private generateHTML(data: ReportData): string {
     const date = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
@@ -379,6 +415,30 @@ export class ReportGeneratorService {
         </div>
       </div>
     `}).join('')}
+  </div>
+
+  <div class="section">
+    <h2>Property Listings</h2>
+    <div style="display: grid; gap: 16px;">
+      ${data.properties.slice(0, 20).map(prop => `
+        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
+          <div style="font-weight: 600; color: #111827; margin-bottom: 8px; font-size: 16px;">
+            ${this.formatPropertyTitle(prop)}
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; font-size: 13px; color: #6b7280;">
+            ${prop.bedrooms ? `<div><strong>Bedrooms:</strong> ${prop.bedrooms}</div>` : ''}
+            ${prop.bathrooms ? `<div><strong>Bathrooms:</strong> ${prop.bathrooms}</div>` : ''}
+            ${prop.county ? `<div><strong>County:</strong> ${prop.county}</div>` : ''}
+            ${prop.ber_rating ? `<div><strong>BER:</strong> ${prop.ber_rating}</div>` : ''}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    ${data.properties.length > 20 ? `
+      <div style="margin-top: 20px; padding: 12px; background: #f3f4f6; border-radius: 8px; text-align: center; color: #6b7280; font-size: 14px;">
+        Showing 20 of ${data.properties.length} properties
+      </div>
+    ` : ''}
   </div>
 
   <div class="section">
