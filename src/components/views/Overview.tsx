@@ -4,35 +4,6 @@ import { apiService } from "../../services/api";
 import { cloudUploadService } from "../../services/cloudUpload";
 import { Building, Users, DollarSign, TrendingUp, Upload, Cloud } from "lucide-react";
 
-
-const resolveAgencyLookupKey = (agency: any): string | null => {
-  if (!agency) return null;
-
-  const candidates = [
-    agency?.unique_key,
-    agency?.Key,
-    agency?.UUID,
-    agency?.sitePrefix,
-    agency?.AcquiantCustomer?.SitePrefix,
-  ];
-
-  const candidate = candidates.find(
-    (value) => typeof value === 'string' && value.trim().length > 0
-  );
-  if (candidate) {
-    return (candidate as string).trim();
-  }
-
-  const fallbackId = agency?.id ?? agency?.SiteID ?? agency?.siteId;
-  if (fallbackId !== undefined && fallbackId !== null) {
-    const trimmed = String(fallbackId).trim();
-    if (trimmed.length > 0) {
-      return trimmed;
-    }
-  }
-
-  return null;
-};
 export default function Overview() {
   const { state, dispatch } = useApp();
   const { agencies, properties, settings, loading } = state;

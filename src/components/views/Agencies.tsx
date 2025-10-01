@@ -179,7 +179,7 @@ export default function Agencies() {
   };
 
   const handleForceSync = async (agency: AgencyRecord) => {
-    const key = resolveAgencyLookupKey(agency);
+    const key = buildAgencyKey(agency);
     if (!key) {
       console.warn('Cannot sync agency without lookup key');
       return;
