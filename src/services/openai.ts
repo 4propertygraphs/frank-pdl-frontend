@@ -1,7 +1,28 @@
-const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+import { supabase } from './supabase';
+
+let OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
-console.log('OpenAI API Key loaded:', OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 10)}...` : 'NOT FOUND');
+async function loadApiKeyFromDatabase() {
+  try {
+    const { data, error } = await supabase
+      .from('app_settings')
+      .select('value')
+      .eq('key', 'OPENAI_API_KEY')
+      .maybeSingle();
+
+    if (data?.value) {
+      OPENAI_API_KEY = data.value;
+      console.log('✓ OpenAI API Key loaded from database');
+    } else {
+      console.warn('⚠ OpenAI API key not found in database');
+    }
+  } catch (error) {
+    console.error('✗ Error loading API key from database:', error);
+  }
+}
+
+loadApiKeyFromDatabase();
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
@@ -34,10 +55,16 @@ Context about the application:
 - You have access to the full property database and can reference specific properties
 - You can trigger actions like: opening property details, generating reports, navigating to sections
 
+IMPORTANT: If you don't have any property or agency data in the context (empty arrays), tell the user they need to:
+1. Go to the Overview section
+2. Click "Load Data" or "Upload to Cloud" button to load properties from XML files
+3. Then come back to chat with you once the data is loaded
+
 When users ask you to show a property or generate a report, you should:
-1. Confirm which property they mean (if ambiguous)
-2. Use the action command format: [ACTION:type:data]
-3. Available actions:
+1. First check if you have property data - if not, explain they need to load data first
+2. Confirm which property they mean (if ambiguous)
+3. Use the action command format: [ACTION:type:data]
+4. Available actions:
    - [ACTION:OPEN_PROPERTY:property_id] - Opens property detail view
    - [ACTION:GENERATE_REPORT:property_id] - Generates AI report for property
    - [ACTION:NAVIGATE:section_name] - Navigates to a section (overview, agencies, settings, etc.)
@@ -47,6 +74,10 @@ Always be helpful, professional, and conversational.`;
 
   async chat(userMessage: string, conversationHistory: ChatMessage[] = [], context?: any): Promise<{ response: string; actions: any[] }> {
     try {
+      if (!OPENAI_API_KEY || OPENAI_API_KEY === 'your_openai_api_key_here') {
+        await loadApiKeyFromDatabase();
+      }
+
       if (!OPENAI_API_KEY || OPENAI_API_KEY === 'your_openai_api_key_here') {
         return this.getFallbackResponse(userMessage, context);
       }
