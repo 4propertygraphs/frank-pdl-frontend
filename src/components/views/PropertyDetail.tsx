@@ -129,7 +129,31 @@ export default function PropertyDetail() {
         };
 
         const description = cleanDescription(selectedProperty.description);
-        const paragraphs = description.split('\n\n').filter(p => p.trim());
+
+        const splitIntoSentences = (text: string) => {
+          return text.match(/[^.!?]+[.!?]+/g) || [text];
+        };
+
+        const createParagraphs = (text: string) => {
+          const sentences = splitIntoSentences(text);
+          const paragraphs: string[] = [];
+          let currentParagraph: string[] = [];
+
+          sentences.forEach((sentence, index) => {
+            currentParagraph.push(sentence.trim());
+
+            if (currentParagraph.length >= 3 || index === sentences.length - 1) {
+              paragraphs.push(currentParagraph.join(' '));
+              currentParagraph = [];
+            }
+          });
+
+          return paragraphs.filter(p => p.trim());
+        };
+
+        const paragraphs = description.includes('\n\n')
+          ? description.split('\n\n').filter(p => p.trim())
+          : createParagraphs(description);
 
         return (
           <div className="space-y-6">
@@ -183,40 +207,6 @@ export default function PropertyDetail() {
               </div>
             </div>
 
-            {/* Key Features */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Property Highlights</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Bed className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Bedrooms</p>
-                    <p className="font-semibold text-gray-900">{selectedProperty.bedrooms ?? 'N/A'}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Bath className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Bathrooms</p>
-                    <p className="font-semibold text-gray-900">{selectedProperty.bathrooms ?? 'N/A'}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Square className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Property Type</p>
-                    <p className="font-semibold text-gray-900">{String(selectedProperty.type || 'N/A')}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Calendar className="w-5 h-5 text-blue-600" />
-                  <div>
-                    <p className="text-sm text-gray-600">Status</p>
-                    <p className="font-semibold text-gray-900">{String(selectedProperty.availability || 'Available')}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         );
       
