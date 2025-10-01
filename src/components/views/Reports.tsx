@@ -21,7 +21,7 @@ interface Report {
 }
 
 export default function Reports() {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const { properties, agencies, settings } = state;
   const [selectedReportType, setSelectedReportType] = useState<string>('all');
   const [selectedAgency, setSelectedAgency] = useState<string>('');
@@ -39,11 +39,32 @@ export default function Reports() {
   ];
 
   useEffect(() => {
+    loadAgencies();
     loadReports();
+  }, []);
+
+  useEffect(() => {
     if (agencies.length > 0 && !selectedAgency) {
       setSelectedAgency(agencies[0].site_prefix);
     }
   }, [agencies]);
+
+  const loadAgencies = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('agencies')
+        .select('*')
+        .order('name');
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        dispatch({ type: 'SET_AGENCIES', payload: data });
+      }
+    } catch (error) {
+      console.error('Failed to load agencies:', error);
+    }
+  };
 
   const loadReports = async () => {
     try {
