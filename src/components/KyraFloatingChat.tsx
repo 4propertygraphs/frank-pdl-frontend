@@ -74,7 +74,7 @@ export default function KyraFloatingChat() {
       minimize: 'Minimize',
       maximize: 'Maximize',
       close: 'Close',
-      welcomeMessage: 'Hello! I\'m Kyra, your AI assistant. I can help you analyze properties, generate reports, and navigate the application. How can I assist you today?'
+      welcomeMessage: 'Hello! I\'m Kyra, your real estate advisor. I have extensive experience in property analysis and market trends. I can help you analyze properties, evaluate investment opportunities, and provide market insights. What would you like to know?'
     },
     cz: {
       chatWithKyra: 'Chat s Kyrou',
@@ -84,7 +84,7 @@ export default function KyraFloatingChat() {
       minimize: 'Minimalizovat',
       maximize: 'Maximalizovat',
       close: 'Zavřít',
-      welcomeMessage: 'Ahoj! Jsem Kyra, váš AI asistent. Mohu vám pomoci analyzovat nemovitosti, generovat reporty a navigovat aplikací. Jak vám mohu pomoci?'
+      welcomeMessage: 'Dobrý den! Jsem Kyra, vaše realitní poradkyně. Mám dlouholeté zkušenosti s analýzou nemovitostí a znalostí trhu. Můžu vám pomoct s hodnocením properties, investičními příležitostmi a tržními insights. Co vás zajímá?'
     },
     ru: {
       chatWithKyra: 'Чат с Kyra',

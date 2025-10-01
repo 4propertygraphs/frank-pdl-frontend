@@ -554,35 +554,35 @@ class KyraAI {
     return Math.min(Math.max(score, 0), 10);
   }
 
-  // Generate AI responses
+  // Generate AI responses with natural professional tone
   async generateResponse(message: string, context: any): Promise<string> {
     const lowerMessage = message.toLowerCase();
-    
+
     // Data-driven responses
-    if (lowerMessage.includes('statistics') || lowerMessage.includes('overview')) {
+    if (lowerMessage.includes('statistics') || lowerMessage.includes('overview') || lowerMessage.includes('celkem') || lowerMessage.includes('kolik')) {
       return this.generateStatisticsResponse(context);
     }
-    
-    if (lowerMessage.includes('agencies') || lowerMessage.includes('agency')) {
+
+    if (lowerMessage.includes('agencies') || lowerMessage.includes('agency') || lowerMessage.includes('agentur')) {
       return this.generateAgencyResponse(context);
     }
-    
-    if (lowerMessage.includes('properties') || lowerMessage.includes('property')) {
+
+    if (lowerMessage.includes('properties') || lowerMessage.includes('property') || lowerMessage.includes('nemovitost')) {
       return this.generatePropertyResponse(context);
     }
-    
-    if (lowerMessage.includes('market') || lowerMessage.includes('trend')) {
+
+    if (lowerMessage.includes('market') || lowerMessage.includes('trend') || lowerMessage.includes('trh')) {
       return this.generateMarketResponse(context);
     }
-    
-    if (lowerMessage.includes('investment') || lowerMessage.includes('recommend')) {
+
+    if (lowerMessage.includes('investment') || lowerMessage.includes('recommend') || lowerMessage.includes('investice') || lowerMessage.includes('doporuč')) {
       return this.generateInvestmentResponse(context);
     }
-    
-    if (lowerMessage.includes('help') || lowerMessage.includes('navigate')) {
+
+    if (lowerMessage.includes('help') || lowerMessage.includes('navigate') || lowerMessage.includes('pomoc') || lowerMessage.includes('nápověd')) {
       return this.generateHelpResponse();
     }
-    
+
     // Default intelligent response
     return this.generateContextualResponse(message, context);
   }
@@ -591,75 +591,63 @@ class KyraAI {
     const { agencies, properties } = context;
     const totalValue = properties.reduce((sum: number, p: Property) => sum + p.price, 0);
     const avgPrice = properties.length > 0 ? totalValue / properties.length : 0;
-    
-    return `📊 **Current Portfolio Statistics:**
-    
-• **Total Properties:** ${properties.length}
-• **Active Agencies:** ${agencies.length}
-• **Portfolio Value:** $${totalValue.toLocaleString()}
-• **Average Price:** $${Math.round(avgPrice).toLocaleString()}
-• **Market Coverage:** ${new Set(properties.map((p: Property) => p.location.city)).size} cities
+    const cities = new Set(properties.map((p: Property) => p.location?.city || p.city || 'Unknown')).size;
 
-**Market Insights:** Based on current data, your portfolio shows strong diversification across multiple markets. I recommend focusing on the Prague market for premium investments.`;
+    return `Dobře, podívám se na aktuální stav vašeho portfolia.
+
+Momentálně máme v systému ${properties.length} nemovitostí od ${agencies.length} realitních agentur. Celková hodnota portfolia je €${totalValue.toLocaleString()}, což je opravdu solidní základ.
+
+Průměrná cena nemovitosti se pohybuje kolem €${Math.round(avgPrice).toLocaleString()}. Pokrýváme ${cities} různých lokalit, což je výborná diverzifikace.
+
+Z mého pohledu je to zdravé portfolio s dobrým rozložením rizika. Pokud byste chtěla detailnější analýzu konkrétních trhů nebo agentur, klidně se zeptejte.`;
   }
 
   private generateAgencyResponse(context: any): string {
     const { agencies, properties } = context;
     const topAgency = agencies.reduce((top: Agency, agency: Agency) => {
       const agencyProps = properties.filter((p: Property) => p.agency_id === agency.id);
-      const topProps = properties.filter((p: Property) => p.agency_id === top.id);
+      const topProps = properties.filter((p: Property) => p.agency_id === top?.id);
       return agencyProps.length > topProps.length ? agency : top;
     }, agencies[0]);
-    
-    return `🏢 **Agency Analysis:**
-    
-**Top Performing Agency:** ${topAgency?.name}
-• Properties Listed: ${properties.filter((p: Property) => p.agency_id === topAgency?.id).length}
-• Market Position: Premium
 
-**Recommendations:**
-• Consider expanding partnerships with high-performing agencies
-• Focus on agencies with strong local market presence
-• Evaluate agency performance metrics regularly
+    const topProps = properties.filter((p: Property) => p.agency_id === topAgency?.id).length;
 
-Would you like me to show detailed agency comparisons or navigate to the Agencies section?`;
+    return `Co se týče agentur, pracujeme s ${agencies.length} partnery.
+
+Nejaktivnější je momentálně ${topAgency?.name || 'agentura v systému'}, která má v nabídce ${topProps} nemovitostí. To je docela slušná aktivita.
+
+Všímám si, že agentury s větším počtem nemovitostí většinou nabízejí i lepší servis a mají širší portfolio lokalit. Pokud vás zajímají konkrétní agentury nebo chcete porovnat jejich výkonnost, můžu vám to detailně rozebrat.
+
+Chcete se podívat na kompletní přehled agentur? Můžu vás tam navigovat.`;
   }
 
   private generatePropertyResponse(context: any): string {
     const { properties } = context;
     const activeProperties = properties.filter((p: Property) => p.status === 'active');
     const avgPrice = properties.reduce((sum: number, p: Property) => sum + p.price, 0) / properties.length;
-    
-    return `🏠 **Property Portfolio Analysis:**
-    
-• **Active Listings:** ${activeProperties.length}
-• **Average Price:** $${Math.round(avgPrice).toLocaleString()}
-• **Price Range:** $${Math.min(...properties.map((p: Property) => p.price)).toLocaleString()} - $${Math.max(...properties.map((p: Property) => p.price)).toLocaleString()}
+    const minPrice = Math.min(...properties.map((p: Property) => p.price));
+    const maxPrice = Math.max(...properties.map((p: Property) => p.price));
 
-**Investment Opportunities:**
-${properties.slice(0, 3).map((p: Property) => `• ${p.title} - $${p.price.toLocaleString()}`).join('\n')}
+    return `Pojďme se podívat na nemovitosti v portfoliu.
 
-I can provide detailed analysis for any specific property. Just ask!`;
+Aktuálně máme ${activeProperties.length} aktivních nabídek. Průměrná cena je €${Math.round(avgPrice).toLocaleString()}, ale rozsah je docela široký - od €${minPrice.toLocaleString()} až po €${maxPrice.toLocaleString()}.
+
+${properties.length > 0 ? `Pár zajímavých možností na úvod:
+${properties.slice(0, 3).map((p: Property) => `• ${p.title} - €${p.price.toLocaleString()}`).join('\n')}` : ''}
+
+Pokud vás zajímá konkrétní nemovitost nebo chcete analýzu investičního potenciálu, klidně se ptejte. Můžu vám poskytnout detailní rozbor jakékoliv property.`;
   }
 
   private generateMarketResponse(context: any): string {
-    return `📈 **Market Analysis:**
-    
-**Current Trends:**
-• Prague market showing 12% growth YoY
-• Apartment demand increasing in city centers
-• Investment opportunities in emerging districts
+    return `Co se týče trhu, vidím několik zajímavých trendů.
 
-**Price Predictions:**
-• Expected 8-15% appreciation over next 12 months
-• Strong rental yield potential in premium locations
+V Irsku, zejména v oblasti Dublinu a okolí, je momentálně docela dynamický trh. Ceny bytů v centrech rostou stabilním tempem, odhaduji tak 8-12% ročně. Je to dané kombinací poptávky a omezené nabídky.
 
-**Recommendations:**
-• Focus on properties under $500K for best ROI
-• Consider diversifying into commercial properties
-• Monitor interest rate changes for timing
+Byty v centru měst mají stále vysoký potenciál, hlavně kvůli nájemnímu trhu. Výnos z pronájmu se v prémiových lokalitách pohybuje kolem 5-7%, což je slušné číslo.
 
-Would you like me to generate a detailed market report?`;
+Moje doporučení? Zaměřte se na nemovitosti do €500,000 - tam je nejlepší poměr cena/výnos. A určitě sledujte úrokové sazby, to může zásadně ovlivnit načasování investice.
+
+Chcete detailnější analýzu nějaké konkrétní lokality nebo typu nemovitosti?`;
   }
 
   private generateInvestmentResponse(context: any): string {
@@ -669,59 +657,62 @@ Would you like me to generate a detailed market report?`;
       const currentScore = this.calculateInvestmentScore(current);
       return currentScore > bestScore ? current : best;
     }, properties[0]);
-    
-    return `💰 **Investment Recommendations:**
-    
-**Top Investment Opportunity:**
-• **${bestInvestment?.title}**
-• Price: $${bestInvestment?.price.toLocaleString()}
-• Investment Score: ${this.calculateInvestmentScore(bestInvestment)}/10
-• Expected ROI: 12-15%
 
-**Portfolio Optimization:**
-• Diversify across 3-4 different markets
-• Maintain 60% residential, 40% commercial split
-• Target properties with renovation potential
+    const score = this.calculateInvestmentScore(bestInvestment);
 
-I can provide detailed investment analysis for any property. Would you like me to create a custom investment report?`;
+    return `Podívejme se na investiční příležitosti.
+
+Z toho, co momentálně vidím v portfoliu, nejvíce mě zaujala tato nabídka:
+
+**${bestInvestment?.title}**
+Cena: €${bestInvestment?.price.toLocaleString()}
+Investiční potenciál: ${score.toFixed(1)}/10
+Odhadovaný ROI: 12-15% ročně
+
+Z dlouhodobého hlediska bych doporučila diverzifikovat napříč 3-4 různými trhy. Ideální je mít portfolio složené cca 60% rezidenční a 40% komerční nemovitosti.
+
+Taky určitě hledejte properties s potenciálem renovace - tam je často největší margin.
+
+Chcete, abych vám připravila detailní investiční analýzu pro nějakou konkrétní nemovitost?`;
   }
 
   private generateHelpResponse(): string {
-    return `🤖 **Kyra AI Assistant - Help Guide:**
-    
-**I can help you with:**
-• Navigate between different sections
-• Analyze property and market data
-• Generate detailed reports
-• Provide investment recommendations
-• Answer questions about agencies and properties
+    return `Ráda vám pomůžu zorientovat se v systému!
 
-**Quick Commands:**
-• "Show statistics" - Portfolio overview
-• "Analyze agencies" - Agency performance
-• "Market trends" - Current market analysis
-• "Investment advice" - Personalized recommendations
-• "Navigate to [section]" - Switch to any section
+Můžu vám pomoct s:
+• Navigací mezi jednotlivými sekcemi aplikace
+• Analýzou nemovitostí a tržních dat
+• Generováním detailních reportů
+• Investičními doporučeními
+• Odpověďmi na otázky ohledně agentur a nemovitostí
 
-**Data Management:**
-I continuously monitor and cache all application data for optimal performance. All your data is automatically backed up and analyzed for insights.
+Pár tipů, na co se můžete zeptat:
+• "Kolik máme nemovitostí?" - přehled portfolia
+• "Jaké jsou nejlepší agentury?" - analýza výkonnosti
+• "Jaký je stav trhu?" - aktuální tržní analýza
+• "Co mi doporučuješ koupit?" - investiční tipy
+• "Naviguj na přehled" - přepnutí do sekce
 
-How can I assist you today?`;
+Pracuji s reálnými daty z vašeho systému a všechno je automaticky zálohované a analyzované.
+
+S čím konkrétně vám můžu dnes pomoct?`;
   }
 
   private generateContextualResponse(message: string, context: any): string {
-    return `I understand you're asking about "${message}". Based on your current portfolio of ${context.properties?.length || 0} properties across ${context.agencies?.length || 0} agencies, I can provide detailed insights and analysis.
+    return `Rozumím, ptáte se na "${message}".
 
-**What I can do:**
-• Analyze your property portfolio performance
-• Compare market trends and opportunities
-• Generate comprehensive reports
-• Navigate you to relevant sections
-• Provide investment recommendations
+Aktuálně pracujeme s portfoliem ${context.properties?.length || 0} nemovitostí od ${context.agencies?.length || 0} agentur. Z dat, která mám k dispozici, můžu vám poskytnout opravdu detailní analýzu.
 
-**Current Market Status:** Your portfolio is performing well with strong diversification. Would you like me to provide specific analysis on any aspect of your real estate investments?
+Co můžu pro vás udělat:
+• Analyzovat výkonnost vašeho portfolia
+• Porovnat tržní trendy a příležitosti
+• Vygenerovat komplexní reporty
+• Navigovat vás na relevantní sekce
+• Poskytnout investiční doporučení
 
-Just ask me anything about your properties, agencies, market trends, or let me help you navigate the application!`;
+Vaše portfolio vypadá dobře - máte solidní diverzifikaci. Chcete se podívat na nějaký konkrétní aspekt vašich realitních investic?
+
+Klidně se ptejte na cokoliv ohledně nemovitostí, agentur, tržních trendů, nebo mi řekněte, kam vás mám navigovat v aplikaci!`;
   }
 
   // Generate property comparison analysis
