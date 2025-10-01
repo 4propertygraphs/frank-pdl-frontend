@@ -19,6 +19,43 @@ export default function Overview() {
     }
   }, [hasLoadedOnce, properties.length, loading]);
 
+  useEffect(() => {
+    const checkAndAutoSync = async () => {
+      const lastSync = localStorage.getItem('lastAutoSync');
+      const now = Date.now();
+      const twoDaysInMs = 2 * 24 * 60 * 60 * 1000;
+
+      if (!lastSync || now - parseInt(lastSync) > twoDaysInMs) {
+        console.log('🔄 Auto-sync triggered (2 days passed)');
+        setUploadProgress('Auto-syncing from XML...');
+
+        try {
+          const result = await cloudUploadService.uploadAllXMLFiles();
+          console.log(`✅ Auto-sync complete: ${result.success} properties`);
+
+          localStorage.setItem('lastAutoSync', now.toString());
+
+          const allProperties = await cloudUploadService.getPropertiesFromDatabase();
+          dispatch({ type: "SET_PROPERTIES", payload: allProperties });
+
+          setUploadProgress(`✅ Auto-synced ${result.success} properties`);
+          setTimeout(() => setUploadProgress(""), 3000);
+        } catch (error: any) {
+          console.error('Auto-sync failed:', error);
+          setUploadProgress("");
+        }
+      }
+    };
+
+    if (hasLoadedOnce && properties.length > 0) {
+      checkAndAutoSync();
+    }
+
+    const interval = setInterval(checkAndAutoSync, 60 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [hasLoadedOnce, properties.length]);
+
   const loadData = async () => {
     try {
       dispatch({ type: "SET_LOADING", payload: true });
@@ -76,6 +113,8 @@ export default function Overview() {
 
     try {
       const result = await cloudUploadService.uploadAllXMLFiles();
+
+      localStorage.setItem('lastAutoSync', Date.now().toString());
 
       setUploadProgress(
         `✅ Upload complete: ${result.success} successful, ${result.failed} failed`
