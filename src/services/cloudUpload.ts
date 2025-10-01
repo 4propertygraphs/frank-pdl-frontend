@@ -60,21 +60,28 @@ export class CloudUploadService {
 
       for (const agencyData of agencyUrls) {
         const sitePrefix = agencyData.SitePrefix?.toLowerCase();
-        const xmlUrl = agencyData.url;
+        const siteId = agencyData.SiteID ?? 0;
 
-        if (!sitePrefix || !xmlUrl) continue;
+        if (!sitePrefix) continue;
 
         try {
-          // Use proxy to avoid CORS: replace acquaintcrm.co.uk domain with proxy
-          const proxyUrl = xmlUrl.replace('https://www.acquaintcrm.co.uk', 'http://localhost:3001/acquaint');
+          let xmlText: string;
 
-          const xmlResponse = await fetch(proxyUrl);
-          if (!xmlResponse.ok) {
-            console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: HTTP ${xmlResponse.status}`);
-            continue;
+          // Check if running in Electron
+          if (window.electron && window.electron.fetchAcquaintData) {
+            // Use Electron IPC to fetch without CORS issues
+            xmlText = await window.electron.fetchAcquaintData(sitePrefix.toUpperCase(), siteId);
+          } else {
+            // Fallback to direct fetch (for web version)
+            const xmlUrl = agencyData.url;
+            const xmlResponse = await fetch(xmlUrl);
+            if (!xmlResponse.ok) {
+              console.log(`⏭️  Skipping ${sitePrefix.toUpperCase()}: HTTP ${xmlResponse.status}`);
+              continue;
+            }
+            xmlText = await xmlResponse.text();
           }
 
-          const xmlText = await xmlResponse.text();
           const properties = xmlParser.parseXML(xmlText, sitePrefix.toUpperCase());
 
           if (properties.length > 0) {
