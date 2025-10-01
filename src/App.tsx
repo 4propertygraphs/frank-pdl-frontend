@@ -6,6 +6,7 @@ import KyraFloatingChat from './components/KyraFloatingChat';
 import Overview from './components/views/Overview';
 import Agencies from './components/views/Agencies';
 import PropertyDetail from './components/views/PropertyDetail';
+import Reports from './components/views/Reports';
 import ProtectData from './components/views/ProtectData';
 import ShareBank from './components/views/ShareBank';
 import TrackOn from './components/views/TrackOn';
@@ -41,6 +42,8 @@ function AppContent() {
         return <Overview />;
       case 'agencies':
         return <Agencies />;
+      case 'reports':
+        return <Reports />;
       case 'protect-data':
         return <ProtectData />;
       case 'share-bank':
