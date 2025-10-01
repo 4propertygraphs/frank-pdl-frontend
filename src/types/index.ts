@@ -27,14 +27,25 @@ export interface Agency {
 }
 
 export interface Property {
-  id: number;
+  id: string;
+  agency_id: string;
   title: string;
-  price?: number;
   address?: string;
+  city?: string;
+  county?: string;
+  postcode?: string;
+  country?: string;
+  price?: number;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  type?: string;
+  status?: string;
   description?: string;
-  agency_id?: number;
+  images?: string[];
   created_at?: string;
   updated_at?: string;
+  synced_at?: string;
+  raw_data?: any;
 }
 
 export interface FieldMapping {

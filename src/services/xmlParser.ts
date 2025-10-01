@@ -68,6 +68,7 @@ export class XMLPropertyParser {
         .filter(Boolean)
         .join(', '),
       city: xmlProp.address2 || xmlProp.town || '',
+      county: xmlProp.address3 || '',
       postcode: xmlProp.address4 || '',
       country: xmlProp.country || 'Ireland',
       price: this.parsePrice(xmlProp.price),
