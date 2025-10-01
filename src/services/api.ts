@@ -167,10 +167,34 @@ class ApiService {
       return window.electron.fetchAcquaintData(sitePrefix, siteId);
     }
 
-    const proxyUrl = `http://localhost:3001/acquaint/datafeeds/standardxml/${sitePrefix}-${siteId}.xml`;
-    console.log('Fetching Acquaint feed via proxy:', proxyUrl);
-    const response = await axios.get(proxyUrl, { responseType: 'text' });
-    return response.data;
+    const filename = `${sitePrefix}-${siteId}.xml`;
+    const directUrl = `https://www.acquaintcrm.co.uk/datafeeds/standardxml/${filename}`;
+
+    console.log('Fetching Acquaint feed:', directUrl);
+
+    try {
+      const response = await axios.get(directUrl, {
+        responseType: 'text',
+        headers: {
+          'Accept': 'application/xml, text/xml, */*'
+        }
+      });
+
+      console.log(`✅ Successfully fetched ${filename}, saving locally...`);
+
+      const blob = new Blob([response.data], { type: 'application/xml' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      return response.data;
+    } catch (error: any) {
+      console.error(`Failed to fetch ${filename}:`, error.message);
+      throw error;
+    }
   }
 
   private async getPropertyDataFromApi(sitePrefix: string, siteId: number | string = 0) {
