@@ -1,51 +1,82 @@
-import { createClient } from '@supabase/supabase-js';
+import pg from 'pg';
 import { config } from 'dotenv';
 import { readFileSync } from 'fs';
 
 config();
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL;
-const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseKey) {
-  console.error('Missing Supabase credentials in .env file');
+// Extract project ref from URL
+const projectRef = supabaseUrl.split('//')[1].split('.')[0];
+
+// Standard Supabase connection string format
+const connectionString = process.env.DATABASE_URL;
+
+console.log('🔧 Attempting to apply users table migration...\n');
+console.log(`Project ref: ${projectRef}`);
+
+if (!connectionString) {
+  console.log('\n❌ ERROR: Database connection string not configured!\n');
+  console.log('To fix this:');
+  console.log('1. Go to: https://supabase.com/dashboard/project/' + projectRef + '/settings/database');
+  console.log('2. Copy the "Connection string" (Connection pooling > Transaction mode)');
+  console.log('3. Add it to your .env file as:');
+  console.log('   DATABASE_URL=postgresql://postgres.xxx:PASSWORD@xxx.pooler.supabase.com:6543/postgres\n');
+  console.log('Or run the SQL manually at:');
+  console.log('   https://supabase.com/dashboard/project/' + projectRef + '/sql/new\n');
+
+  console.log('=' .repeat(80));
+  console.log(readFileSync('supabase/migrations/20251002100000_create_users_table.sql', 'utf8'));
+  console.log('=' .repeat(80));
   process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const client = new pg.Client({
+  connectionString,
+  ssl: { rejectUnauthorized: false }
+});
 
-async function applyMigration() {
-  try {
-    console.log('Reading migration file...');
-    const sql = readFileSync('supabase/migrations/20251002100000_create_users_table.sql', 'utf8');
+try {
+  await client.connect();
+  console.log('✅ Connected to database\n');
 
-    console.log('Applying users table migration...');
+  // Read migration file
+  const sql = readFileSync('supabase/migrations/20251002100000_create_users_table.sql', 'utf8');
 
-    const statements = sql
-      .split(';')
-      .map(s => s.trim())
-      .filter(s => s && !s.startsWith('--') && !s.startsWith('/*'));
+  // Remove comments and split by semicolons
+  const statements = sql
+    .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
+    .replace(/--[^\n]*/g, '') // Remove line comments
+    .split(';')
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
 
-    for (const statement of statements) {
-      if (!statement) continue;
+  console.log(`📝 Executing ${statements.length} SQL statements...\n`);
 
-      console.log(`Executing: ${statement.substring(0, 80)}...`);
-
-      const { error } = await supabase.rpc('exec_sql', { sql_query: statement });
-
-      if (error) {
-        console.error('Error:', error.message);
-      } else {
-        console.log('✓ Success');
+  for (let i = 0; i < statements.length; i++) {
+    const statement = statements[i];
+    if (statement.trim()) {
+      try {
+        await client.query(statement);
+        console.log(`✅ Statement ${i + 1}/${statements.length} executed`);
+      } catch (error) {
+        // Ignore "already exists" errors
+        if (error.message.includes('already exists') || error.message.includes('duplicate')) {
+          console.log(`⚠️  Statement ${i + 1}/${statements.length} skipped (already exists)`);
+        } else {
+          throw error;
+        }
       }
     }
-
-    console.log('\n✅ Migration completed!');
-
-  } catch (error) {
-    console.error('Migration failed:', error);
-    process.exit(1);
   }
-}
 
-applyMigration();
+  console.log('\n✅ Migration completed successfully!\n');
+
+} catch (error) {
+  console.error('❌ Error:', error.message);
+  console.log('\nPlease run the SQL manually in Supabase Dashboard:');
+  console.log('https://supabase.com/dashboard/project/' + projectRef + '/sql/new\n');
+  process.exit(1);
+} finally {
+  await client.end();
+}
