@@ -1,4 +1,5 @@
 import axios from 'axios';
+import agencyDetails from '../../public/GetAgency.json';
 
 export interface DaftProperty {
   id: string;
@@ -35,11 +36,27 @@ export interface DaftSearchParams {
 
 class DaftApiService {
   private readonly BASE_URL = 'https://www.daft.ie/api';
-  private readonly HEADERS = {
+  private getHeaders(apiKey?: string) {
+    return {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     'Accept': 'application/json',
     'Referer': 'https://www.daft.ie/',
-  };
+    ...(apiKey && { 'Authorization': `Bearer ${apiKey}` }),
+    ...(apiKey && { 'X-API-Key': apiKey }),
+    };
+  }
+
+  private getApiKeyForAgency(agencyId?: string): string | null {
+    if (!agencyId) return null;
+    
+    const agency = agencyDetails.find((a: any) => 
+      a.sitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
+      a.SitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
+      a.Key?.toLowerCase() === agencyId.toLowerCase()
+    );
+    
+    return agency?.DaftApiKey || null;
+  }
 
   private getMockDaftData(propertyId?: string): DaftProperty[] {
     return [
@@ -67,9 +84,11 @@ class DaftApiService {
     ];
   }
 
-  async searchProperties(params: DaftSearchParams = {}): Promise<DaftProperty[]> {
+  async searchProperties(params: DaftSearchParams = {}, agencyId?: string): Promise<DaftProperty[]> {
+    const apiKey = this.getApiKeyForAgency(agencyId);
+    
     try {
-      console.log('🔍 Attempting Daft API search...');
+      console.log('🔍 Attempting Daft API search...', apiKey ? 'with API key' : 'without API key');
       const searchParams = new URLSearchParams();
       
       if (params.location) searchParams.append('location', params.location);
@@ -84,7 +103,7 @@ class DaftApiService {
 
       const response = await axios.get(`${this.BASE_URL}/v1/listings`, {
         params: Object.fromEntries(searchParams),
-        headers: this.HEADERS,
+        headers: this.getHeaders(apiKey),
         timeout: 10000,
       });
 
@@ -96,11 +115,13 @@ class DaftApiService {
     }
   }
 
-  async getPropertyById(daftId: string): Promise<DaftProperty | null> {
+  async getPropertyById(daftId: string, agencyId?: string): Promise<DaftProperty | null> {
+    const apiKey = this.getApiKeyForAgency(agencyId);
+    
     try {
-      console.log('🔍 Attempting Daft property fetch...');
+      console.log('🔍 Attempting Daft property fetch...', apiKey ? 'with API key' : 'without API key');
       const response = await axios.get(`${this.BASE_URL}/v1/listings/${daftId}`, {
-        headers: this.HEADERS,
+        headers: this.getHeaders(apiKey),
         timeout: 10000,
       });
 
@@ -114,9 +135,9 @@ class DaftApiService {
     }
   }
 
-  async searchByAddress(address: string): Promise<DaftProperty[]> {
+  async searchByAddress(address: string, agencyId?: string): Promise<DaftProperty[]> {
     try {
-      console.log('🔍 Attempting Daft address search...');
+      console.log('🔍 Attempting Daft address search for agency:', agencyId);
       // Clean and format address for search
       const cleanAddress = address
         .replace(/[^\w\s,]/g, '')
@@ -127,7 +148,7 @@ class DaftApiService {
         location: cleanAddress,
         limit: 10,
         sort: 'relevance'
-      });
+      }, agencyId);
     } catch (error) {
       console.error('Daft address search error:', error);
       console.log('🔄 Daft API unavailable, using mock data');

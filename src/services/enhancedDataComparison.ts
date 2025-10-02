@@ -159,7 +159,7 @@ export class EnhancedDataComparisonService {
     try {
       console.log('🔍 Enhanced Daft fetch for property:', property.id);
       // Search by address first
-      const searchResults = await daftApiService.searchByAddress(property.address || property.title);
+      const searchResults = await daftApiService.searchByAddress(property.address || property.title, property.agency_id);
       
       if (searchResults.length > 0) {
         // Find best match based on price and location similarity
@@ -180,7 +180,7 @@ export class EnhancedDataComparisonService {
   private async fetchFromMyHomeEnhanced(property: Property): Promise<MyHomeProperty | null> {
     try {
       console.log('🔍 Enhanced MyHome fetch for property:', property.id);
-      const searchResults = await myHomeApiService.searchByAddress(property.address || property.title);
+      const searchResults = await myHomeApiService.searchByAddress(property.address || property.title, property.agency_id);
       
       if (searchResults.length > 0) {
         const bestMatch = this.findBestMatch(property, searchResults, 'myhome');

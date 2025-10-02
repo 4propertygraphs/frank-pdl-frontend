@@ -1,4 +1,5 @@
 import axios from 'axios';
+import agencyDetails from '../../public/GetAgency.json';
 
 export interface MyHomeProperty {
   id: string;
@@ -41,12 +42,33 @@ export interface MyHomeSearchParams {
 
 class MyHomeApiService {
   private readonly BASE_URL = 'https://www.myhome.ie/api';
-  private readonly HEADERS = {
+  
+  private getHeaders(apiKey?: string, groupId?: number) {
+    return {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
     'Accept': 'application/json',
     'Referer': 'https://www.myhome.ie/',
     'X-Requested-With': 'XMLHttpRequest',
-  };
+    ...(apiKey && { 'Authorization': `Bearer ${apiKey}` }),
+    ...(apiKey && { 'X-API-Key': apiKey }),
+    ...(groupId && { 'X-Group-ID': groupId.toString() }),
+    };
+  }
+
+  private getApiCredentialsForAgency(agencyId?: string): { apiKey: string | null; groupId: number | null } {
+    if (!agencyId) return { apiKey: null, groupId: null };
+    
+    const agency = agencyDetails.find((a: any) => 
+      a.sitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
+      a.SitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
+      a.Key?.toLowerCase() === agencyId.toLowerCase()
+    );
+    
+    return {
+      apiKey: agency?.MyhomeApi?.ApiKey || null,
+      groupId: agency?.MyhomeApi?.GroupID || null,
+    };
+  }
 
   private getMockMyHomeData(propertyId?: string): MyHomeProperty[] {
     return [
@@ -80,9 +102,11 @@ class MyHomeApiService {
     ];
   }
 
-  async searchProperties(params: MyHomeSearchParams = {}): Promise<MyHomeProperty[]> {
+  async searchProperties(params: MyHomeSearchParams = {}, agencyId?: string): Promise<MyHomeProperty[]> {
+    const { apiKey, groupId } = this.getApiCredentialsForAgency(agencyId);
+    
     try {
-      console.log('🔍 Attempting MyHome API search...');
+      console.log('🔍 Attempting MyHome API search...', apiKey ? 'with API key' : 'without API key', groupId ? `GroupID: ${groupId}` : '');
       const searchParams = new URLSearchParams();
       
       if (params.county) searchParams.append('county', params.county);
@@ -94,10 +118,14 @@ class MyHomeApiService {
       
       searchParams.append('page', (params.page || 1).toString());
       searchParams.append('pageSize', (params.pageSize || 50).toString());
+      
+      if (groupId) {
+        searchParams.append('groupId', groupId.toString());
+      }
 
       const response = await axios.get(`${this.BASE_URL}/search`, {
         params: Object.fromEntries(searchParams),
-        headers: this.HEADERS,
+        headers: this.getHeaders(apiKey, groupId),
         timeout: 15000,
       });
 
@@ -109,11 +137,13 @@ class MyHomeApiService {
     }
   }
 
-  async getPropertyById(myHomeId: string): Promise<MyHomeProperty | null> {
+  async getPropertyById(myHomeId: string, agencyId?: string): Promise<MyHomeProperty | null> {
+    const { apiKey, groupId } = this.getApiCredentialsForAgency(agencyId);
+    
     try {
-      console.log('🔍 Attempting MyHome property fetch...');
+      console.log('🔍 Attempting MyHome property fetch...', apiKey ? 'with API key' : 'without API key');
       const response = await axios.get(`${this.BASE_URL}/properties/${myHomeId}`, {
-        headers: this.HEADERS,
+        headers: this.getHeaders(apiKey, groupId),
         timeout: 10000,
       });
 
@@ -127,9 +157,9 @@ class MyHomeApiService {
     }
   }
 
-  async searchByAddress(address: string): Promise<MyHomeProperty[]> {
+  async searchByAddress(address: string, agencyId?: string): Promise<MyHomeProperty[]> {
     try {
-      console.log('🔍 Attempting MyHome address search...');
+      console.log('🔍 Attempting MyHome address search for agency:', agencyId);
       // Extract county from address for better search
       const addressParts = address.split(',').map(s => s.trim());
       const possibleCounty = addressParts[addressParts.length - 1];
@@ -137,7 +167,7 @@ class MyHomeApiService {
       return await this.searchProperties({
         county: possibleCounty,
         pageSize: 20,
-      });
+      }, agencyId);
     } catch (error) {
       console.error('MyHome address search error:', error);
       console.log('🔄 MyHome API unavailable, using mock data');
