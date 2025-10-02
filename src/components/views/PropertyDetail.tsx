@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Image, MapPin, Bed, Bath, Square, Calendar, AlertTriangle, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { kyraAI } from '../../services/kyra';
-import { dataComparisonService, PropertyComparison } from '../../services/dataComparison';
+import { enhancedDataComparisonService, EnhancedPropertyComparison } from '../../services/enhancedDataComparison';
 
 export default function PropertyDetail() {
   const { state, dispatch } = useApp();
@@ -11,7 +11,7 @@ export default function PropertyDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [comparisonData, setComparisonData] = useState<any>(null);
   const [reportData, setReportData] = useState<any>(null);
-  const [envComparisonData, setEnvComparisonData] = useState<PropertyComparison | null>(null);
+  const [envComparisonData, setEnvComparisonData] = useState<EnhancedPropertyComparison | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingEnvComparison, setIsLoadingEnvComparison] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function PropertyDetail() {
 
     setIsLoadingEnvComparison(true);
     try {
-      const comparison = await dataComparisonService.comparePropertyData(selectedProperty);
+      const comparison = await enhancedDataComparisonService.comparePropertyDataEnhanced(selectedProperty);
       setEnvComparisonData(comparison);
     } catch (error) {
       console.error('Failed to load environment comparison:', error);
@@ -367,28 +367,69 @@ export default function PropertyDetail() {
         return (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-gray-900">Multi-Source Data Comparison</h3>
+              <h3 className="text-xl font-semibold text-gray-900">Real-Time Multi-Source Data Comparison</h3>
               <div className="flex items-center gap-2 text-sm text-gray-500">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                Last updated: {new Date(envComparisonData.lastUpdated).toLocaleTimeString()}
+                <div className={`w-2 h-2 rounded-full animate-pulse ${
+                  envComparisonData.overallConsistency > 80 ? 'bg-green-500' : 
+                  envComparisonData.overallConsistency > 60 ? 'bg-yellow-500' : 'bg-red-500'
+                }`}></div>
+                Consistency: {envComparisonData.overallConsistency}%
               </div>
             </div>
 
-            {/* Source Legend */}
+            {/* Enhanced Source Status */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-semibold text-gray-900 mb-3">Data Sources</h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <h4 className="font-semibold text-gray-900 mb-3">Data Source Status</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {envComparisonData.sources.map((source) => (
-                  <div key={source.name} className="flex items-center gap-2">
+                  <div key={source.name} className={`flex items-center gap-2 p-3 rounded-lg border ${
+                    source.status === 'connected' ? 'bg-green-50 border-green-200' :
+                    source.status === 'error' ? 'bg-red-50 border-red-200' :
+                    source.status === 'loading' ? 'bg-blue-50 border-blue-200' :
+                    'bg-gray-50 border-gray-200'
+                  }`}>
                     <div 
-                      className="w-4 h-4 rounded-full" 
+                      className="w-3 h-3 rounded-full" 
                       style={{ backgroundColor: source.color }}
                     ></div>
-                    <span className="text-sm font-medium">{source.icon} {source.name}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">{source.icon} {source.name}</span>
+                        <div className={`w-2 h-2 rounded-full ${
+                          source.status === 'connected' ? 'bg-green-500' :
+                          source.status === 'error' ? 'bg-red-500' :
+                          source.status === 'loading' ? 'bg-blue-500 animate-pulse' :
+                          'bg-gray-400'
+                        }`}></div>
+                      </div>
+                      {source.errorMessage && (
+                        <p className="text-xs text-red-600 mt-1">{source.errorMessage}</p>
+                      )}
+                      {source.lastSync && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          Last sync: {new Date(source.lastSync).toLocaleTimeString()}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
             </div>
+
+            {/* Critical Issues Alert */}
+            {envComparisonData.criticalIssues.length > 0 && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                  <h4 className="font-semibold text-red-900">Critical Data Issues</h4>
+                </div>
+                <ul className="space-y-1">
+                  {envComparisonData.criticalIssues.map((issue, index) => (
+                    <li key={index} className="text-sm text-red-800">{issue}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="bg-white border rounded-lg overflow-hidden">
               <table className="w-full">
@@ -411,49 +452,79 @@ export default function PropertyDetail() {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {envComparisonData.fields.map((field) => (
-                    <tr key={field.key} className={field.hasDifferences ? 'bg-red-50' : ''}>
+                    <tr key={field.key} className={
+                      field.significantDifference ? 'bg-red-100' :
+                      field.hasDifferences ? 'bg-yellow-50' : 
+                      'hover:bg-gray-50'
+                    }>
                       <td className="px-6 py-4 text-sm font-medium text-gray-900">
                         <div className="flex items-center gap-2">
-                          {field.hasDifferences && (
-                            <AlertTriangle className="w-4 h-4 text-red-500" />
+                          {field.significantDifference ? (
+                            <AlertTriangle className="w-4 h-4 text-red-600" />
+                          ) : field.hasDifferences ? (
+                            <AlertTriangle className="w-4 h-4 text-yellow-600" />
+                          ) : (
+                            <div className="w-4 h-4 flex items-center justify-center">
+                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            </div>
                           )}
                           {field.label}
+                          <span className="text-xs text-gray-500">
+                            ({field.confidenceScore}% confidence)
+                          </span>
                         </div>
                       </td>
                       {envComparisonData.sources.map((source) => {
                         const value = field.sources[source.name.toLowerCase()];
-                        const formattedValue = dataComparisonService.formatValue(value, field.type);
+                        const formattedValue = enhancedDataComparisonService.formatValue(value, field.type);
+                        const isSignificantlyDifferent = field.significantDifference;
                         const isDifferent = field.hasDifferences;
+                        const sourceConnected = source.status === 'connected';
                         
                         return (
                           <td 
                             key={source.name}
                             className={`px-6 py-4 text-sm ${
-                              isDifferent 
-                                ? 'bg-red-100 font-semibold text-red-900 border-l-4 border-red-500' 
-                                : 'text-gray-600'
+                              !sourceConnected ? 'bg-gray-100 text-gray-400' :
+                              isSignificantlyDifferent ? 'bg-red-200 font-bold text-red-900 border-l-4 border-red-600' :
+                              isDifferent ? 'bg-yellow-100 font-semibold text-yellow-900 border-l-2 border-yellow-500' :
+                              'text-gray-700'
                             }`}
                           >
-                            <div className="flex items-center gap-2">
-                              <span>{formattedValue}</span>
-                              {isDifferent && field.type === 'currency' && (
-                                <span className="text-xs text-red-600">
-                                  {dataComparisonService.getDifferencePercentage(
+                            {!sourceConnected ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-400">Not connected</span>
+                                <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <span>{formattedValue}</span>
+                                {isDifferent && (field.type === 'currency' || field.type === 'number') && (
+                                  <span className={`text-xs font-bold ${
+                                    isSignificantlyDifferent ? 'text-red-700' : 'text-yellow-700'
+                                  }`}>
+                                    {enhancedDataComparisonService.getDifferencePercentage(
                                     value, 
                                     field.sources.acquaint, 
                                     field.type
-                                  )}%
-                                </span>
-                              )}
-                            </div>
+                                    )}%
+                                  </span>
+                                )}
+                              </div>
+                            )}
                           </td>
                         );
                       })}
                       <td className="px-6 py-4">
-                        {field.hasDifferences ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                        {field.significantDifference ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-red-200 text-red-900 font-bold">
                             <AlertTriangle className="w-3 h-3" />
-                            Differences
+                            Critical
+                          </span>
+                        ) : field.hasDifferences ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">
+                            <AlertTriangle className="w-3 h-3" />
+                            Minor Diff
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
@@ -467,25 +538,31 @@ export default function PropertyDetail() {
               </table>
             </div>
 
-            {/* Summary of differences */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+            {/* Enhanced Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 relative">
                 <div className="flex items-center gap-2 mb-2">
                   <AlertTriangle className="w-5 h-5 text-red-600" />
-                  <h4 className="font-semibold text-red-900">Data Inconsistencies</h4>
+                  <h4 className="font-semibold text-red-900">Inconsistencies</h4>
                 </div>
                 <p className="text-sm text-red-800">
-                  {envComparisonData.fields.filter(f => f.hasDifferences).length} field(s) show differences across sources
+                  {envComparisonData.fields.filter(f => f.hasDifferences).length} field(s) with differences
                 </p>
-                <ul className="mt-2 space-y-1">
+                <div className="mt-2 space-y-1">
                   {envComparisonData.fields
                     .filter(f => f.hasDifferences)
+                    .slice(0, 3)
                     .map(field => (
-                      <li key={field.key} className="text-xs text-red-700">
-                        • {field.label}
-                      </li>
+                      <div key={field.key} className="text-xs text-red-700 flex items-center gap-1">
+                        <span className={field.significantDifference ? 'font-bold' : ''}>
+                          • {field.label}
+                        </span>
+                        {field.significantDifference && (
+                          <span className="bg-red-200 text-red-900 px-1 rounded text-xs font-bold">!</span>
+                        )}
+                      </div>
                     ))}
-                </ul>
+                </div>
               </div>
 
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
@@ -493,34 +570,77 @@ export default function PropertyDetail() {
                   <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
                     <span className="text-white text-xs">✓</span>
                   </div>
-                  <h4 className="font-semibold text-green-900">Consistent Data</h4>
+                  <h4 className="font-semibold text-green-900">Consistent</h4>
                 </div>
                 <p className="text-sm text-green-800">
-                  {envComparisonData.fields.filter(f => !f.hasDifferences).length} field(s) are consistent across all sources
+                  {envComparisonData.fields.filter(f => !f.hasDifferences).length} field(s) consistent
                 </p>
-                <ul className="mt-2 space-y-1">
+                <div className="mt-2 space-y-1">
                   {envComparisonData.fields
                     .filter(f => !f.hasDifferences)
-                    .slice(0, 5)
+                    .slice(0, 3)
                     .map(field => (
-                      <li key={field.key} className="text-xs text-green-700">
+                      <div key={field.key} className="text-xs text-green-700">
                         • {field.label}
-                      </li>
+                      </div>
                     ))}
-                </ul>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs">💡</span>
+                  </div>
+                  <h4 className="font-semibold text-blue-900">Suggestions</h4>
+                </div>
+                <div className="space-y-1">
+                  {envComparisonData.suggestions.slice(0, 2).map((suggestion, index) => (
+                    <p key={index} className="text-xs text-blue-800">{suggestion}</p>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <div className="flex items-start gap-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-white text-xs">i</span>
+            {/* Field Recommendations */}
+            {envComparisonData.fields.some(f => f.recommendations && f.recommendations.length > 0) && (
+              <div className="bg-white border rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 mb-3">Field-Specific Recommendations</h4>
+                <div className="space-y-3">
+                  {envComparisonData.fields
+                    .filter(f => f.recommendations && f.recommendations.length > 0 && f.hasDifferences)
+                    .map(field => (
+                      <div key={field.key} className="border-l-4 border-blue-500 pl-4">
+                        <h5 className="font-medium text-gray-900 mb-1">{field.label}</h5>
+                        <div className="space-y-1">
+                          {field.recommendations!.map((rec, index) => (
+                            <p key={index} className="text-sm text-gray-700">{rec}</p>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-blue-900">Data Source Analysis</p>
-                <p className="text-sm text-blue-700">
-                  Red highlighting indicates discrepancies between data sources. This helps identify 
-                  potential data quality issues and ensures accuracy across all platforms.
-                </p>
+            )}
+
+            {/* Legend */}
+            <div className="bg-gray-50 border rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 mb-3">Color Legend</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-red-200 border-l-4 border-red-600 rounded-sm"></div>
+                  <span>Critical differences (>5% price variance)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-yellow-100 border-l-2 border-yellow-500 rounded-sm"></div>
+                  <span>Minor differences</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-white border rounded-sm flex items-center justify-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  </div>
+                  <span>Consistent data</span>
+                </div>
               </div>
             </div>
           </div>
