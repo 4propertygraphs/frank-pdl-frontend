@@ -27,25 +27,29 @@ export default function Overview() {
       setLoadingStats(true);
       const { supabase } = await import('../../services/supabase');
 
-      const { data: properties, error: propsError } = await supabase
+      const { count: propertiesCount, error: propsCountError } = await supabase
+        .from('properties')
+        .select('*', { count: 'exact', head: true });
+
+      const { data: priceData, error: priceError } = await supabase
         .from('properties')
         .select('price');
 
-      const { data: agencies, error: agenciesError } = await supabase
+      const { count: agenciesCount, error: agenciesError } = await supabase
         .from('agencies')
-        .select('id')
+        .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
 
-      if (propsError || agenciesError) {
-        console.error('Error loading stats:', propsError || agenciesError);
+      if (propsCountError || agenciesError || priceError) {
+        console.error('Error loading stats:', propsCountError || agenciesError || priceError);
         setLoadingStats(false);
         return;
       }
 
-      const totalProperties = properties?.length || 0;
-      const totalAgencies = agencies?.length || 0;
-      const totalValue = properties?.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0) || 0;
-      const avgPrice = totalProperties > 0 ? Math.round(totalValue / totalProperties) : 0;
+      const totalProperties = propertiesCount || 0;
+      const totalAgencies = agenciesCount || 0;
+      const totalValue = priceData?.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0) || 0;
+      const avgPrice = priceData && priceData.length > 0 ? Math.round(totalValue / priceData.length) : 0;
 
       const lastUpdate = localStorage.getItem('lastAutoSync');
       const lastUpdateDate = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleString() : 'Never';
