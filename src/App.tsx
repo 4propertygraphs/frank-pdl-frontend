@@ -30,7 +30,7 @@ function AppContent() {
 
   if (!isAuthenticated) {
     return (
-      <div className={`min-h-screen ${device.isMobile ? 'p-4' : device.isTV ? 'p-12' : 'p-0'}`}>
+      <div className="w-screen h-screen flex items-center justify-center p-0 m-0">
         <LoginForm />
       </div>
     );
@@ -62,7 +62,7 @@ function AppContent() {
   };
 
   return (
-    <div className={`flex h-screen bg-gray-100 ${device.isMobile ? 'flex-col' : ''}`}>
+    <div className={`flex w-screen h-screen bg-gray-100 m-0 p-0 ${device.isMobile ? 'flex-col' : ''}`}>
       <Sidebar />
       <main className={`flex-1 overflow-auto ${
         device.isMobile ? 'pt-16' : ''
