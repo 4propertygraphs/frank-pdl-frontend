@@ -1,5 +1,6 @@
 import axios from 'axios';
 import agencyDetails from '../../public/GetAgency.json';
+import apiKeys from '../../public/agency-keys.json';
 
 export interface MyHomeProperty {
   id: string;
@@ -60,11 +61,24 @@ class MyHomeApiService {
     
     console.log('🔍 Looking for MyHome API credentials for agency:', agencyId);
     
-    // GetAgency.json is an array of agencies, search through all
-    let foundAgency = null;
+    // First try agency-keys.json (preferred source for API keys)
+    const apiKeyEntry = apiKeys.find(entry => 
+      entry.SitePrefix?.toLowerCase() === agencyId.toLowerCase()
+    );
     
+    if (apiKeyEntry?.MyHomeApiKey && 
+        apiKeyEntry.MyHomeApiKey !== 'your_myhome_api_key_here' &&
+        apiKeyEntry.MyHomeGroupId) {
+      console.log('✅ Found MyHome API credentials in agency-keys.json for:', agencyId);
+      return {
+        apiKey: apiKeyEntry.MyHomeApiKey,
+        groupId: apiKeyEntry.MyHomeGroupId
+      };
+    }
+    
+    // Fallback to GetAgency.json (legacy)
+    let foundAgency = null;
     for (const agency of agencyDetails) {
-      // Check all possible site prefix fields
       const sitePrefixes = [
         agency.sitePrefix,
         agency.SitePrefix,
@@ -76,25 +90,22 @@ class MyHomeApiService {
       
       if (sitePrefixes.includes(agencyId.toLowerCase())) {
         foundAgency = agency;
-        console.log('✅ Found agency in GetAgency.json:', agency.Name || agency.name || agency.OfficeName);
-        console.log('🔑 Full agency object:', agency);
-        console.log('🔑 MyHome API data:', agency.MyhomeApi);
-        console.log('🔑 All keys:', Object.keys(agency));
         break;
       }
     }
     
-    const credentials = {
+    const legacyCredentials = {
       apiKey: foundAgency?.MyhomeApi?.ApiKey || foundAgency?.myhome_api_key || foundAgency?.MyHomeApiKey || null,
       groupId: foundAgency?.MyhomeApi?.GroupID || foundAgency?.myhome_group_id || foundAgency?.MyHomeGroupId || null,
     };
     
-    console.log('🔑 MyHome credentials for', agencyId, ':', {
-      apiKey: credentials.apiKey ? `${credentials.apiKey.substring(0, 8)}...` : 'not found',
-      groupId: credentials.groupId
-    });
+    if (legacyCredentials.apiKey && legacyCredentials.groupId) {
+      console.log('✅ Found MyHome API credentials in GetAgency.json for:', agencyId);
+      return legacyCredentials;
+    }
     
-    return credentials;
+    console.log('🚫 No MyHome API credentials found for:', agencyId);
+    return { apiKey: null, groupId: null };
   }
 
   private getMockMyHomeData(propertyId?: string): MyHomeProperty[] {

@@ -2,7 +2,7 @@ import { Property } from '../types';
 import { daftApiService, DaftProperty } from './daftApi';
 import { myHomeApiService, MyHomeProperty } from './myhomeApi';
 import { wordpressApiService as wpApiService, WordPressProperty } from './wordpressApi';
-import { repo1BackendService } from './repo1Backend';
+import apiKeys from '../../public/agency-keys.json';
 
 export interface EnhancedDataSource {
   name: string;
@@ -593,14 +593,32 @@ export class EnhancedDataComparisonService {
   }
 
   private getWordPressUrlForAgency(agencyId: string | null): string | null {
-    // This would be configured per agency
-    const agencyUrls: Record<string, string> = {
+    if (!agencyId) return null;
+    
+    // Look up WordPress URL in agency-keys.json
+    const apiKeyEntry = apiKeys.find(entry => 
+      entry.SitePrefix?.toLowerCase() === agencyId.toLowerCase()
+    );
+    
+    if (apiKeyEntry?.WordPressUrl) {
+      console.log('✅ Found WordPress URL for', agencyId, ':', apiKeyEntry.WordPressUrl);
+      return apiKeyEntry.WordPressUrl;
+    }
+    
+    // Fallback to hardcoded URLs
+    const fallbackUrls: Record<string, string> = {
       'KNAM': 'https://caseykennedy.ie',
       'BSKY': 'https://blueskyproperties.ie',
-      // Add more agency WordPress URLs as needed
     };
 
-    return agencyId ? agencyUrls[agencyId.toUpperCase()] || null : null;
+    const fallbackUrl = fallbackUrls[agencyId.toUpperCase()] || null;
+    if (fallbackUrl) {
+      console.log('✅ Found WordPress URL (fallback) for', agencyId, ':', fallbackUrl);
+    } else {
+      console.log('🚫 No WordPress URL found for:', agencyId);
+    }
+    
+    return fallbackUrl;
   }
 
   formatValue(value: any, type: string): string {

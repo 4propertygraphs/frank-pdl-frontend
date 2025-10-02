@@ -1,5 +1,6 @@
 import axios from 'axios';
 import agencyDetails from '../../public/GetAgency.json';
+import apiKeys from '../../public/agency-keys.json';
 
 export interface DaftProperty {
   id: string;
@@ -51,11 +52,19 @@ class DaftApiService {
     
     console.log('🔍 Looking for Daft API key for agency:', agencyId);
     
-    // GetAgency.json is an array of agencies, search through all
-    let foundAgency = null;
+    // First try agency-keys.json (preferred source for API keys)
+    const apiKeyEntry = apiKeys.find(entry => 
+      entry.SitePrefix?.toLowerCase() === agencyId.toLowerCase()
+    );
     
+    if (apiKeyEntry?.DaftApiKey && apiKeyEntry.DaftApiKey !== 'your_daft_api_key_here') {
+      console.log('✅ Found Daft API key in agency-keys.json for:', agencyId);
+      return apiKeyEntry.DaftApiKey;
+    }
+    
+    // Fallback to GetAgency.json (legacy)
+    let foundAgency = null;
     for (const agency of agencyDetails) {
-      // Check all possible site prefix fields
       const sitePrefixes = [
         agency.sitePrefix,
         agency.SitePrefix,
@@ -67,17 +76,19 @@ class DaftApiService {
       
       if (sitePrefixes.includes(agencyId.toLowerCase())) {
         foundAgency = agency;
-        console.log('✅ Found agency in GetAgency.json:', agency.Name || agency.name || agency.OfficeName);
-        console.log('🔑 Full agency object:', agency);
-        console.log('🔑 DaftApiKey field:', agency.DaftApiKey);
-        console.log('🔑 All keys:', Object.keys(agency));
         break;
       }
     }
     
-    const apiKey = foundAgency?.DaftApiKey || foundAgency?.daftApiKey || foundAgency?.daft_api_key || null;
-    console.log('🔑 Daft API key for', agencyId, ':', apiKey ? `${apiKey.substring(0, 8)}...` : 'not found');
-    return apiKey;
+    const legacyApiKey = foundAgency?.DaftApiKey || foundAgency?.daftApiKey || foundAgency?.daft_api_key || null;
+    
+    if (legacyApiKey) {
+      console.log('✅ Found Daft API key in GetAgency.json for:', agencyId);
+      return legacyApiKey;
+    }
+    
+    console.log('🚫 No Daft API key found for:', agencyId);
+    return null;
   }
 
   private getMockDaftData(propertyId?: string): DaftProperty[] {
