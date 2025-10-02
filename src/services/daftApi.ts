@@ -78,20 +78,20 @@ class DaftApiService {
     return [
       {
         id: propertyId || 'daft-mock-1',
-        title: '3 Bed Semi-Detached House, Dublin 4',
-        price: 485000,
-        bedrooms: 3,
-        bathrooms: 2,
-        propertyType: 'Semi-Detached House',
-        address: 'Sandymount, Dublin 4',
-        county: 'Dublin',
-        eircode: 'D04 X1Y2',
-        berRating: 'B3',
-        floorArea: 125,
-        description: 'Beautiful family home in sought-after Sandymount location...',
-        images: ['https://images.pexels.com/photos/106399/pexels-photo-106399.jpeg'],
-        contactName: 'Sarah Murphy',
-        phone: '+353 1 234 5678',
+        title: 'No API Key Available',
+        price: 0,
+        bedrooms: 0,
+        bathrooms: 0,
+        propertyType: 'No API',
+        address: 'No API Key Configured',
+        county: 'No API',
+        eircode: 'No API',
+        berRating: 'No API',
+        floorArea: 0,
+        description: 'Daft API key not configured for this agency',
+        images: [],
+        contactName: 'No API',
+        phone: 'No API',
         latitude: 53.3331,
         longitude: -6.2267,
         publishDate: new Date().toISOString(),
@@ -102,6 +102,11 @@ class DaftApiService {
 
   async searchProperties(params: DaftSearchParams = {}, agencyId?: string): Promise<DaftProperty[]> {
     const apiKey = this.getApiKeyForAgency(agencyId);
+    
+    if (!apiKey) {
+      console.log('🚫 No Daft API key for agency:', agencyId, '- returning No API data');
+      return this.getMockDaftData();
+    }
     
     // Use Supabase Edge Function as proxy
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;

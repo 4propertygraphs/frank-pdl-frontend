@@ -90,13 +90,13 @@ export class EnhancedDataComparisonService {
         daftData = results.daft;
         myhomeData = results.myhome;
 
-        sources[1].status = daftData ? 'connected' : 'error';
+        sources[1].status = daftData && daftData.title !== 'No API Key Available' ? 'connected' : 'error';
         sources[1].lastSync = new Date().toISOString();
-        sources[1].errorMessage = daftData ? undefined : 'No data found';
+        sources[1].errorMessage = daftData && daftData.title !== 'No API Key Available' ? undefined : 'No API key configured';
 
-        sources[2].status = myhomeData ? 'connected' : 'error';
+        sources[2].status = myhomeData && myhomeData.displayAddress !== 'No API Key Available' ? 'connected' : 'error';
         sources[2].lastSync = new Date().toISOString();
-        sources[2].errorMessage = myhomeData ? undefined : 'No data found';
+        sources[2].errorMessage = myhomeData && myhomeData.displayAddress !== 'No API Key Available' ? undefined : 'No API key configured';
       } catch (error: any) {
         sources[1].status = 'error';
         sources[1].errorMessage = error.message;
@@ -107,8 +107,9 @@ export class EnhancedDataComparisonService {
       try {
         sources[1].status = 'loading';
         daftData = await this.fetchFromDaftEnhanced(property);
-        sources[1].status = daftData ? 'connected' : 'error';
+        sources[1].status = daftData && daftData.title !== 'No API Key Available' ? 'connected' : 'error';
         sources[1].lastSync = new Date().toISOString();
+        sources[1].errorMessage = daftData && daftData.title !== 'No API Key Available' ? undefined : 'No API key configured';
       } catch (error: any) {
         sources[1].status = 'error';
         sources[1].errorMessage = error.message;
@@ -117,8 +118,9 @@ export class EnhancedDataComparisonService {
       try {
         sources[2].status = 'loading';
         myhomeData = await this.fetchFromMyHomeEnhanced(property);
-        sources[2].status = myhomeData ? 'connected' : 'error';
+        sources[2].status = myhomeData && myhomeData.displayAddress !== 'No API Key Available' ? 'connected' : 'error';
         sources[2].lastSync = new Date().toISOString();
+        sources[2].errorMessage = myhomeData && myhomeData.displayAddress !== 'No API Key Available' ? undefined : 'No API key configured';
       } catch (error: any) {
         sources[2].status = 'error';
         sources[2].errorMessage = error.message;

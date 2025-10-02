@@ -95,23 +95,23 @@ class MyHomeApiService {
     return [
       {
         id: propertyId || 'myhome-mock-1',
-        displayAddress: '4 Bed Detached House, Naas, Co. Kildare',
-        price: 425000,
-        bedrooms: 4,
-        bathrooms: 3,
-        propertyType: 'Detached House',
-        county: 'Kildare',
-        region: 'Naas',
-        eircode: 'W91 X2Y3',
-        berRating: 'B2',
-        floorArea: 145,
-        description: 'Spacious family home in excellent condition with large garden...',
-        photos: ['https://images.pexels.com/photos/323705/pexels-photo-323705.jpeg'],
+        displayAddress: 'No API Key Available',
+        price: 0,
+        bedrooms: 0,
+        bathrooms: 0,
+        propertyType: 'No API',
+        county: 'No API',
+        region: 'No API',
+        eircode: 'No API',
+        berRating: 'No API',
+        floorArea: 0,
+        description: 'MyHome API key not configured for this agency',
+        photos: [],
         contactDetails: {
-          firstName: 'John',
-          lastName: 'O\'Brien',
-          phone: '+353 45 123 456',
-          email: 'john@example.ie',
+          firstName: 'No API',
+          lastName: '',
+          phone: 'No API',
+          email: 'No API',
         },
         location: {
           latitude: 53.2157,
@@ -125,6 +125,11 @@ class MyHomeApiService {
 
   async searchProperties(params: MyHomeSearchParams = {}, agencyId?: string): Promise<MyHomeProperty[]> {
     const { apiKey, groupId } = this.getApiCredentialsForAgency(agencyId);
+    
+    if (!apiKey || !groupId) {
+      console.log('🚫 No MyHome API credentials for agency:', agencyId, '- returning No API data');
+      return this.getMockMyHomeData();
+    }
     
     // Use Supabase Edge Function as proxy
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
