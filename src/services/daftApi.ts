@@ -118,7 +118,9 @@ class DaftApiService {
         headers: {
           'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        method: 'GET',
       });
 
       if (!response.ok) {
@@ -166,7 +168,9 @@ class DaftApiService {
         headers: {
           'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        method: 'GET',
       });
 
       if (!response.ok) {
