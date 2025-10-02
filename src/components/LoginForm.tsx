@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { LogIn, Eye, EyeOff, Loader2, UserPlus, Shield } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { login, register, type RegisterData } from '../services/auth';
-import { useDeviceDetection } from '../utils/deviceDetection';
 
 export default function LoginForm() {
   const { dispatch } = useApp();
-  const device = useDeviceDetection();
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -75,36 +73,25 @@ export default function LoginForm() {
     }
   };
 
-  const cardClass = `bg-white rounded-2xl shadow-2xl ${
-    device.isMobile ? 'p-6' :
-    device.isTablet ? 'p-7' :
-    device.isTV ? 'p-12' :
-    'p-8'
-  }`;
-
-  const inputClass = `w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-    device.isTV ? 'text-lg py-4' : ''
-  }`;
-
-  const buttonClass = `w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 ${
-    device.isTV ? 'py-5 text-xl' : ''
-  }`;
+  const cardClass = 'bg-white rounded-2xl shadow-2xl p-8';
+  const inputClass = 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent';
+  const buttonClass = 'w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center p-4">
       <div className={cardClass}>
         <div className="text-center mb-8">
-          <div className={`${device.isTV ? 'w-24 h-24' : 'w-16 h-16'} bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
+          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
             {isRegisterMode ? (
-              <UserPlus className={`${device.isTV ? 'w-12 h-12' : 'w-8 h-8'} text-white`} />
+              <UserPlus className="w-8 h-8 text-white" />
             ) : (
-              <LogIn className={`${device.isTV ? 'w-12 h-12' : 'w-8 h-8'} text-white`} />
+              <LogIn className="w-8 h-8 text-white" />
             )}
           </div>
-          <h1 className={`${device.isTV ? 'text-4xl' : device.isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900`}>
+          <h1 className="text-2xl font-bold text-gray-900">
             4Property Codes
           </h1>
-          <p className={`text-gray-600 ${device.isTV ? 'text-lg' : 'text-sm'}`}>
+          <p className="text-gray-600 text-sm">
             {isRegisterMode ? 'Create your account' : 'Sign in to your account'}
           </p>
         </div>
