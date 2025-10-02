@@ -82,8 +82,8 @@ export default function Sidebar() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     dispatch({ type: 'SET_AUTHENTICATED', payload: false });
     if (device.isMobile) {
       setIsMobileMenuOpen(false);

@@ -30,14 +30,6 @@ export interface User {
   lastLogin?: string;
 }
 
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 export async function register(data: RegisterData): Promise<{ success: boolean; user?: User; error?: string }> {
   try {
     const { email, password, name, surname, company, sitePrefix, adminCode } = data;
@@ -55,54 +47,48 @@ export async function register(data: RegisterData): Promise<{ success: boolean; 
       return { success: false, error: 'Invalid email format' };
     }
 
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email.toLowerCase())
-      .maybeSingle();
-
-    if (existingUser) {
-      return { success: false, error: 'User with this email already exists' };
-    }
-
     const isAdmin = adminCode === ADMIN_CODE;
 
-    const passwordHash = await hashPassword(password);
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email: email.toLowerCase(),
+      password,
+      options: {
+        data: {
+          name,
+          surname,
+          company: company || '',
+          site_prefix: sitePrefix || '',
+          is_admin: isAdmin,
+        },
+      },
+    });
 
-    const { data: newUser, error: insertError } = await supabase
-      .from('users')
-      .insert({
-        email: email.toLowerCase(),
-        password_hash: passwordHash,
-        name,
-        surname,
-        company: company || '',
-        site_prefix: sitePrefix || '',
-        is_admin: isAdmin,
-        is_verified: true,
-      })
-      .select()
-      .single();
+    if (signUpError) {
+      console.error('Registration error:', signUpError);
+      if (signUpError.message.includes('already registered')) {
+        return { success: false, error: 'User with this email already exists' };
+      }
+      return { success: false, error: signUpError.message };
+    }
 
-    if (insertError) {
-      console.error('Registration error:', insertError);
+    if (!authData.user) {
       return { success: false, error: 'Failed to create user account' };
     }
 
     const user: User = {
-      id: newUser.id,
-      email: newUser.email,
-      name: newUser.name,
-      surname: newUser.surname,
-      company: newUser.company,
-      sitePrefix: newUser.site_prefix,
-      isAdmin: newUser.is_admin,
-      isVerified: newUser.is_verified,
-      createdAt: newUser.created_at,
+      id: authData.user.id,
+      email: authData.user.email!,
+      name,
+      surname,
+      company: company || '',
+      sitePrefix: sitePrefix || '',
+      isAdmin,
+      isVerified: true,
+      createdAt: authData.user.created_at,
     };
 
     localStorage.setItem('4property_user', JSON.stringify(user));
-    localStorage.setItem('4property_auth_token', newUser.id);
+    localStorage.setItem('4property_auth_token', authData.user.id);
 
     return { success: true, user };
   } catch (error) {
@@ -119,39 +105,30 @@ export async function login(data: LoginData): Promise<{ success: boolean; user?:
       return { success: false, error: 'Email and password are required' };
     }
 
-    const passwordHash = await hashPassword(password);
+    const { data: authData, error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.toLowerCase(),
+      password,
+    });
 
-    const { data: user, error: queryError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email.toLowerCase())
-      .eq('password_hash', passwordHash)
-      .maybeSingle();
-
-    if (queryError || !user) {
+    if (signInError || !authData.user) {
       return { success: false, error: 'Invalid email or password' };
     }
 
-    await supabase
-      .from('users')
-      .update({ last_login: new Date().toISOString() })
-      .eq('id', user.id);
-
     const userData: User = {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      surname: user.surname,
-      company: user.company,
-      sitePrefix: user.site_prefix,
-      isAdmin: user.is_admin,
-      isVerified: user.is_verified,
-      createdAt: user.created_at,
+      id: authData.user.id,
+      email: authData.user.email!,
+      name: authData.user.user_metadata.name || '',
+      surname: authData.user.user_metadata.surname || '',
+      company: authData.user.user_metadata.company || '',
+      sitePrefix: authData.user.user_metadata.site_prefix || '',
+      isAdmin: authData.user.user_metadata.is_admin || false,
+      isVerified: true,
+      createdAt: authData.user.created_at,
       lastLogin: new Date().toISOString(),
     };
 
     localStorage.setItem('4property_user', JSON.stringify(userData));
-    localStorage.setItem('4property_auth_token', user.id);
+    localStorage.setItem('4property_auth_token', authData.user.id);
 
     return { success: true, user: userData };
   } catch (error) {
@@ -160,7 +137,8 @@ export async function login(data: LoginData): Promise<{ success: boolean; user?:
   }
 }
 
-export function logout(): void {
+export async function logout(): Promise<void> {
+  await supabase.auth.signOut();
   localStorage.removeItem('4property_user');
   localStorage.removeItem('4property_auth_token');
 }
