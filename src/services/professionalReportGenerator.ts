@@ -68,6 +68,65 @@ export class ProfessionalReportGenerator {
     }
   }
 
+  async generateProfessionalReportFromProperties(dbProperties: any[], agencyName: string): Promise<Blob> {
+    try {
+      const properties = this.convertDBPropertiesToPropertyData(dbProperties);
+      const marketData = this.calculateMarketData(properties);
+
+      const html = this.generateHTML(properties, marketData, agencyName);
+      return new Blob([html], { type: 'text/html' });
+    } catch (error) {
+      console.error('Failed to generate professional report:', error);
+      throw error;
+    }
+  }
+
+  private convertDBPropertiesToPropertyData(dbProperties: any[]): PropertyData[] {
+    return dbProperties.map(prop => {
+      try {
+        const county = typeof prop.county === 'string' ? JSON.parse(prop.county)['#text'] || prop.county : prop.county?.['#text'] || '';
+        const type = typeof prop.type === 'string' ? JSON.parse(prop.type)['#text'] || prop.type : prop.type?.['#text'] || '';
+
+        return {
+          id: prop.id || '',
+          title: prop.title || '',
+          price: Number(prop.price || 0),
+          bedrooms: Number(prop.bedrooms || 0),
+          bathrooms: Number(prop.bathrooms || 0),
+          type: type,
+          county: county,
+          city: prop.town || '',
+          address: prop.address || '',
+          description: prop.description || '',
+          ber_rating: prop.ber_rating || '',
+          floorarea: Number(prop.floor_area || 0),
+          images: Array.isArray(prop.images) ? prop.images : [],
+          latitude: Number(prop.latitude || 0),
+          longitude: Number(prop.longitude || 0),
+        };
+      } catch (err) {
+        console.error('Error converting property:', err, prop);
+        return {
+          id: prop.id || '',
+          title: prop.title || '',
+          price: Number(prop.price || 0),
+          bedrooms: 0,
+          bathrooms: 0,
+          type: '',
+          county: '',
+          city: '',
+          address: '',
+          description: '',
+          ber_rating: '',
+          floorarea: 0,
+          images: [],
+          latitude: 0,
+          longitude: 0,
+        };
+      }
+    });
+  }
+
   private extractProperties(data: any): PropertyData[] {
     const properties: PropertyData[] = [];
     const rawProperties = data?.data?.property || [];

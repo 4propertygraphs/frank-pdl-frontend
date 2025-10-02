@@ -87,25 +87,16 @@ export default function Reports() {
         return;
       }
 
-      const siteId = agency.site_id || 0;
-      const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-xml-proxy?sitePrefix=${selectedAgency}&siteId=${siteId}`;
+      const agencyProps = properties.filter(p => p.agency_id === selectedAgency);
 
-      const xmlResponse = await fetch(proxyUrl, {
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-      });
-
-      if (!xmlResponse.ok) {
-        alert(`Failed to fetch agency data: HTTP ${xmlResponse.status}`);
+      if (agencyProps.length === 0) {
+        alert('No properties found for this agency. Please sync properties first from TrackOn page.');
         setIsGenerating(false);
         return;
       }
 
-      const xmlText = await xmlResponse.text();
-      const blob = await professionalReportGenerator.generateProfessionalReportFromXML(
-        xmlText,
-        selectedAgency,
+      const blob = await professionalReportGenerator.generateProfessionalReportFromProperties(
+        agencyProps,
         agency.name || agency.site_prefix
       );
 
