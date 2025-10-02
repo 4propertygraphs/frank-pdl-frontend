@@ -59,8 +59,11 @@ class DaftApiService {
     
     if (apiKeyEntry?.DaftApiKey && apiKeyEntry.DaftApiKey !== 'your_daft_api_key_here') {
       console.log('✅ Found Daft API key in agency-keys.json for:', agencyId);
+      console.log('🔑 API key preview:', apiKeyEntry.DaftApiKey.substring(0, 10) + '...');
       return apiKeyEntry.DaftApiKey;
     }
+    
+    console.log('🔍 agency-keys.json entries:', apiKeys.map(k => ({ prefix: k.SitePrefix, hasKey: !!k.DaftApiKey })));
     
     // Fallback to GetAgency.json (legacy)
     let foundAgency = null;

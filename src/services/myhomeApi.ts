@@ -70,11 +70,19 @@ class MyHomeApiService {
         apiKeyEntry.MyHomeApiKey !== 'your_myhome_api_key_here' &&
         apiKeyEntry.MyHomeGroupId) {
       console.log('✅ Found MyHome API credentials in agency-keys.json for:', agencyId);
+      console.log('🔑 MyHome API key preview:', apiKeyEntry.MyHomeApiKey.substring(0, 10) + '...');
+      console.log('🔑 MyHome Group ID:', apiKeyEntry.MyHomeGroupId);
       return {
         apiKey: apiKeyEntry.MyHomeApiKey,
         groupId: apiKeyEntry.MyHomeGroupId
       };
     }
+    
+    console.log('🔍 agency-keys.json entries:', apiKeys.map(k => ({ 
+      prefix: k.SitePrefix, 
+      hasMyHomeKey: !!k.MyHomeApiKey,
+      hasGroupId: !!k.MyHomeGroupId 
+    })));
     
     // Fallback to GetAgency.json (legacy)
     let foundAgency = null;
