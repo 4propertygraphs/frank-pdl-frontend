@@ -1,143 +1,337 @@
-import React, { useState } from "react";
-import { LogIn, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useApp } from "../contexts/AppContext";
-import { apiService } from "../services/api";
+import React, { useState } from 'react';
+import { LogIn, Eye, EyeOff, Loader2, UserPlus, Shield } from 'lucide-react';
+import { useApp } from '../contexts/AppContext';
+import { login, register, type RegisterData } from '../services/auth';
+import { useDeviceDetection } from '../utils/deviceDetection';
 
 export default function LoginForm() {
   const { dispatch } = useApp();
-  const [email, setEmail] = useState("tech@4pm.ie");
-  const [password, setPassword] = useState("password");
+  const device = useDeviceDetection();
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const [registerData, setRegisterData] = useState<RegisterData>({
+    email: '',
+    password: '',
+    name: '',
+    surname: '',
+    company: '',
+    sitePrefix: '',
+    adminCode: '',
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
+    setError('');
 
     try {
-      console.log("🔐 Attempting login with:", { email });
-      const response = await apiService.login(email, password);
+      const result = await login(loginData);
 
-      console.log("✅ Login response:", response);
-
-      if (response.token) {
-        // Login successful - update context
-        dispatch({ type: "SET_AUTHENTICATED", payload: true });
-
-        console.log("✅ Login successful, user authenticated");
-        console.log(
-          "🎫 Token value:",
-          response.token.substring(0, 20) + "..."
-        );
+      if (result.success && result.user) {
+        dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+        console.log('Login successful:', result.user);
       } else {
-        setError("Invalid credentials");
+        setError(result.error || 'Login failed');
       }
     } catch (err: any) {
-      console.error("❌ Login failed:", err);
-      setError(err.message || "Login failed");
+      console.error('Login error:', err);
+      setError(err.message || 'An unexpected error occurred');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const result = await register(registerData);
+
+      if (result.success && result.user) {
+        setSuccessMessage('Registration successful! Logging you in...');
+        setTimeout(() => {
+          dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+        }, 1500);
+      } else {
+        setError(result.error || 'Registration failed');
+      }
+    } catch (err: any) {
+      console.error('Registration error:', err);
+      setError(err.message || 'An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const cardClass = `bg-white rounded-2xl shadow-2xl w-full ${
+    device.isMobile ? 'max-w-sm p-6' :
+    device.isTablet ? 'max-w-md p-7' :
+    device.isTV ? 'max-w-2xl p-12' :
+    'max-w-lg p-8'
+  }`;
+
+  const inputClass = `w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+    device.isTV ? 'text-lg py-4' : ''
+  }`;
+
+  const buttonClass = `w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2 ${
+    device.isTV ? 'py-5 text-xl' : ''
+  }`;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
-        {/* Logo */}
+    <div className={`min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center ${device.isMobile ? 'p-4' : 'p-8'}`}>
+      <div className={cardClass}>
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <LogIn className="w-8 h-8 text-white" />
+          <div className={`${device.isTV ? 'w-24 h-24' : 'w-16 h-16'} bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
+            {isRegisterMode ? (
+              <UserPlus className={`${device.isTV ? 'w-12 h-12' : 'w-8 h-8'} text-white`} />
+            ) : (
+              <LogIn className={`${device.isTV ? 'w-12 h-12' : 'w-8 h-8'} text-white`} />
+            )}
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">4Property</h1>
-          <p className="text-gray-600">codes</p>
+          <h1 className={`${device.isTV ? 'text-4xl' : device.isMobile ? 'text-xl' : 'text-2xl'} font-bold text-gray-900`}>
+            4Property Codes
+          </h1>
+          <p className={`text-gray-600 ${device.isTV ? 'text-lg' : 'text-sm'}`}>
+            {isRegisterMode ? 'Create your account' : 'Sign in to your account'}
+          </p>
         </div>
 
-        {/* Login Form */}
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+        {isRegisterMode ? (
+          <form onSubmit={handleRegister} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Name *
+                </label>
+                <input
+                  type="text"
+                  value={registerData.name}
+                  onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
+                  className={inputClass}
+                  placeholder="First name"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Surname *
+                </label>
+                <input
+                  type="text"
+                  value={registerData.surname}
+                  onChange={(e) => setRegisterData({ ...registerData, surname: e.target.value })}
+                  className={inputClass}
+                  placeholder="Last name"
+                  required
+                />
+              </div>
+            </div>
 
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-2"
-            >
-              Password
-            </label>
-            <div className="relative">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Company
+              </label>
               <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
-                placeholder="Enter your password"
+                type="text"
+                value={registerData.company}
+                onChange={(e) => setRegisterData({ ...registerData, company: e.target.value })}
+                className={inputClass}
+                placeholder="Company name"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Site Prefix
+              </label>
+              <input
+                type="text"
+                value={registerData.sitePrefix}
+                onChange={(e) => setRegisterData({ ...registerData, sitePrefix: e.target.value })}
+                className={inputClass}
+                placeholder="e.g., ADMIN"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email *
+              </label>
+              <input
+                type="email"
+                value={registerData.email}
+                onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                className={inputClass}
+                placeholder="your@email.com"
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
             </div>
-          </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-800 text-sm">{error}</p>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password *
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={registerData.password}
+                  onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                  className={inputClass + ' pr-12'}
+                  placeholder="Min. 6 characters"
+                  required
+                  minLength={6}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
             </div>
-          )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Signing in...
-              </>
-            ) : (
-              <>
-                <LogIn className="w-5 h-5" />
-                Sign In
-              </>
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="w-5 h-5 text-amber-600" />
+                <label className="block text-sm font-medium text-amber-900">
+                  Admin Code (Optional)
+                </label>
+              </div>
+              <input
+                type="text"
+                value={registerData.adminCode}
+                onChange={(e) => setRegisterData({ ...registerData, adminCode: e.target.value })}
+                className={inputClass}
+                placeholder="Enter admin code if applicable"
+              />
+              <p className="text-xs text-amber-700 mt-2">
+                Enter the admin verification code to create an admin account
+              </p>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-red-800 text-sm">{error}</p>
+              </div>
             )}
-          </button>
-        </form>
 
-        {/* Default Credentials Info */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-800 font-medium mb-2">
-            Default Credentials:
-          </p>
-          <p className="text-sm text-blue-700">Email: tech@4pm.ie</p>
-          <p className="text-sm text-blue-700">Password: password</p>
-        </div>
+            {successMessage && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <p className="text-green-800 text-sm">{successMessage}</p>
+              </div>
+            )}
+
+            <button type="submit" disabled={isLoading} className={buttonClass}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Creating account...
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-5 h-5" />
+                  Register
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegisterMode(false);
+                setError('');
+                setSuccessMessage('');
+              }}
+              className="w-full text-blue-600 hover:text-blue-700 text-sm font-medium"
+            >
+              Already have an account? Sign in
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={loginData.email}
+                onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                className={inputClass}
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={loginData.password}
+                  onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                  className={inputClass + ' pr-12'}
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <p className="text-red-800 text-sm">{error}</p>
+              </div>
+            )}
+
+            <button type="submit" disabled={isLoading} className={buttonClass}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-5 h-5" />
+                  Sign In
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegisterMode(true);
+                setError('');
+              }}
+              className="w-full text-blue-600 hover:text-blue-700 text-sm font-medium"
+            >
+              Don't have an account? Register
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
