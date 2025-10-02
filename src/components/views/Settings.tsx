@@ -1,6 +1,7 @@
 import React from 'react';
 import { Globe, Palette, Bell, Download, Save } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
+import Repo1Settings from '../Repo1Settings';
 
 export default function Settings() {
   const { state, dispatch } = useApp();
@@ -193,6 +194,9 @@ export default function Settings() {
               </label>
             </div>
           </div>
+
+          {/* Repo1 Backend Settings */}
+          <Repo1Settings />
 
           {/* Save Button */}
           <div className="flex justify-end">

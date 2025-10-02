@@ -2,6 +2,7 @@ import { Property } from '../types';
 import { daftApiService, DaftProperty } from './daftApi';
 import { myHomeApiService, MyHomeProperty } from './myhomeApi';
 import { myHomeApiService as wpApiService, WordPressProperty } from './wordpressApi';
+import { repo1BackendService } from './repo1Backend';
 
 export interface EnhancedDataSource {
   name: string;
@@ -67,37 +68,70 @@ export class EnhancedDataComparisonService {
 
   async comparePropertyDataEnhanced(property: Property): Promise<EnhancedPropertyComparison> {
     const sources = [...this.dataSources];
-    
-    // Update source statuses
-    sources[0].status = 'connected'; // Acquaint is always available
-    
-    try {
-      // Test Daft connection
-      sources[1].status = 'loading';
-      const daftData = await this.fetchFromDaftEnhanced(property);
-      sources[1].status = daftData ? 'connected' : 'error';
-      sources[1].lastSync = new Date().toISOString();
-    } catch (error: any) {
-      sources[1].status = 'error';
-      sources[1].errorMessage = error.message;
+
+    sources[0].status = 'connected';
+
+    let daftData = null;
+    let myhomeData = null;
+    let wordpressData = null;
+
+    const useRepo1Backend = import.meta.env.VITE_USE_REPO1_BACKEND === 'true';
+
+    if (useRepo1Backend) {
+      try {
+        sources[1].status = 'loading';
+        sources[2].status = 'loading';
+
+        const results = await repo1BackendService.comparePropertyAcrossSources(
+          property.id,
+          property.address || property.title
+        );
+
+        daftData = results.daft;
+        myhomeData = results.myhome;
+
+        sources[1].status = daftData ? 'connected' : 'error';
+        sources[1].lastSync = new Date().toISOString();
+        sources[1].errorMessage = daftData ? undefined : 'No data found';
+
+        sources[2].status = myhomeData ? 'connected' : 'error';
+        sources[2].lastSync = new Date().toISOString();
+        sources[2].errorMessage = myhomeData ? undefined : 'No data found';
+      } catch (error: any) {
+        sources[1].status = 'error';
+        sources[1].errorMessage = error.message;
+        sources[2].status = 'error';
+        sources[2].errorMessage = error.message;
+      }
+    } else {
+      try {
+        sources[1].status = 'loading';
+        daftData = await this.fetchFromDaftEnhanced(property);
+        sources[1].status = daftData ? 'connected' : 'error';
+        sources[1].lastSync = new Date().toISOString();
+      } catch (error: any) {
+        sources[1].status = 'error';
+        sources[1].errorMessage = error.message;
+      }
+
+      try {
+        sources[2].status = 'loading';
+        myhomeData = await this.fetchFromMyHomeEnhanced(property);
+        sources[2].status = myhomeData ? 'connected' : 'error';
+        sources[2].lastSync = new Date().toISOString();
+      } catch (error: any) {
+        sources[2].status = 'error';
+        sources[2].errorMessage = error.message;
+      }
     }
 
-    try {
-      // Test MyHome connection
-      sources[2].status = 'loading';
-      const myhomeData = await this.fetchFromMyHomeEnhanced(property);
-      sources[2].status = myhomeData ? 'connected' : 'error';
-      sources[2].lastSync = new Date().toISOString();
-    } catch (error: any) {
-      sources[2].status = 'error';
-      sources[2].errorMessage = error.message;
+    wordpressData = await this.fetchFromWordPressEnhanced(property);
+    sources[3].status = wordpressData ? 'connected' : 'not_configured';
+    if (wordpressData) {
+      sources[3].lastSync = new Date().toISOString();
     }
 
-    // Fetch all data
     const acquaintData = this.extractAcquaintData(property);
-    const daftData = await this.fetchFromDaftEnhanced(property);
-    const myhomeData = await this.fetchFromMyHomeEnhanced(property);
-    const wordpressData = await this.fetchFromWordPressEnhanced(property);
 
     const fields = this.buildEnhancedComparisonFields({
       acquaint: acquaintData,
