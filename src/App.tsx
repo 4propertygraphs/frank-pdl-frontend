@@ -30,7 +30,7 @@ function AppContent() {
 
   if (!isAuthenticated) {
     return (
-      <div className="w-screen h-screen flex items-center justify-center p-0 m-0">
+      <div className="w-screen h-screen flex items-center justify-center p-0 m-0 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800">
         <LoginForm />
       </div>
     );
