@@ -183,4 +183,4 @@ class WordPressApiService {
   }
 }
 
-export const myHomeApiService = new MyHomeApiService();
+export const wordpressApiService = new WordPressApiService();

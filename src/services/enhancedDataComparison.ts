@@ -1,7 +1,7 @@
 import { Property } from '../types';
 import { daftApiService, DaftProperty } from './daftApi';
 import { myHomeApiService, MyHomeProperty } from './myhomeApi';
-import { myHomeApiService as wpApiService, WordPressProperty } from './wordpressApi';
+import { wordpressApiService as wpApiService, WordPressProperty } from './wordpressApi';
 import { repo1BackendService } from './repo1Backend';
 
 export interface EnhancedDataSource {
