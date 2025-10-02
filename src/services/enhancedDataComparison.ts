@@ -157,40 +157,49 @@ export class EnhancedDataComparisonService {
 
   private async fetchFromDaftEnhanced(property: Property): Promise<DaftProperty | null> {
     try {
+      console.log('🔍 Enhanced Daft fetch for property:', property.id);
       // Search by address first
       const searchResults = await daftApiService.searchByAddress(property.address || property.title);
       
       if (searchResults.length > 0) {
         // Find best match based on price and location similarity
         const bestMatch = this.findBestMatch(property, searchResults, 'daft');
+        console.log('✅ Found Daft match:', bestMatch?.id);
         return bestMatch as DaftProperty;
       }
       
+      console.log('📭 No Daft matches found');
       return null;
     } catch (error) {
       console.error('Enhanced Daft fetch error:', error);
+      console.log('🔄 Daft fetch failed, returning null');
       return null;
     }
   }
 
   private async fetchFromMyHomeEnhanced(property: Property): Promise<MyHomeProperty | null> {
     try {
+      console.log('🔍 Enhanced MyHome fetch for property:', property.id);
       const searchResults = await myHomeApiService.searchByAddress(property.address || property.title);
       
       if (searchResults.length > 0) {
         const bestMatch = this.findBestMatch(property, searchResults, 'myhome');
+        console.log('✅ Found MyHome match:', bestMatch?.id);
         return bestMatch as MyHomeProperty;
       }
       
+      console.log('📭 No MyHome matches found');
       return null;
     } catch (error) {
       console.error('Enhanced MyHome fetch error:', error);
+      console.log('🔄 MyHome fetch failed, returning null');
       return null;
     }
   }
 
   private async fetchFromWordPressEnhanced(property: Property): Promise<WordPressProperty | null> {
     try {
+      console.log('🔍 Enhanced WordPress fetch for property:', property.id);
       // This would need to be configured per agency
       const wpBaseUrl = this.getWordPressUrlForAgency(property.agency_id);
       if (!wpBaseUrl) return null;
@@ -200,12 +209,15 @@ export class EnhancedDataComparisonService {
       
       if (searchResults.length > 0) {
         const bestMatch = this.findBestMatch(property, searchResults, 'wordpress');
+        console.log('✅ Found WordPress match:', bestMatch?.id);
         return bestMatch as WordPressProperty;
       }
       
+      console.log('📭 No WordPress matches found');
       return null;
     } catch (error) {
       console.error('Enhanced WordPress fetch error:', error);
+      console.log('🔄 WordPress fetch failed, returning null');
       return null;
     }
   }

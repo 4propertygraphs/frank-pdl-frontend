@@ -46,42 +46,53 @@ class Repo1BackendService {
 
   async testConnection(): Promise<boolean> {
     try {
+      console.log('🔍 Testing Repo1 backend connection...');
       const response = await this.axiosInstance.get('/health');
+      console.log('✅ Repo1 backend connected');
       return response.status === 200;
     } catch (error) {
       console.error('Repo1 backend connection test failed:', error);
+      console.log('🔄 Repo1 backend not available');
       return false;
     }
   }
 
   async fetchFromMyHome(propertyId: string): Promise<any> {
     try {
+      console.log('🔍 Fetching from MyHome via Repo1...');
       const response = await this.axiosInstance.get('/myhome', {
         params: { propertyId },
       });
+      console.log('✅ MyHome data received via Repo1');
       return response.data;
     } catch (error: any) {
       console.error('MyHome API error via repo1:', error);
       if (error.response?.status === 404) {
+        console.log('📭 MyHome property not found');
         return null;
       }
-      throw new Error(`Failed to fetch from MyHome: ${error.message}`);
+      console.log('🔄 MyHome via Repo1 failed, returning null');
+      return null;
     }
   }
 
   async fetchFromDaft(propertyId?: string): Promise<any> {
     try {
+      console.log('🔍 Fetching from Daft via Repo1...');
       const endpoint = propertyId ? '/daft' : '/daft/all';
       const response = await this.axiosInstance.get(endpoint, {
         params: propertyId ? { propertyId } : {},
       });
+      console.log('✅ Daft data received via Repo1');
       return response.data;
     } catch (error: any) {
       console.error('Daft API error via repo1:', error);
       if (error.response?.status === 404) {
+        console.log('📭 Daft property not found');
         return null;
       }
-      throw new Error(`Failed to fetch from Daft: ${error.message}`);
+      console.log('🔄 Daft via Repo1 failed, returning null');
+      return null;
     }
   }
 
