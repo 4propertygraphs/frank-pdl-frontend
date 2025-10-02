@@ -2,7 +2,26 @@ import { Property } from '../types';
 import { daftApiService, DaftProperty } from './daftApi';
 import { myHomeApiService, MyHomeProperty } from './myhomeApi';
 import { wordpressApiService as wpApiService, WordPressProperty } from './wordpressApi';
-import apiKeys from '../../public/agency-keys.json';
+
+// Load API keys from agencies copy.json
+let apiKeys: any[] = [];
+
+async function loadApiKeys() {
+  try {
+    const response = await fetch('/agencies copy.json');
+    if (response.ok) {
+      apiKeys = await response.json();
+      console.log('✅ Loaded WordPress URLs from agencies copy.json:', apiKeys.length, 'entries');
+    } else {
+      console.warn('⚠️ Could not load agencies copy.json');
+    }
+  } catch (error) {
+    console.error('❌ Error loading WordPress URLs:', error);
+  }
+}
+
+// Load API keys on module initialization
+loadApiKeys();
 
 export interface EnhancedDataSource {
   name: string;

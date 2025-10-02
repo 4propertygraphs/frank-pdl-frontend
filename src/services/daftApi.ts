@@ -1,6 +1,25 @@
 import axios from 'axios';
 import agencyDetails from '../../public/GetAgency.json';
-import apiKeys from '../../public/agency-keys.json';
+
+// Load API keys from agencies copy.json
+let apiKeys: any[] = [];
+
+async function loadApiKeys() {
+  try {
+    const response = await fetch('/agencies copy.json');
+    if (response.ok) {
+      apiKeys = await response.json();
+      console.log('✅ Loaded API keys from agencies copy.json:', apiKeys.length, 'entries');
+    } else {
+      console.warn('⚠️ Could not load agencies copy.json');
+    }
+  } catch (error) {
+    console.error('❌ Error loading API keys:', error);
+  }
+}
+
+// Load API keys on module initialization
+loadApiKeys();
 
 export interface DaftProperty {
   id: string;

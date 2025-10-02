@@ -1,6 +1,25 @@
 import axios from 'axios';
 import agencyDetails from '../../public/GetAgency.json';
-import apiKeys from '../../public/agency-keys.json';
+
+// Load API keys from agencies copy.json
+let apiKeys: any[] = [];
+
+async function loadApiKeys() {
+  try {
+    const response = await fetch('/agencies copy.json');
+    if (response.ok) {
+      apiKeys = await response.json();
+      console.log('✅ Loaded MyHome API keys from agencies copy.json:', apiKeys.length, 'entries');
+    } else {
+      console.warn('⚠️ Could not load agencies copy.json');
+    }
+  } catch (error) {
+    console.error('❌ Error loading MyHome API keys:', error);
+  }
+}
+
+// Load API keys on module initialization
+loadApiKeys();
 
 export interface MyHomeProperty {
   id: string;
