@@ -84,23 +84,68 @@ export class ProfessionalReportGenerator {
   private convertDBPropertiesToPropertyData(dbProperties: any[]): PropertyData[] {
     return dbProperties.map(prop => {
       try {
-        const county = typeof prop.county === 'string' ? JSON.parse(prop.county)['#text'] || prop.county : prop.county?.['#text'] || '';
-        const type = typeof prop.type === 'string' ? JSON.parse(prop.type)['#text'] || prop.type : prop.type?.['#text'] || '';
+        let county = '';
+        let type = '';
+        let town = '';
+
+        if (prop.county) {
+          try {
+            if (typeof prop.county === 'string' && prop.county.startsWith('{')) {
+              const countyObj = JSON.parse(prop.county);
+              county = countyObj['#text'] || countyObj.toString();
+            } else {
+              county = String(prop.county);
+            }
+          } catch {
+            county = String(prop.county);
+          }
+        }
+
+        if (prop.type) {
+          try {
+            if (typeof prop.type === 'string' && prop.type.startsWith('{')) {
+              const typeObj = JSON.parse(prop.type);
+              type = typeObj['#text'] || typeObj.toString();
+            } else {
+              type = String(prop.type);
+            }
+          } catch {
+            type = String(prop.type);
+          }
+        }
+
+        if (prop.town) {
+          try {
+            if (typeof prop.town === 'string' && prop.town.startsWith('{')) {
+              const townObj = JSON.parse(prop.town);
+              town = townObj['#text'] || townObj.toString();
+            } else {
+              town = String(prop.town);
+            }
+          } catch {
+            town = String(prop.town);
+          }
+        }
+
+        const images = prop.images ?
+          (Array.isArray(prop.images) ? prop.images :
+            (typeof prop.images === 'string' ? JSON.parse(prop.images) : []))
+          : [];
 
         return {
           id: prop.id || '',
-          title: prop.title || '',
+          title: prop.title || prop.display_address || '',
           price: Number(prop.price || 0),
           bedrooms: Number(prop.bedrooms || 0),
           bathrooms: Number(prop.bathrooms || 0),
-          type: type,
-          county: county,
-          city: prop.town || '',
-          address: prop.address || '',
+          type: type || 'Property',
+          county: county || 'Unknown',
+          city: town || '',
+          address: prop.address || prop.display_address || '',
           description: prop.description || '',
           ber_rating: prop.ber_rating || '',
           floorarea: Number(prop.floor_area || 0),
-          images: Array.isArray(prop.images) ? prop.images : [],
+          images: images,
           latitude: Number(prop.latitude || 0),
           longitude: Number(prop.longitude || 0),
         };
@@ -112,8 +157,8 @@ export class ProfessionalReportGenerator {
           price: Number(prop.price || 0),
           bedrooms: 0,
           bathrooms: 0,
-          type: '',
-          county: '',
+          type: 'Property',
+          county: 'Unknown',
           city: '',
           address: '',
           description: '',
@@ -187,9 +232,38 @@ export class ProfessionalReportGenerator {
     };
   }
 
+  private extractCounty(prop: PropertyData): string {
+    if (prop.county && prop.county !== '' && prop.county !== 'Unknown' && prop.county !== '[object Object]') {
+      return prop.county;
+    }
+
+    if (prop.title) {
+      const parts = prop.title.split(',').map(s => s.trim()).filter(Boolean);
+      if (parts.length > 0) {
+        let lastPart = parts[parts.length - 1];
+        lastPart = lastPart.replace(/\.$/, '').trim();
+        lastPart = lastPart.replace(/\b[A-Z]\d{2}\s*[A-Z0-9]{4}\b/g, '').trim();
+
+        const words = lastPart.split(/\s+/);
+        const filteredWords = words.filter(w => !/^[A-Z]\d{2}/.test(w));
+        lastPart = filteredWords.join(' ').trim();
+
+        if (lastPart.length > 0 && lastPart.length < 50 && !/\d{2,}/.test(lastPart)) {
+          return lastPart;
+        }
+      }
+    }
+
+    if (prop.city) {
+      return prop.city;
+    }
+
+    return 'Other Areas';
+  }
+
   private groupByCounty(properties: PropertyData[]) {
     return properties.reduce((acc, prop) => {
-      const county = prop.county || 'Unknown';
+      const county = this.extractCounty(prop);
       if (!acc[county]) {
         acc[county] = { count: 0, avgPrice: 0, totalPrice: 0 };
       }
@@ -200,9 +274,31 @@ export class ProfessionalReportGenerator {
     }, {} as Record<string, { count: number; avgPrice: number; totalPrice: number }>);
   }
 
+  private normalizePropertyType(type: string): string {
+    if (!type || type === '' || type === 'Unknown' || type === '[object Object]') {
+      return 'Other';
+    }
+
+    const lowerType = type.toLowerCase();
+
+    if (lowerType.includes('detached')) return 'Detached House';
+    if (lowerType.includes('semi-detached') || lowerType.includes('semi detached')) return 'Semi-Detached House';
+    if (lowerType.includes('terrace')) return 'Terraced House';
+    if (lowerType.includes('apartment') || lowerType.includes('flat')) return 'Apartment';
+    if (lowerType.includes('bungalow')) return 'Bungalow';
+    if (lowerType.includes('cottage')) return 'Cottage';
+    if (lowerType.includes('duplex')) return 'Duplex';
+    if (lowerType.includes('townhouse') || lowerType.includes('town house')) return 'Townhouse';
+    if (lowerType.includes('studio')) return 'Studio';
+    if (lowerType.includes('penthouse')) return 'Penthouse';
+    if (lowerType.includes('house') && !lowerType.includes('semi')) return 'House';
+
+    return type.charAt(0).toUpperCase() + type.slice(1);
+  }
+
   private groupByType(properties: PropertyData[]) {
     return properties.reduce((acc, prop) => {
-      const type = prop.type || 'Unknown';
+      const type = this.normalizePropertyType(prop.type);
       if (!acc[type]) {
         acc[type] = { count: 0, avgPrice: 0, totalPrice: 0 };
       }
@@ -211,6 +307,119 @@ export class ProfessionalReportGenerator {
       acc[type].avgPrice = Math.round(acc[type].totalPrice / acc[type].count);
       return acc;
     }, {} as Record<string, { count: number; avgPrice: number; totalPrice: number }>);
+  }
+
+  private generatePriceRangeChart(properties: PropertyData[]): string {
+    const ranges = [
+      { label: 'Under €100K', min: 0, max: 100000 },
+      { label: '€100K - €200K', min: 100000, max: 200000 },
+      { label: '€200K - €300K', min: 200000, max: 300000 },
+      { label: '€300K - €400K', min: 300000, max: 400000 },
+      { label: '€400K - €500K', min: 400000, max: 500000 },
+      { label: '€500K - €750K', min: 500000, max: 750000 },
+      { label: '€750K - €1M', min: 750000, max: 1000000 },
+      { label: 'Over €1M', min: 1000000, max: Infinity },
+    ];
+
+    const counts = ranges.map(range => ({
+      label: range.label,
+      count: properties.filter(p => p.price >= range.min && p.price < range.max).length,
+    }));
+
+    const maxCount = Math.max(...counts.map(c => c.count));
+
+    return counts
+      .filter(c => c.count > 0)
+      .map(({ label, count }) => {
+        const width = (count / maxCount) * 100;
+        return `
+          <div class="chart-row">
+            <div class="chart-label">${label}</div>
+            <div class="chart-bar-container">
+              <div class="chart-bar" style="width: ${width}%; background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);">
+                <div class="chart-value">${count} properties</div>
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  private generateBedroomChart(properties: PropertyData[]): string {
+    const bedrooms = properties.reduce((acc, prop) => {
+      const beds = prop.bedrooms || 0;
+      if (beds === 0) return acc;
+      const key = beds >= 5 ? '5+' : String(beds);
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const maxCount = Math.max(...Object.values(bedrooms));
+
+    return Object.entries(bedrooms)
+      .sort((a, b) => {
+        const aNum = a[0] === '5+' ? 5 : parseInt(a[0]);
+        const bNum = b[0] === '5+' ? 5 : parseInt(b[0]);
+        return aNum - bNum;
+      })
+      .map(([beds, count]) => {
+        const width = (count / maxCount) * 100;
+        return `
+          <div class="chart-row">
+            <div class="chart-label">${beds} Bedroom${beds !== '1' ? 's' : ''}</div>
+            <div class="chart-bar-container">
+              <div class="chart-bar" style="width: ${width}%; background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);">
+                <div class="chart-value">${count} properties</div>
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join('');
+  }
+
+  private generateBERChart(properties: PropertyData[]): string {
+    const berOrder = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'E1', 'E2', 'F', 'G'];
+    const berColors: Record<string, string> = {
+      'A': 'linear-gradient(90deg, #10b981 0%, #059669 100%)',
+      'B': 'linear-gradient(90deg, #84cc16 0%, #65a30d 100%)',
+      'C': 'linear-gradient(90deg, #fbbf24 0%, #f59e0b 100%)',
+      'D': 'linear-gradient(90deg, #fb923c 0%, #f97316 100%)',
+      'E': 'linear-gradient(90deg, #f87171 0%, #ef4444 100%)',
+      'F': 'linear-gradient(90deg, #dc2626 0%, #b91c1c 100%)',
+      'G': 'linear-gradient(90deg, #991b1b 0%, #7f1d1d 100%)',
+    };
+
+    const bers = properties.reduce((acc, prop) => {
+      const ber = prop.ber_rating?.toUpperCase().trim() || '';
+      if (ber === '' || ber === 'EXEMPT' || ber === 'N/A') return acc;
+      acc[ber] = (acc[ber] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const maxCount = Math.max(...Object.values(bers), 1);
+
+    return berOrder
+      .filter(rating => bers[rating])
+      .map(rating => {
+        const count = bers[rating];
+        const width = (count / maxCount) * 100;
+        const colorKey = rating.charAt(0);
+        const color = berColors[colorKey] || 'linear-gradient(90deg, #94a3b8 0%, #64748b 100%)';
+
+        return `
+          <div class="chart-row">
+            <div class="chart-label">Rating ${rating}</div>
+            <div class="chart-bar-container">
+              <div class="chart-bar" style="width: ${width}%; background: ${color};">
+                <div class="chart-value">${count} properties</div>
+              </div>
+            </div>
+          </div>
+        `;
+      })
+      .join('') || '<p style="color: #64748b; font-style: italic;">No BER data available for properties</p>';
   }
 
   private generateHTML(properties: PropertyData[], marketData: MarketData, agencyName: string): string {
@@ -739,6 +948,61 @@ export class ProfessionalReportGenerator {
               <div class="chart-bar-container">
                 <div class="chart-bar" style="width: ${width}%; background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);">
                   <div class="chart-value">€${Math.round(info.avgPrice / 1000)}K avg</div>
+                </div>
+              </div>
+            </div>
+          `}).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICE RANGE ANALYSIS PAGE -->
+  <div class="page content-page">
+    <div class="header">
+      <h2>Price Range Analysis</h2>
+    </div>
+    <div class="footer">
+      <span>${agencyName}</span>
+      <span>${date}</span>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Price Distribution</h2>
+      <div class="chart-container">
+        ${this.generatePriceRangeChart(properties)}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Bedroom Distribution</h2>
+      <div class="chart-container">
+        ${this.generateBedroomChart(properties)}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Energy Rating (BER) Distribution</h2>
+      <div class="chart-container">
+        ${this.generateBERChart(properties)}
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Top 10 Most Expensive Properties</h2>
+      <div class="chart-container">
+        ${properties
+          .filter(p => p.price > 0)
+          .sort((a, b) => b.price - a.price)
+          .slice(0, 10)
+          .map((prop, index) => {
+            const maxPrice = properties.reduce((max, p) => Math.max(max, p.price), 0);
+            const width = (prop.price / maxPrice) * 100;
+            return `
+            <div class="chart-row">
+              <div class="chart-label" style="min-width: 200px; font-size: 12px;">${prop.title.substring(0, 35)}${prop.title.length > 35 ? '...' : ''}</div>
+              <div class="chart-bar-container">
+                <div class="chart-bar" style="width: ${width}%; background: linear-gradient(90deg, #10b981 0%, #059669 100%);">
+                  <div class="chart-value">€${Math.round(prop.price / 1000)}K</div>
                 </div>
               </div>
             </div>
