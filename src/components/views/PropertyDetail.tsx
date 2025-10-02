@@ -629,7 +629,7 @@ export default function PropertyDetail() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-200 border-l-4 border-red-600 rounded-sm"></div>
-                  <span>Critical differences (>5% price variance)</span>
+                  <span>Critical differences (&gt;5% price variance)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-yellow-100 border-l-2 border-yellow-500 rounded-sm"></div>
