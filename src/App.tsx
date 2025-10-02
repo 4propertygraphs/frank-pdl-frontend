@@ -67,11 +67,11 @@ function AppContent() {
       <main className={`flex-1 overflow-auto ${
         device.isMobile ? 'pt-16' : ''
       } ${device.isTV ? 'text-lg' : ''}`}>
-        <div className={`${
+        <div className={`w-full h-full ${
           device.isMobile ? 'p-4' :
           device.isTablet ? 'p-6' :
-          device.isTV ? 'p-12 max-w-[2400px] mx-auto' :
-          'p-8'
+          device.isTV ? 'p-8' :
+          'p-6'
         }`}>
           {renderCurrentView()}
         </div>
