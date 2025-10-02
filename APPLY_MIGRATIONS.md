@@ -3,7 +3,7 @@
 ## Krok za krokem:
 
 1. Otevři tvůj Supabase projekt:
-   https://supabase.com/dashboard/project/cuirkrmvnhsiqqeplmdj
+   https://supabase.com/dashboard/project/bmccujcrlyvpjfyarrfv
 
 2. Jdi do **SQL Editor** (v levém menu)
 
