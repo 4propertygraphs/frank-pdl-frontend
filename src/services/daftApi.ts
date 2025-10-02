@@ -49,13 +49,29 @@ class DaftApiService {
   private getApiKeyForAgency(agencyId?: string): string | null {
     if (!agencyId) return null;
     
-    const agency = agencyDetails.find((a: any) => 
-      a.sitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
-      a.SitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
-      a.Key?.toLowerCase() === agencyId.toLowerCase()
-    );
+    console.log('🔍 Looking for Daft API key for agency:', agencyId);
     
-    return agency?.DaftApiKey || null;
+    const agency = agencyDetails.find((a: any) => {
+      const matches = [
+        a.sitePrefix?.toLowerCase(),
+        a.SitePrefix?.toLowerCase(), 
+        a.Key?.toLowerCase(),
+        a.unique_key?.toLowerCase(),
+        a.UUID?.toLowerCase(),
+        a.AcquiantCustomer?.SitePrefix?.toLowerCase()
+      ].filter(Boolean);
+      
+      const found = matches.some(key => key === agencyId.toLowerCase());
+      if (found) {
+        console.log('✅ Found agency in GetAgency.json:', a.Name || a.name || a.OfficeName);
+        console.log('🔑 DaftApiKey:', a.DaftApiKey);
+      }
+      return found;
+    });
+    
+    const apiKey = agency?.DaftApiKey || null;
+    console.log('🔑 Daft API key for', agencyId, ':', apiKey ? `${apiKey.substring(0, 8)}...` : 'not found');
+    return apiKey;
   }
 
   private getMockDaftData(propertyId?: string): DaftProperty[] {

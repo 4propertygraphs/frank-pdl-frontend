@@ -58,16 +58,37 @@ class MyHomeApiService {
   private getApiCredentialsForAgency(agencyId?: string): { apiKey: string | null; groupId: number | null } {
     if (!agencyId) return { apiKey: null, groupId: null };
     
-    const agency = agencyDetails.find((a: any) => 
-      a.sitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
-      a.SitePrefix?.toLowerCase() === agencyId.toLowerCase() ||
-      a.Key?.toLowerCase() === agencyId.toLowerCase()
-    );
+    console.log('🔍 Looking for MyHome API credentials for agency:', agencyId);
     
-    return {
+    const agency = agencyDetails.find((a: any) => {
+      const matches = [
+        a.sitePrefix?.toLowerCase(),
+        a.SitePrefix?.toLowerCase(),
+        a.Key?.toLowerCase(),
+        a.unique_key?.toLowerCase(),
+        a.UUID?.toLowerCase(),
+        a.AcquiantCustomer?.SitePrefix?.toLowerCase()
+      ].filter(Boolean);
+      
+      const found = matches.some(key => key === agencyId.toLowerCase());
+      if (found) {
+        console.log('✅ Found agency in GetAgency.json:', a.Name || a.name || a.OfficeName);
+        console.log('🔑 MyHome API data:', a.MyhomeApi);
+      }
+      return found;
+    });
+    
+    const credentials = {
       apiKey: agency?.MyhomeApi?.ApiKey || null,
       groupId: agency?.MyhomeApi?.GroupID || null,
     };
+    
+    console.log('🔑 MyHome credentials for', agencyId, ':', {
+      apiKey: credentials.apiKey ? `${credentials.apiKey.substring(0, 8)}...` : 'not found',
+      groupId: credentials.groupId
+    });
+    
+    return credentials;
   }
 
   private getMockMyHomeData(propertyId?: string): MyHomeProperty[] {
@@ -145,7 +166,9 @@ class MyHomeApiService {
         headers: {
           'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        method: 'GET',
       });
 
       if (!response.ok) {
