@@ -75,11 +75,11 @@ export default function LoginForm() {
     }
   };
 
-  const cardClass = `bg-white rounded-2xl shadow-2xl w-full ${
-    device.isMobile ? 'max-w-sm p-6' :
-    device.isTablet ? 'max-w-md p-7' :
-    device.isTV ? 'max-w-2xl p-12' :
-    'max-w-lg p-8'
+  const cardClass = `bg-white rounded-2xl shadow-2xl ${
+    device.isMobile ? 'p-6' :
+    device.isTablet ? 'p-7' :
+    device.isTV ? 'p-12' :
+    'p-8'
   }`;
 
   const inputClass = `w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
@@ -91,7 +91,7 @@ export default function LoginForm() {
   }`;
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center ${device.isMobile ? 'p-4' : 'p-8'}`}>
+    <div className="min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 flex items-center justify-center p-4">
       <div className={cardClass}>
         <div className="text-center mb-8">
           <div className={`${device.isTV ? 'w-24 h-24' : 'w-16 h-16'} bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
