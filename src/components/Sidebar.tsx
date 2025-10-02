@@ -9,10 +9,13 @@ import {
   Settings,
   Home,
   Menu,
-  X
+  X,
+  LogOut,
+  User
 } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { useDeviceDetection } from '../utils/deviceDetection';
+import { logout, getCurrentUser } from '../services/auth';
 
 const menuItems = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
@@ -69,10 +72,19 @@ export default function Sidebar() {
   const t = translations[settings.language];
   const device = useDeviceDetection();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const currentUser = getCurrentUser();
 
   const handleNavClick = (viewId: string) => {
     dispatch({ type: 'SET_SELECTED_PROPERTY', payload: null });
     dispatch({ type: 'SET_CURRENT_VIEW', payload: viewId });
+    if (device.isMobile) {
+      setIsMobileMenuOpen(false);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    dispatch({ type: 'SET_AUTHENTICATED', payload: false });
     if (device.isMobile) {
       setIsMobileMenuOpen(false);
     }
@@ -119,8 +131,37 @@ export default function Sidebar() {
         </ul>
       </nav>
 
-      <div className={`${device.isMobile ? 'p-2' : 'p-4'} border-t border-gray-700`}>
-        <div className={`flex items-center gap-2 ${device.isMobile ? 'text-xs' : 'text-sm'} text-gray-400`}>
+      <div className={`${device.isMobile ? 'p-2' : 'p-4'} border-t border-gray-700 space-y-3`}>
+        {currentUser && (
+          <div className={`${device.isMobile ? 'p-2' : 'p-3'} bg-gray-800 rounded-lg`}>
+            <div className="flex items-center gap-2 mb-2">
+              <User className={`${device.isMobile ? 'w-4 h-4' : 'w-5 h-5'} text-blue-400`} />
+              <span className={`${device.isMobile ? 'text-xs' : 'text-sm'} text-gray-300 font-medium truncate`}>
+                {currentUser.name} {currentUser.surname}
+              </span>
+            </div>
+            {currentUser.isAdmin && (
+              <div className="flex items-center gap-1">
+                <Shield className="w-3 h-3 text-amber-400" />
+                <span className="text-xs text-amber-400 font-medium">Admin</span>
+              </div>
+            )}
+          </div>
+        )}
+
+        <button
+          onClick={handleLogout}
+          className={`w-full flex items-center gap-3 ${
+            device.isMobile ? 'px-2 py-2 text-xs' : device.isTV ? 'px-6 py-4 text-lg' : 'px-3 py-2.5'
+          } rounded-lg transition-all duration-200 text-red-400 hover:bg-red-900 hover:bg-opacity-20 hover:text-red-300`}
+        >
+          <LogOut className={`${device.isMobile ? 'w-4 h-4' : device.isTV ? 'w-7 h-7' : 'w-5 h-5'}`} />
+          {(!device.isMobile || isMobileMenuOpen) && (
+            <span>Logout</span>
+          )}
+        </button>
+
+        <div className={`flex items-center gap-2 ${device.isMobile ? 'text-xs' : 'text-sm'} text-gray-400 pt-2`}>
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span>Connected</span>
         </div>

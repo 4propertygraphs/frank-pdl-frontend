@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, ReactNode, useEffect } from 'react';
 import { Agency, Property, AppSettings, AIMessage } from '../types';
+import { isAuthenticated } from '../services/auth';
 
 interface AppState {
   agencies: Agency[];
@@ -82,14 +83,15 @@ const AppContext = createContext<{
 export function AppProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Load saved settings from localStorage
+  // Load saved settings and check authentication on mount
   useEffect(() => {
-    // Check if user is already authenticated
-    const token = localStorage.getItem('auth_token');
-    if (token) {
+    // Check if user is authenticated (checks for 4property_auth_token)
+    const authenticated = isAuthenticated();
+    if (authenticated) {
       dispatch({ type: 'SET_AUTHENTICATED', payload: true });
+      console.log('Session restored from localStorage');
     }
-    
+
     const savedSettings = localStorage.getItem('4property-settings');
     if (savedSettings) {
       try {
