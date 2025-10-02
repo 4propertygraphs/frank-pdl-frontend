@@ -6,15 +6,30 @@ let apiKeys: any[] = [];
 
 async function loadApiKeys() {
   try {
+    console.log('🔍 Attempting to load API keys from agencies copy.json...');
     const response = await fetch('/agencies copy.json');
     if (response.ok) {
       apiKeys = await response.json();
       console.log('✅ Loaded API keys from agencies copy.json:', apiKeys.length, 'entries');
+      console.log('📋 First entry structure:', apiKeys[0]);
+      console.log('📋 Available SitePrefixes:', apiKeys.map(k => k.SitePrefix || k.sitePrefix || 'NO_PREFIX'));
     } else {
-      console.warn('⚠️ Could not load agencies copy.json');
+      console.warn('⚠️ Could not load agencies copy.json - HTTP', response.status);
     }
   } catch (error) {
-    console.error('❌ Error loading API keys:', error);
+    console.error('❌ Error loading API keys from agencies copy.json:', error);
+    
+    // Try alternative file names
+    try {
+      console.log('🔍 Trying agency-keys.json as fallback...');
+      const fallbackResponse = await fetch('/agency-keys.json');
+      if (fallbackResponse.ok) {
+        apiKeys = await fallbackResponse.json();
+        console.log('✅ Loaded API keys from agency-keys.json fallback:', apiKeys.length, 'entries');
+      }
+    } catch (fallbackError) {
+      console.error('❌ Fallback also failed:', fallbackError);
+    }
   }
 }
 
