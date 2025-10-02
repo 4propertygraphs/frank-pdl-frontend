@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Image, MapPin, Bed, Bath, Square, Calendar, AlertTriangle, Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { useApp } from '../../contexts/AppContext';
 import { kyraAI } from '../../services/kyra';
+import { dataComparisonService, PropertyComparison } from '../../services/dataComparison';
 
 export default function PropertyDetail() {
   const { state, dispatch } = useApp();
@@ -10,16 +11,34 @@ export default function PropertyDetail() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [comparisonData, setComparisonData] = useState<any>(null);
   const [reportData, setReportData] = useState<any>(null);
+  const [envComparisonData, setEnvComparisonData] = useState<PropertyComparison | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingEnvComparison, setIsLoadingEnvComparison] = useState(false);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
 
   useEffect(() => {
     if (selectedProperty && properties.length > 0) {
       generateAIData();
+      if (activeTab === 'env-comparison') {
+        loadEnvComparison();
+      }
     }
-  }, [selectedProperty?.id]);
+  }, [selectedProperty?.id, activeTab]);
 
+  const loadEnvComparison = async () => {
+    if (!selectedProperty) return;
+
+    setIsLoadingEnvComparison(true);
+    try {
+      const comparison = await dataComparisonService.comparePropertyData(selectedProperty);
+      setEnvComparisonData(comparison);
+    } catch (error) {
+      console.error('Failed to load environment comparison:', error);
+    } finally {
+      setIsLoadingEnvComparison(false);
+    }
+  };
   const generateAIData = async () => {
     if (!selectedProperty || properties.length === 0) return;
 
@@ -334,74 +353,174 @@ export default function PropertyDetail() {
         );
       
       case 'env-comparison':
-        const compareData = {
-          acquaint: { source: 'Music', price: '€450,000', bedrooms: 3, type: 'House' },
-          daft: { source: 'Actor', price: '€448,000', bedrooms: 3, type: 'House' },
-          myhome: { source: 'Agency', price: '€450,000', bedrooms: 3, type: 'House' },
-          wordpress: { source: 'Direct', price: '€455,000', bedrooms: 3, type: 'Semi-Detached' }
-        };
+        if (isLoadingEnvComparison || !envComparisonData) {
+          return (
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-3" />
+                <p className="text-gray-600">Loading data from multiple sources...</p>
+              </div>
+            </div>
+          );
+        }
 
         return (
           <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Environment Data Comparison</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-gray-900">Multi-Source Data Comparison</h3>
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                Last updated: {new Date(envComparisonData.lastUpdated).toLocaleTimeString()}
+              </div>
+            </div>
+
+            {/* Source Legend */}
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h4 className="font-semibold text-gray-900 mb-3">Data Sources</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {envComparisonData.sources.map((source) => (
+                  <div key={source.name} className="flex items-center gap-2">
+                    <div 
+                      className="w-4 h-4 rounded-full" 
+                      style={{ backgroundColor: source.color }}
+                    ></div>
+                    <span className="text-sm font-medium">{source.icon} {source.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-white border rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Field</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Acquaint</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Daft</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">MyHome</th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">WordPress</th>
+                    {envComparisonData.sources.map((source) => (
+                      <th key={source.name} className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: source.color }}
+                          ></div>
+                          {source.name}
+                        </div>
+                      </th>
+                    ))}
+                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  <tr>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Source</td>
-                    <td className={`px-6 py-4 text-sm ${compareData.acquaint.source !== compareData.daft.source ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
-                      {compareData.acquaint.source}
-                    </td>
-                    <td className={`px-6 py-4 text-sm ${compareData.daft.source !== compareData.acquaint.source ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
-                      {compareData.daft.source}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.source}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.wordpress.source}</td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Price</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.acquaint.price}</td>
-                    <td className={`px-6 py-4 text-sm ${compareData.daft.price !== compareData.acquaint.price ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
-                      {compareData.daft.price}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.price}</td>
-                    <td className={`px-6 py-4 text-sm ${compareData.wordpress.price !== compareData.myhome.price ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
-                      {compareData.wordpress.price}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Bedrooms</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.acquaint.bedrooms}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.daft.bedrooms}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.bedrooms}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.wordpress.bedrooms}</td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">Type</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.acquaint.type}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.daft.type}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{compareData.myhome.type}</td>
-                    <td className={`px-6 py-4 text-sm ${compareData.wordpress.type !== compareData.myhome.type ? 'bg-yellow-50 font-semibold text-yellow-900' : 'text-gray-600'}`}>
-                      {compareData.wordpress.type}
-                    </td>
-                  </tr>
+                  {envComparisonData.fields.map((field) => (
+                    <tr key={field.key} className={field.hasDifferences ? 'bg-red-50' : ''}>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                        <div className="flex items-center gap-2">
+                          {field.hasDifferences && (
+                            <AlertTriangle className="w-4 h-4 text-red-500" />
+                          )}
+                          {field.label}
+                        </div>
+                      </td>
+                      {envComparisonData.sources.map((source) => {
+                        const value = field.sources[source.name.toLowerCase()];
+                        const formattedValue = dataComparisonService.formatValue(value, field.type);
+                        const isDifferent = field.hasDifferences;
+                        
+                        return (
+                          <td 
+                            key={source.name}
+                            className={`px-6 py-4 text-sm ${
+                              isDifferent 
+                                ? 'bg-red-100 font-semibold text-red-900 border-l-4 border-red-500' 
+                                : 'text-gray-600'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span>{formattedValue}</span>
+                              {isDifferent && field.type === 'currency' && (
+                                <span className="text-xs text-red-600">
+                                  {dataComparisonService.getDifferencePercentage(
+                                    value, 
+                                    field.sources.acquaint, 
+                                    field.type
+                                  )}%
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                        );
+                      })}
+                      <td className="px-6 py-4">
+                        {field.hasDifferences ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                            <AlertTriangle className="w-3 h-3" />
+                            Differences
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                            ✓ Consistent
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            <div className="flex items-start gap-2 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-              <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+
+            {/* Summary of differences */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="w-5 h-5 text-red-600" />
+                  <h4 className="font-semibold text-red-900">Data Inconsistencies</h4>
+                </div>
+                <p className="text-sm text-red-800">
+                  {envComparisonData.fields.filter(f => f.hasDifferences).length} field(s) show differences across sources
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {envComparisonData.fields
+                    .filter(f => f.hasDifferences)
+                    .map(field => (
+                      <li key={field.key} className="text-xs text-red-700">
+                        • {field.label}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-xs">✓</span>
+                  </div>
+                  <h4 className="font-semibold text-green-900">Consistent Data</h4>
+                </div>
+                <p className="text-sm text-green-800">
+                  {envComparisonData.fields.filter(f => !f.hasDifferences).length} field(s) are consistent across all sources
+                </p>
+                <ul className="mt-2 space-y-1">
+                  {envComparisonData.fields
+                    .filter(f => !f.hasDifferences)
+                    .slice(0, 5)
+                    .map(field => (
+                      <li key={field.key} className="text-xs text-green-700">
+                        • {field.label}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-white text-xs">i</span>
+              </div>
               <div>
-                <p className="text-sm font-semibold text-yellow-900">Highlighted differences</p>
-                <p className="text-sm text-yellow-700">Yellow cells indicate data discrepancies between platforms</p>
+                <p className="text-sm font-semibold text-blue-900">Data Source Analysis</p>
+                <p className="text-sm text-blue-700">
+                  Red highlighting indicates discrepancies between data sources. This helps identify 
+                  potential data quality issues and ensures accuracy across all platforms.
+                </p>
               </div>
             </div>
           </div>
