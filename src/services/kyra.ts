@@ -855,6 +855,24 @@ Klidně se ptejte na cokoliv ohledně nemovitostí, agentur, tržních trendů, 
       return 'Consider Carefully - While this property has potential, thorough due diligence is recommended before proceeding.';
     }
   }
+  // Chat method for Overview chat interface
+  async chat(message: string): Promise<string> {
+    try {
+      // Get context from cache
+      const data = await this.getData();
+      const context = {
+        agencies: data.agencies || [],
+        properties: data.properties || []
+      };
+
+      // Generate response with context
+      return await this.generateResponse(message, context);
+    } catch (error) {
+      console.error('🤖 Kyra chat error:', error);
+      return 'Omlouvám se, ale momentálně nemohu zpracovat váš dotaz. Zkuste to prosím znovu.';
+    }
+  }
 }
 
 export const kyraAI = new KyraAI();
+export const kyraService = kyraAI;
