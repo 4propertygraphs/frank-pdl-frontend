@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Building, Users, DollarSign, TrendingUp, Upload, Cloud, Loader2, MessageSquare, Plus, Trash2, Send } from "lucide-react";
+import { Upload, Cloud, Loader2, MessageSquare, Plus, Trash2, Send } from "lucide-react";
 import { kyraService } from "../../services/kyra";
-
-interface DBStats {
-  totalProperties: number;
-  activeAgencies: number;
-  avgPrice: number;
-  totalValue: number;
-  allAgencies: Array<{ name: string; count: number; avgPrice: number }>;
-}
 
 interface Conversation {
   id: string;
@@ -32,10 +24,7 @@ export default function Overview() {
   const { settings } = state;
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<string>("");
-  const [stats, setStats] = useState<DBStats | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  // Chat state
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,7 +33,6 @@ export default function Overview() {
   const [loadingConversations, setLoadingConversations] = useState(true);
 
   useEffect(() => {
-    loadAllStats();
     loadConversations();
   }, []);
 
@@ -53,61 +41,6 @@ export default function Overview() {
       loadMessages(currentConversation.id);
     }
   }, [currentConversation]);
-
-  const loadAllStats = async () => {
-    try {
-      setLoading(true);
-      const { supabase } = await import('../../services/supabase');
-
-      const { data: agencies, error: agenciesError } = await supabase
-        .from('agencies')
-        .select('*')
-        .eq('is_active', true);
-
-      const { data: properties, error: propertiesError } = await supabase
-        .from('properties')
-        .select('*');
-
-      if (agenciesError || propertiesError) {
-        console.error('Error loading data:', agenciesError || propertiesError);
-        setLoading(false);
-        return;
-      }
-
-      const activeAgencies = agencies?.filter(a => a.property_count > 0) || [];
-      const allProperties = properties || [];
-
-      const totalValue = allProperties.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
-      const avgPrice = allProperties.length > 0 ? Math.round(totalValue / allProperties.length) : 0;
-
-      const allAgencies = activeAgencies
-        .map(a => {
-          const agencyProps = allProperties.filter(p => p.agency_id === a.agency_id);
-          const agencyTotal = agencyProps.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0);
-          const agencyAvg = agencyProps.length > 0 ? Math.round(agencyTotal / agencyProps.length) : 0;
-          return {
-            name: a.name,
-            count: agencyProps.length,
-            avgPrice: agencyAvg
-          };
-        })
-        .filter(a => a.count > 0)
-        .sort((a, b) => b.count - a.count);
-
-      setStats({
-        totalProperties: allProperties.length,
-        activeAgencies: activeAgencies.length,
-        avgPrice,
-        totalValue,
-        allAgencies
-      });
-
-      setLoading(false);
-    } catch (err: any) {
-      console.error('Error loading stats:', err);
-      setLoading(false);
-    }
-  };
 
   const loadConversations = async () => {
     try {
@@ -270,8 +203,6 @@ export default function Overview() {
       localStorage.setItem('lastAutoSync', Date.now().toString());
       setUploadProgress(`✅ Sync complete: ${result.success} uploaded, ${result.failed} failed`);
 
-      await loadAllStats();
-
       setTimeout(() => {
         setUploadProgress("");
         setIsUploading(false);
@@ -288,74 +219,20 @@ export default function Overview() {
 
   const translations = {
     en: {
-      title: "Dashboard Overview",
-      subtitle: "Real-time insights into your property portfolio",
+      title: "Kyra Assistant",
+      subtitle: "Your AI-powered property management assistant",
     },
     cz: {
-      title: "Přehled dashboard",
-      subtitle: "Poznatky v reálném čase o vašem portfoliu nemovitostí",
+      title: "Kyra Asistent",
+      subtitle: "Váš AI asistent pro správu nemovitostí",
     },
   };
 
   const t = translations[settings.language as "en" | "cz"] || translations.en;
 
-  if (loading) {
-    return (
-      <div className="flex-1 p-6 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-16 h-16 text-blue-600 animate-spin mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-700">Loading dashboard...</h2>
-        </div>
-      </div>
-    );
-  }
-
-  if (!stats) {
-    return (
-      <div className="flex-1 p-6 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Cloud className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-700">No data available</h2>
-          <p className="text-gray-500 mt-2">Click "Sync All to Cloud" to load properties</p>
-        </div>
-      </div>
-    );
-  }
-
-  const mainStats = [
-    {
-      title: "Total Properties",
-      value: stats.totalProperties.toLocaleString(),
-      icon: Building,
-      bgColor: "bg-blue-50",
-      iconColor: "text-blue-600"
-    },
-    {
-      title: "Active Agencies",
-      value: stats.activeAgencies.toString(),
-      icon: Users,
-      bgColor: "bg-green-50",
-      iconColor: "text-green-600"
-    },
-    {
-      title: "Average Price",
-      value: `€${stats.avgPrice.toLocaleString()}`,
-      icon: DollarSign,
-      bgColor: "bg-orange-50",
-      iconColor: "text-orange-600"
-    },
-    {
-      title: "Total Value",
-      value: `€${stats.totalValue.toLocaleString()}`,
-      icon: TrendingUp,
-      bgColor: "bg-purple-50",
-      iconColor: "text-purple-600"
-    },
-  ];
-
   return (
     <div className="flex-1 p-6 bg-gray-50 min-h-screen">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.title}</h1>
           <p className="text-gray-600">{t.subtitle}</p>
@@ -390,60 +267,7 @@ export default function Overview() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {mainStats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div
-              key={index}
-              className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-500 mb-2">
-                    {stat.title}
-                  </p>
-                  <p className="text-3xl font-bold text-gray-900">
-                    {stat.value}
-                  </p>
-                </div>
-                <div className={`p-4 rounded-xl ${stat.bgColor}`}>
-                  <Icon className={`w-7 h-7 ${stat.iconColor}`} />
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <Users className="w-5 h-5 text-blue-600" />
-          All Agencies
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-3 px-4 text-sm font-semibold text-gray-700">Agency Name</th>
-                <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">Properties</th>
-                <th className="text-right py-3 px-4 text-sm font-semibold text-gray-700">Average Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.allAgencies.map((agency, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50 transition-colors">
-                  <td className="py-3 px-4 text-gray-900 font-medium">{agency.name}</td>
-                  <td className="py-3 px-4 text-right text-blue-600 font-semibold">{agency.count}</td>
-                  <td className="py-3 px-4 text-right text-gray-700">€{agency.avgPrice.toLocaleString()}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden" style={{ height: '600px' }}>
+      <div className="bg-white rounded-xl shadow-sm border overflow-hidden" style={{ height: 'calc(100vh - 220px)', minHeight: '600px' }}>
         <div className="flex h-full">
           <div className="w-64 border-r bg-gray-50 flex flex-col">
             <div className="p-4 border-b bg-white">
@@ -512,6 +336,18 @@ export default function Overview() {
                   <div className="text-center">
                     <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-20" />
                     <p className="text-lg">Start a conversation with Kyra</p>
+                    <p className="text-sm mt-2">Try asking:</p>
+                    <div className="mt-4 space-y-2 text-left max-w-md mx-auto">
+                      <div className="bg-white p-3 rounded-lg border text-gray-600 text-sm">
+                        "How many properties do we have?"
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border text-gray-600 text-sm">
+                        "Show me the top agencies"
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border text-gray-600 text-sm">
+                        "What's the market trend?"
+                      </div>
+                    </div>
                   </div>
                 </div>
               ) : (
