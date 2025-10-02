@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useApp } from "../../contexts/AppContext";
 import { cloudUploadService } from "../../services/cloudUpload";
-import { Upload, Cloud, Loader2, MessageSquare, Plus, Trash2, Send } from "lucide-react";
+import { Upload, Cloud, Loader2, MessageSquare, Plus, Trash2, Send, Building, Users, DollarSign, Clock } from "lucide-react";
 import { kyraService } from "../../services/kyra";
 
 interface Conversation {
@@ -19,6 +19,13 @@ interface Message {
   created_at: string;
 }
 
+interface Stats {
+  totalProperties: number;
+  totalAgencies: number;
+  avgPrice: number;
+  lastUpdate: string;
+}
+
 export default function Overview() {
   const { state } = useApp();
   const { settings } = state;
@@ -31,9 +38,12 @@ export default function Overview() {
   const [inputMessage, setInputMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [loadingConversations, setLoadingConversations] = useState(true);
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     loadConversations();
+    loadStats();
   }, []);
 
   useEffect(() => {
@@ -41,6 +51,47 @@ export default function Overview() {
       loadMessages(currentConversation.id);
     }
   }, [currentConversation]);
+
+  const loadStats = async () => {
+    try {
+      setLoadingStats(true);
+      const { supabase } = await import('../../services/supabase');
+
+      const { data: properties, error: propsError } = await supabase
+        .from('properties')
+        .select('price');
+
+      const { data: agencies, error: agenciesError } = await supabase
+        .from('agencies')
+        .select('id')
+        .eq('is_active', true);
+
+      if (propsError || agenciesError) {
+        console.error('Error loading stats:', propsError || agenciesError);
+        setLoadingStats(false);
+        return;
+      }
+
+      const totalProperties = properties?.length || 0;
+      const totalAgencies = agencies?.length || 0;
+      const totalValue = properties?.reduce((sum, p) => sum + (parseFloat(p.price) || 0), 0) || 0;
+      const avgPrice = totalProperties > 0 ? Math.round(totalValue / totalProperties) : 0;
+
+      const lastUpdate = localStorage.getItem('lastAutoSync');
+      const lastUpdateDate = lastUpdate ? new Date(parseInt(lastUpdate)).toLocaleString() : 'Never';
+
+      setStats({
+        totalProperties,
+        totalAgencies,
+        avgPrice,
+        lastUpdate: lastUpdateDate
+      });
+      setLoadingStats(false);
+    } catch (err) {
+      console.error('Error loading stats:', err);
+      setLoadingStats(false);
+    }
+  };
 
   const loadConversations = async () => {
     try {
@@ -203,6 +254,8 @@ export default function Overview() {
       localStorage.setItem('lastAutoSync', Date.now().toString());
       setUploadProgress(`✅ Sync complete: ${result.success} uploaded, ${result.failed} failed`);
 
+      await loadStats();
+
       setTimeout(() => {
         setUploadProgress("");
         setIsUploading(false);
@@ -229,6 +282,37 @@ export default function Overview() {
   };
 
   const t = translations[settings.language as "en" | "cz"] || translations.en;
+
+  const statCards = [
+    {
+      title: "Total Properties",
+      value: loadingStats ? "..." : stats?.totalProperties.toLocaleString() || "0",
+      icon: Building,
+      bgColor: "bg-blue-50",
+      iconColor: "text-blue-600"
+    },
+    {
+      title: "Active Agencies",
+      value: loadingStats ? "..." : stats?.totalAgencies.toString() || "0",
+      icon: Users,
+      bgColor: "bg-green-50",
+      iconColor: "text-green-600"
+    },
+    {
+      title: "Average Price",
+      value: loadingStats ? "..." : `€${stats?.avgPrice.toLocaleString() || "0"}`,
+      icon: DollarSign,
+      bgColor: "bg-orange-50",
+      iconColor: "text-orange-600"
+    },
+    {
+      title: "Last Update",
+      value: loadingStats ? "..." : stats?.lastUpdate || "Never",
+      icon: Clock,
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600"
+    },
+  ];
 
   return (
     <div className="flex-1 p-6 bg-gray-50 min-h-screen">
@@ -267,7 +351,33 @@ export default function Overview() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border overflow-hidden" style={{ height: 'calc(100vh - 220px)', minHeight: '600px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        {statCards.map((stat, index) => {
+          const Icon = stat.icon;
+          return (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-all duration-300"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-gray-500 mb-2">
+                    {stat.title}
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stat.value}
+                  </p>
+                </div>
+                <div className={`p-3 rounded-xl ${stat.bgColor}`}>
+                  <Icon className={`w-6 h-6 ${stat.iconColor}`} />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border overflow-hidden" style={{ height: 'calc(100vh - 420px)', minHeight: '500px' }}>
         <div className="flex h-full">
           <div className="w-64 border-r bg-gray-50 flex flex-col">
             <div className="p-4 border-b bg-white">
