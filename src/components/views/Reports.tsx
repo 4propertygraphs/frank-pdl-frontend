@@ -81,16 +81,34 @@ export default function Reports() {
     setIsGenerating(true);
     try {
       const agency = agencies.find(a => a.site_prefix === selectedAgency);
-      if (!agency || !agency.xml_url) {
-        alert('Agency XML URL not found. Cannot generate report.');
+      if (!agency) {
+        alert('Agency not found.');
         setIsGenerating(false);
         return;
       }
 
-      const blob = await professionalReportGenerator.generateProfessionalReport(
-        agency.xml_url,
+      const siteId = agency.site_id || 0;
+      const proxyUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/fetch-xml-proxy?sitePrefix=${selectedAgency}&siteId=${siteId}`;
+
+      const xmlResponse = await fetch(proxyUrl, {
+        headers: {
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+      });
+
+      if (!xmlResponse.ok) {
+        alert(`Failed to fetch agency data: HTTP ${xmlResponse.status}`);
+        setIsGenerating(false);
+        return;
+      }
+
+      const xmlText = await xmlResponse.text();
+      const blob = await professionalReportGenerator.generateProfessionalReportFromXML(
+        xmlText,
+        selectedAgency,
         agency.name || agency.site_prefix
       );
+
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       const date = new Date().toISOString().split('T')[0];

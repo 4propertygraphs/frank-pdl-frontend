@@ -54,6 +54,20 @@ export class ProfessionalReportGenerator {
     }
   }
 
+  async generateProfessionalReportFromXML(xmlText: string, sitePrefix: string, agencyName: string): Promise<Blob> {
+    try {
+      const data = this.parser.parse(xmlText);
+      const properties = this.extractProperties(data);
+      const marketData = this.calculateMarketData(properties);
+
+      const html = this.generateHTML(properties, marketData, agencyName);
+      return new Blob([html], { type: 'text/html' });
+    } catch (error) {
+      console.error('Failed to generate professional report:', error);
+      throw error;
+    }
+  }
+
   private extractProperties(data: any): PropertyData[] {
     const properties: PropertyData[] = [];
     const rawProperties = data?.data?.property || [];
