@@ -78,17 +78,17 @@ class DaftApiService {
     return [
       {
         id: propertyId || 'daft-mock-1',
-        title: 'No API Key Available',
+        title: 'No API',
         price: 0,
         bedrooms: 0,
         bathrooms: 0,
         propertyType: 'No API',
-        address: 'No API Key Configured',
+        address: 'No API',
         county: 'No API',
         eircode: 'No API',
         berRating: 'No API',
         floorArea: 0,
-        description: 'Daft API key not configured for this agency',
+        description: 'No API',
         images: [],
         contactName: 'No API',
         phone: 'No API',
@@ -108,40 +108,42 @@ class DaftApiService {
       return this.getMockDaftData();
     }
     
-    // Use Supabase Edge Function as proxy
+    // Use external database API via Supabase Edge Function
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseKey) {
-      console.log('🔄 Supabase not configured, using mock data');
+      console.log('🔄 Supabase not configured, using No API data');
       return this.getMockDaftData();
     }
     
     try {
-      console.log('🔍 Calling Daft via Supabase Edge Function...', apiKey ? 'with API key' : 'without API key');
+      console.log('🔍 Calling Daft via external database API...', `API Key: ${apiKey.substring(0, 8)}...`);
       const searchParams = new URLSearchParams();
       
+      searchParams.append('source', 'daft');
+      searchParams.append('action', 'search');
       if (params.location) searchParams.append('location', params.location);
-      if (params.minPrice) searchParams.append('priceFrom', params.minPrice.toString());
-      if (params.maxPrice) searchParams.append('priceTo', params.maxPrice.toString());
+      if (params.minPrice) searchParams.append('minPrice', params.minPrice.toString());
+      if (params.maxPrice) searchParams.append('maxPrice', params.maxPrice.toString());
       if (params.propertyType) searchParams.append('propertyType', params.propertyType);
-      if (params.minBeds) searchParams.append('numBedsFrom', params.minBeds.toString());
-      if (params.maxBeds) searchParams.append('numBedsTo', params.maxBeds.toString());
+      if (params.minBeds) searchParams.append('minBeds', params.minBeds.toString());
+      if (params.maxBeds) searchParams.append('maxBeds', params.maxBeds.toString());
       if (params.sort) searchParams.append('sort', params.sort);
+      if (params.address) searchParams.append('address', params.address);
       
-      searchParams.append('limit', (params.limit || 50).toString());
-      
-      if (apiKey) searchParams.append('apiKey', apiKey);
+      searchParams.append('limit', (params.limit || 10).toString());
+      searchParams.append('api_key', apiKey);
 
-      const proxyUrl = `${supabaseUrl}/functions/v1/daft-proxy?${searchParams.toString()}`;
+      const proxyUrl = `${supabaseUrl}/functions/v1/external-data-proxy?${searchParams.toString()}`;
       
       const response = await fetch(proxyUrl, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        method: 'GET',
       });
 
       if (!response.ok) {
@@ -150,16 +152,18 @@ class DaftApiService {
       
       const result = await response.json();
       
-      if (result.isMockData) {
-        console.log('📭 Daft API returned mock data:', result.message);
+      if (result.isNoApiData) {
+        console.log('📭 Daft API returned No API data:', result.message);
+      } else if (result.isRealData) {
+        console.log('✅ Real Daft data received via external database');
       } else {
-        console.log('✅ Real Daft data received via proxy');
+        console.log('📭 Daft API returned fallback data');
       }
       
       return this.transformDaftResponse(result.data || []);
     } catch (error: any) {
       console.error('Daft API error:', error);
-      console.log('🔄 Daft API unavailable, using mock data');
+      console.log('🔄 Daft API unavailable, using No API data');
       return this.getMockDaftData();
     }
   }

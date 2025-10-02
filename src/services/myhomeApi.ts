@@ -95,7 +95,7 @@ class MyHomeApiService {
     return [
       {
         id: propertyId || 'myhome-mock-1',
-        displayAddress: 'No API Key Available',
+        displayAddress: 'No API',
         price: 0,
         bedrooms: 0,
         bathrooms: 0,
@@ -105,7 +105,7 @@ class MyHomeApiService {
         eircode: 'No API',
         berRating: 'No API',
         floorArea: 0,
-        description: 'MyHome API key not configured for this agency',
+        description: 'No API',
         photos: [],
         contactDetails: {
           firstName: 'No API',
@@ -131,49 +131,43 @@ class MyHomeApiService {
       return this.getMockMyHomeData();
     }
     
-    // Use Supabase Edge Function as proxy
+    // Use external database API via Supabase Edge Function
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
     const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
     
     if (!supabaseUrl || !supabaseKey) {
-      console.log('🔄 Supabase not configured, using mock data');
-      return this.getMockMyHomeData();
-    }
-    
-    if (!apiKey || !groupId) {
-      console.log('🔄 MyHome API credentials not found for agency:', agencyId, 'using mock data');
+      console.log('🔄 Supabase not configured, using No API data');
       return this.getMockMyHomeData();
     }
     
     try {
-      console.log('🔍 Calling MyHome via Supabase Edge Function...', `API Key: ${apiKey.substring(0, 8)}...`, `GroupID: ${groupId}`);
+      console.log('🔍 Calling MyHome via external database API...', `API Key: ${apiKey.substring(0, 8)}...`, `GroupID: ${groupId}`);
       const searchParams = new URLSearchParams();
       
+      searchParams.append('source', 'myhome');
+      searchParams.append('action', 'search');
       if (params.county) searchParams.append('county', params.county);
       if (params.minPrice) searchParams.append('minPrice', params.minPrice.toString());
       if (params.maxPrice) searchParams.append('maxPrice', params.maxPrice.toString());
       if (params.propertyType) searchParams.append('propertyType', params.propertyType);
       if (params.minBeds) searchParams.append('minBeds', params.minBeds.toString());
       if (params.maxBeds) searchParams.append('maxBeds', params.maxBeds.toString());
+      if (params.address) searchParams.append('address', params.address);
       
       searchParams.append('page', (params.page || 1).toString());
       searchParams.append('pageSize', (params.pageSize || 50).toString());
-      searchParams.append('apiKey', apiKey);
-      searchParams.append('groupId', groupId.toString());
-      
-      if (groupId) {
-        searchParams.append('groupId', groupId.toString());
-      }
+      searchParams.append('api_key', apiKey);
+      searchParams.append('group_id', groupId.toString());
 
-      const proxyUrl = `${supabaseUrl}/functions/v1/myhome-proxy?${searchParams.toString()}`;
+      const proxyUrl = `${supabaseUrl}/functions/v1/external-data-proxy?${searchParams.toString()}`;
       
       const response = await fetch(proxyUrl, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${supabaseKey}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        method: 'GET',
       });
 
       if (!response.ok) {
@@ -182,16 +176,18 @@ class MyHomeApiService {
       
       const result = await response.json();
       
-      if (result.isMockData) {
-        console.log('📭 MyHome API returned mock data:', result.message);
+      if (result.isNoApiData) {
+        console.log('📭 MyHome API returned No API data:', result.message);
+      } else if (result.isRealData) {
+        console.log('✅ Real MyHome data received via external database');
       } else {
-        console.log('✅ Real MyHome data received via proxy');
+        console.log('📭 MyHome API returned fallback data');
       }
       
       return this.transformMyHomeResponse(result.data || []);
     } catch (error: any) {
       console.error('MyHome API error:', error);
-      console.log('🔄 MyHome API unavailable, using mock data');
+      console.log('🔄 MyHome API unavailable, using No API data');
       return this.getMockMyHomeData();
     }
   }
