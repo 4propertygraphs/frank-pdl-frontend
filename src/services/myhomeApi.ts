@@ -105,8 +105,22 @@ class MyHomeApiService {
   async searchProperties(params: MyHomeSearchParams = {}, agencyId?: string): Promise<MyHomeProperty[]> {
     const { apiKey, groupId } = this.getApiCredentialsForAgency(agencyId);
     
+    // Use Supabase Edge Function as proxy
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.log('🔄 Supabase not configured, using mock data');
+      return this.getMockMyHomeData();
+    }
+    
+    if (!apiKey || !groupId) {
+      console.log('🔄 MyHome API credentials not found for agency:', agencyId, 'using mock data');
+      return this.getMockMyHomeData();
+    }
+    
     try {
-      console.log('🔍 Attempting MyHome API search...', apiKey ? 'with API key' : 'without API key', groupId ? `GroupID: ${groupId}` : '');
+      console.log('🔍 Calling MyHome via Supabase Edge Function...', `API Key: ${apiKey.substring(0, 8)}...`, `GroupID: ${groupId}`);
       const searchParams = new URLSearchParams();
       
       if (params.county) searchParams.append('county', params.county);
@@ -118,18 +132,35 @@ class MyHomeApiService {
       
       searchParams.append('page', (params.page || 1).toString());
       searchParams.append('pageSize', (params.pageSize || 50).toString());
+      searchParams.append('apiKey', apiKey);
+      searchParams.append('groupId', groupId.toString());
       
       if (groupId) {
         searchParams.append('groupId', groupId.toString());
       }
 
-      const response = await axios.get(`${this.BASE_URL}/search`, {
-        params: Object.fromEntries(searchParams),
-        headers: this.getHeaders(apiKey, groupId),
-        timeout: 15000,
+      const proxyUrl = `${supabaseUrl}/functions/v1/myhome-proxy?${searchParams.toString()}`;
+      
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
       });
 
-      return this.transformMyHomeResponse(response.data);
+      if (!response.ok) {
+        throw new Error(`Proxy error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (result.isMockData) {
+        console.log('📭 MyHome API returned mock data:', result.message);
+      } else {
+        console.log('✅ Real MyHome data received via proxy');
+      }
+      
+      return this.transformMyHomeResponse(result.data || []);
     } catch (error: any) {
       console.error('MyHome API error:', error);
       console.log('🔄 MyHome API unavailable, using mock data');
@@ -140,14 +171,38 @@ class MyHomeApiService {
   async getPropertyById(myHomeId: string, agencyId?: string): Promise<MyHomeProperty | null> {
     const { apiKey, groupId } = this.getApiCredentialsForAgency(agencyId);
     
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey || !apiKey || !groupId) {
+      console.log('🔄 Missing credentials, using mock data');
+      const mockData = this.getMockMyHomeData(myHomeId);
+      return mockData[0] || null;
+    }
+    
     try {
-      console.log('🔍 Attempting MyHome property fetch...', apiKey ? 'with API key' : 'without API key');
-      const response = await axios.get(`${this.BASE_URL}/properties/${myHomeId}`, {
-        headers: this.getHeaders(apiKey, groupId),
-        timeout: 10000,
+      console.log('🔍 Fetching MyHome property via Supabase Edge Function...');
+      
+      const searchParams = new URLSearchParams();
+      searchParams.append('propertyId', myHomeId);
+      searchParams.append('apiKey', apiKey);
+      searchParams.append('groupId', groupId.toString());
+      
+      const proxyUrl = `${supabaseUrl}/functions/v1/myhome-proxy?${searchParams.toString()}`;
+      
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
       });
 
-      const properties = this.transformMyHomeResponse([response.data]);
+      if (!response.ok) {
+        throw new Error(`Proxy error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      const properties = this.transformMyHomeResponse(result.data || []);
       return properties[0] || null;
     } catch (error: any) {
       console.error('MyHome property fetch error:', error);
@@ -159,13 +214,14 @@ class MyHomeApiService {
 
   async searchByAddress(address: string, agencyId?: string): Promise<MyHomeProperty[]> {
     try {
-      console.log('🔍 Attempting MyHome address search for agency:', agencyId);
+      console.log('🔍 MyHome address search via proxy for agency:', agencyId);
       // Extract county from address for better search
       const addressParts = address.split(',').map(s => s.trim());
       const possibleCounty = addressParts[addressParts.length - 1];
       
       return await this.searchProperties({
         county: possibleCounty,
+        address: address,
         pageSize: 20,
       }, agencyId);
     } catch (error) {

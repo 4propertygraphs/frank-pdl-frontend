@@ -87,8 +87,17 @@ class DaftApiService {
   async searchProperties(params: DaftSearchParams = {}, agencyId?: string): Promise<DaftProperty[]> {
     const apiKey = this.getApiKeyForAgency(agencyId);
     
+    // Use Supabase Edge Function as proxy
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.log('🔄 Supabase not configured, using mock data');
+      return this.getMockDaftData();
+    }
+    
     try {
-      console.log('🔍 Attempting Daft API search...', apiKey ? 'with API key' : 'without API key');
+      console.log('🔍 Calling Daft via Supabase Edge Function...', apiKey ? 'with API key' : 'without API key');
       const searchParams = new URLSearchParams();
       
       if (params.location) searchParams.append('location', params.location);
@@ -100,14 +109,31 @@ class DaftApiService {
       if (params.sort) searchParams.append('sort', params.sort);
       
       searchParams.append('limit', (params.limit || 50).toString());
+      
+      if (apiKey) searchParams.append('apiKey', apiKey);
 
-      const response = await axios.get(`${this.BASE_URL}/v1/listings`, {
-        params: Object.fromEntries(searchParams),
-        headers: this.getHeaders(apiKey),
-        timeout: 10000,
+      const proxyUrl = `${supabaseUrl}/functions/v1/daft-proxy?${searchParams.toString()}`;
+      
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
       });
 
-      return this.transformDaftResponse(response.data);
+      if (!response.ok) {
+        throw new Error(`Proxy error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      
+      if (result.isMockData) {
+        console.log('📭 Daft API returned mock data:', result.message);
+      } else {
+        console.log('✅ Real Daft data received via proxy');
+      }
+      
+      return this.transformDaftResponse(result.data || []);
     } catch (error: any) {
       console.error('Daft API error:', error);
       console.log('🔄 Daft API unavailable, using mock data');
@@ -118,14 +144,37 @@ class DaftApiService {
   async getPropertyById(daftId: string, agencyId?: string): Promise<DaftProperty | null> {
     const apiKey = this.getApiKeyForAgency(agencyId);
     
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+    
+    if (!supabaseUrl || !supabaseKey) {
+      console.log('🔄 Supabase not configured, using mock data');
+      const mockData = this.getMockDaftData(daftId);
+      return mockData[0] || null;
+    }
+    
     try {
-      console.log('🔍 Attempting Daft property fetch...', apiKey ? 'with API key' : 'without API key');
-      const response = await axios.get(`${this.BASE_URL}/v1/listings/${daftId}`, {
-        headers: this.getHeaders(apiKey),
-        timeout: 10000,
+      console.log('🔍 Fetching Daft property via Supabase Edge Function...', apiKey ? 'with API key' : 'without API key');
+      
+      const searchParams = new URLSearchParams();
+      searchParams.append('propertyId', daftId);
+      if (apiKey) searchParams.append('apiKey', apiKey);
+      
+      const proxyUrl = `${supabaseUrl}/functions/v1/daft-proxy?${searchParams.toString()}`;
+      
+      const response = await fetch(proxyUrl, {
+        headers: {
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Content-Type': 'application/json',
+        },
       });
 
-      const properties = this.transformDaftResponse([response.data]);
+      if (!response.ok) {
+        throw new Error(`Proxy error: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      const properties = this.transformDaftResponse(result.data || []);
       return properties[0] || null;
     } catch (error: any) {
       console.error('Daft property fetch error:', error);
@@ -137,7 +186,7 @@ class DaftApiService {
 
   async searchByAddress(address: string, agencyId?: string): Promise<DaftProperty[]> {
     try {
-      console.log('🔍 Attempting Daft address search for agency:', agencyId);
+      console.log('🔍 Daft address search via proxy for agency:', agencyId);
       // Clean and format address for search
       const cleanAddress = address
         .replace(/[^\w\s,]/g, '')
@@ -145,7 +194,7 @@ class DaftApiService {
         .trim();
 
       return await this.searchProperties({
-        location: cleanAddress,
+        address: cleanAddress,
         limit: 10,
         sort: 'relevance'
       }, agencyId);

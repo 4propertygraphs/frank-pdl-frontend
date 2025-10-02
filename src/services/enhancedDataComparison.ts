@@ -157,14 +157,14 @@ export class EnhancedDataComparisonService {
 
   private async fetchFromDaftEnhanced(property: Property): Promise<DaftProperty | null> {
     try {
-      console.log('🔍 Enhanced Daft fetch for property:', property.id);
+      console.log('🔍 Enhanced Daft fetch via proxy for property:', property.id, 'agency:', property.agency_id);
       // Search by address first
       const searchResults = await daftApiService.searchByAddress(property.address || property.title, property.agency_id);
       
       if (searchResults.length > 0) {
         // Find best match based on price and location similarity
         const bestMatch = this.findBestMatch(property, searchResults, 'daft');
-        console.log('✅ Found Daft match:', bestMatch?.id);
+        console.log('✅ Found Daft match:', bestMatch?.id, 'isMock:', !!(bestMatch as any)?._isMockData);
         return bestMatch as DaftProperty;
       }
       
@@ -179,12 +179,12 @@ export class EnhancedDataComparisonService {
 
   private async fetchFromMyHomeEnhanced(property: Property): Promise<MyHomeProperty | null> {
     try {
-      console.log('🔍 Enhanced MyHome fetch for property:', property.id);
+      console.log('🔍 Enhanced MyHome fetch via proxy for property:', property.id, 'agency:', property.agency_id);
       const searchResults = await myHomeApiService.searchByAddress(property.address || property.title, property.agency_id);
       
       if (searchResults.length > 0) {
         const bestMatch = this.findBestMatch(property, searchResults, 'myhome');
-        console.log('✅ Found MyHome match:', bestMatch?.id);
+        console.log('✅ Found MyHome match:', bestMatch?.id, 'isMock:', !!(bestMatch as any)?._isMockData);
         return bestMatch as MyHomeProperty;
       }
       
@@ -550,6 +550,18 @@ export class EnhancedDataComparisonService {
 
   private generateSuggestions(fields: EnhancedComparisonField[], sources: EnhancedDataSource[]): string[] {
     const suggestions: string[] = [];
+
+    // Check if we're getting real vs mock data
+    const realDataSources = sources.filter(s => s.status === 'connected').length;
+    const mockDataSources = sources.filter(s => s.status === 'error').length;
+    
+    if (mockDataSources > 0) {
+      suggestions.push(`⚠️ ${mockDataSources} source(s) using mock data - check API configuration`);
+    }
+    
+    if (realDataSources >= 2) {
+      suggestions.push('✅ Multiple real data sources connected - comparison is reliable');
+    }
 
     const inconsistentFields = fields.filter(f => f.hasDifferences).length;
     const totalFields = fields.length;
