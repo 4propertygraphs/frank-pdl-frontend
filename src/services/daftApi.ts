@@ -51,25 +51,31 @@ class DaftApiService {
     
     console.log('🔍 Looking for Daft API key for agency:', agencyId);
     
-    const agency = agencyDetails.find((a: any) => {
-      const matches = [
-        a.sitePrefix?.toLowerCase(),
-        a.SitePrefix?.toLowerCase(), 
-        a.Key?.toLowerCase(),
-        a.unique_key?.toLowerCase(),
-        a.UUID?.toLowerCase(),
-        a.AcquiantCustomer?.SitePrefix?.toLowerCase()
-      ].filter(Boolean);
-      
-      const found = matches.some(key => key === agencyId.toLowerCase());
-      if (found) {
-        console.log('✅ Found agency in GetAgency.json:', a.Name || a.name || a.OfficeName);
-        console.log('🔑 DaftApiKey:', a.DaftApiKey);
-      }
-      return found;
-    });
+    // GetAgency.json is an array of agencies, search through all
+    let foundAgency = null;
     
-    const apiKey = agency?.DaftApiKey || null;
+    for (const agency of agencyDetails) {
+      // Check all possible site prefix fields
+      const sitePrefixes = [
+        agency.sitePrefix,
+        agency.SitePrefix,
+        agency.Key,
+        agency.unique_key,
+        agency.UUID,
+        agency.AcquiantCustomer?.SitePrefix
+      ].filter(Boolean).map(s => String(s).toLowerCase());
+      
+      if (sitePrefixes.includes(agencyId.toLowerCase())) {
+        foundAgency = agency;
+        console.log('✅ Found agency in GetAgency.json:', agency.Name || agency.name || agency.OfficeName);
+        console.log('🔑 Full agency object:', agency);
+        console.log('🔑 DaftApiKey field:', agency.DaftApiKey);
+        console.log('🔑 All keys:', Object.keys(agency));
+        break;
+      }
+    }
+    
+    const apiKey = foundAgency?.DaftApiKey || foundAgency?.daftApiKey || foundAgency?.daft_api_key || null;
     console.log('🔑 Daft API key for', agencyId, ':', apiKey ? `${apiKey.substring(0, 8)}...` : 'not found');
     return apiKey;
   }

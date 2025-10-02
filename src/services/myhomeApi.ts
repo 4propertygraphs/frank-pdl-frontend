@@ -60,27 +60,33 @@ class MyHomeApiService {
     
     console.log('🔍 Looking for MyHome API credentials for agency:', agencyId);
     
-    const agency = agencyDetails.find((a: any) => {
-      const matches = [
-        a.sitePrefix?.toLowerCase(),
-        a.SitePrefix?.toLowerCase(),
-        a.Key?.toLowerCase(),
-        a.unique_key?.toLowerCase(),
-        a.UUID?.toLowerCase(),
-        a.AcquiantCustomer?.SitePrefix?.toLowerCase()
-      ].filter(Boolean);
+    // GetAgency.json is an array of agencies, search through all
+    let foundAgency = null;
+    
+    for (const agency of agencyDetails) {
+      // Check all possible site prefix fields
+      const sitePrefixes = [
+        agency.sitePrefix,
+        agency.SitePrefix,
+        agency.Key,
+        agency.unique_key,
+        agency.UUID,
+        agency.AcquiantCustomer?.SitePrefix
+      ].filter(Boolean).map(s => String(s).toLowerCase());
       
-      const found = matches.some(key => key === agencyId.toLowerCase());
-      if (found) {
-        console.log('✅ Found agency in GetAgency.json:', a.Name || a.name || a.OfficeName);
-        console.log('🔑 MyHome API data:', a.MyhomeApi);
+      if (sitePrefixes.includes(agencyId.toLowerCase())) {
+        foundAgency = agency;
+        console.log('✅ Found agency in GetAgency.json:', agency.Name || agency.name || agency.OfficeName);
+        console.log('🔑 Full agency object:', agency);
+        console.log('🔑 MyHome API data:', agency.MyhomeApi);
+        console.log('🔑 All keys:', Object.keys(agency));
+        break;
       }
-      return found;
-    });
+    }
     
     const credentials = {
-      apiKey: agency?.MyhomeApi?.ApiKey || null,
-      groupId: agency?.MyhomeApi?.GroupID || null,
+      apiKey: foundAgency?.MyhomeApi?.ApiKey || foundAgency?.myhome_api_key || foundAgency?.MyHomeApiKey || null,
+      groupId: foundAgency?.MyhomeApi?.GroupID || foundAgency?.myhome_group_id || foundAgency?.MyHomeGroupId || null,
     };
     
     console.log('🔑 MyHome credentials for', agencyId, ':', {
