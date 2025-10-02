@@ -1,4 +1,5 @@
 import { XMLParser } from 'fast-xml-parser';
+import { kyraAI } from './kyra';
 
 interface PropertyData {
   id: string;
@@ -132,9 +133,11 @@ export class ProfessionalReportGenerator {
             (typeof prop.images === 'string' ? JSON.parse(prop.images) : []))
           : [];
 
+        const displayTitle = prop.display_address || prop.address || prop.title || `Property ${prop.id}`;
+
         return {
           id: prop.id || '',
-          title: prop.title || prop.display_address || '',
+          title: displayTitle,
           price: Number(prop.price || 0),
           bedrooms: Number(prop.bedrooms || 0),
           bathrooms: Number(prop.bathrooms || 0),
@@ -153,7 +156,7 @@ export class ProfessionalReportGenerator {
         console.error('Error converting property:', err, prop);
         return {
           id: prop.id || '',
-          title: prop.title || '',
+          title: prop.display_address || prop.address || 'Property',
           price: Number(prop.price || 0),
           bedrooms: 0,
           bathrooms: 0,
@@ -609,40 +612,76 @@ export class ProfessionalReportGenerator {
     .chart-row {
       display: flex;
       align-items: center;
-      margin-bottom: 15px;
-      gap: 15px;
+      margin-bottom: 18px;
+      gap: 20px;
+      padding: 8px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: transparent;
+    }
+    .chart-row:hover {
+      background: #f8fafc;
+      transform: translateX(4px);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
     }
     .chart-label {
-      min-width: 150px;
-      font-size: 14px;
+      min-width: 180px;
+      font-size: 15px;
       font-weight: 600;
-      color: #334155;
+      color: #1e293b;
+      letter-spacing: 0.3px;
+      transition: color 0.2s ease;
+    }
+    .chart-row:hover .chart-label {
+      color: #1e3a8a;
     }
     .chart-bar-container {
       flex: 1;
-      height: 36px;
-      background: #f1f5f9;
-      border-radius: 6px;
-      overflow: hidden;
+      height: 44px;
+      background: linear-gradient(to right, #f1f5f9, #e2e8f0);
+      border-radius: 8px;
+      overflow: visible;
       position: relative;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
     }
     .chart-bar {
       height: 100%;
       background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%);
-      border-radius: 6px;
+      border-radius: 8px;
       position: relative;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-      transition: width 0.5s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25), inset 0 2px 4px rgba(255,255,255,0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: left center;
+    }
+    .chart-row:hover .chart-bar {
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4), inset 0 2px 4px rgba(255,255,255,0.3);
+      transform: scaleY(1.05);
+    }
+    .chart-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50%;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+      border-radius: 8px 8px 0 0;
     }
     .chart-value {
       position: absolute;
-      right: 12px;
+      right: 14px;
       top: 50%;
       transform: translateY(-50%);
       color: white;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+    }
+    .chart-row:hover .chart-value {
+      transform: translateY(-50%) scale(1.08);
+      text-shadow: 0 3px 6px rgba(0,0,0,0.4);
     }
     .property-card {
       background: white;
@@ -1081,6 +1120,16 @@ export class ProfessionalReportGenerator {
     const pricePosition = Number(priceVsMarket) > 0 ? 'above' : 'below';
     const pricePerSqM = property.floorarea ? Math.round(property.price / property.floorarea) : 0;
 
+    const convertedProperty = {
+      ...property,
+      location: { city: property.city },
+      area: property.floorarea,
+      created_at: new Date().toISOString(),
+      agency_id: agencyName
+    };
+
+    const kyraReport = kyraAI.generatePropertyReport(convertedProperty, [] as any);
+
     return `
   <div class="page content-page">
     <div class="header">
@@ -1186,13 +1235,42 @@ export class ProfessionalReportGenerator {
         </div>
 
         <div class="recommendation-box">
-          <h4>Investment Recommendations</h4>
-          <ul class="recommendation-list">
-            <li>Target buyer profile: ${property.bedrooms && property.bedrooms >= 4 ? 'Families seeking spacious accommodation' : property.bedrooms === 1 ? 'First-time buyers or investors' : 'Young professionals or small families'}</li>
-            <li>Key selling points: ${property.county} location${property.ber_rating ? ', ' + property.ber_rating + ' energy rating' : ''}${property.floorarea ? ', ' + property.floorarea + 'm² living space' : ''}</li>
-            <li>Marketing strategy: ${Number(priceVsMarket) > 10 ? 'Emphasize premium features and exclusive location benefits' : 'Highlight excellent value proposition and investment potential'}</li>
-            <li>Expected market interest: ${property.bedrooms && property.bedrooms >= 3 ? 'High demand from family buyers' : 'Strong interest from first-time buyers and investors'}</li>
+          <h4>Kyra AI Investment Analysis</h4>
+          <p style="font-size: 14px; margin-bottom: 15px; font-style: italic; color: #065f46;">
+            ${kyraReport.marketAnalysis}
+          </p>
+          <div class="comparison-grid" style="margin-bottom: 15px;">
+            <div class="comparison-item">
+              <div class="label">Investment Score</div>
+              <div class="value" style="color: #10b981">${kyraReport.investmentMetrics.investmentScore}/10</div>
+            </div>
+            <div class="comparison-item">
+              <div class="label">Projected ROI</div>
+              <div class="value" style="color: #10b981">${kyraReport.investmentMetrics.projectedROI}%</div>
+            </div>
+            <div class="comparison-item">
+              <div class="label">Est. Value</div>
+              <div class="value">€${Math.round(kyraReport.priceRecommendation.estimatedValue / 1000)}K</div>
+            </div>
+            <div class="comparison-item">
+              <div class="label">Market Confidence</div>
+              <div class="value" style="color: #10b981">${kyraReport.investmentMetrics.marketConfidence}%</div>
+            </div>
+          </div>
+          <strong style="color: #065f46; display: block; margin-bottom: 8px;">Key Strengths:</strong>
+          <ul class="recommendation-list" style="margin-bottom: 15px;">
+            ${kyraReport.strengths.map((s: string) => `<li>${s}</li>`).join('')}
           </ul>
+          ${kyraReport.concerns[0] !== 'No major concerns identified' ? `
+            <strong style="color: #92400e; display: block; margin-bottom: 8px;">Considerations:</strong>
+            <ul class="recommendation-list" style="margin-bottom: 15px;">
+              ${kyraReport.concerns.map((c: string) => `<li>${c}</li>`).join('')}
+            </ul>
+          ` : ''}
+          <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 6px; border: 2px solid #10b981;">
+            <strong style="color: #065f46; font-size: 15px;">Kyra's Recommendation:</strong>
+            <p style="margin-top: 8px; font-size: 14px; color: #065f46;">${kyraReport.recommendation}</p>
+          </div>
         </div>
 
         <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
